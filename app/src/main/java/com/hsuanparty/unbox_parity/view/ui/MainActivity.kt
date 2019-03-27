@@ -6,12 +6,17 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.facebook.FacebookSdk
+import com.facebook.appevents.AppEventsLogger
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.FirebaseApp
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.networkChecker.NetworkChangeReceiver
 import com.hsuanparty.unbox_parity.utils.networkChecker.NetworkState
 import com.hsuanparty.unbox_parity.R
 import kotlinx.android.synthetic.main.activity_main.*
+
+
 
 /**
  * Author: Tsung Hsuan, Lai
@@ -29,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(com.hsuanparty.unbox_parity.R.layout.activity_main)
 
         initUI()
 
@@ -99,5 +104,11 @@ class MainActivity : AppCompatActivity() {
 
         // test crashlytics
 //        Crashlytics.getInstance().crash()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        LogMessage.D(TAG, "onActivityResult()")
+        //callbackManager.onActivityResult(requestCode, resultCode, data)
     }
 }

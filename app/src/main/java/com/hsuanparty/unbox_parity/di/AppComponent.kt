@@ -1,9 +1,7 @@
 package com.hsuanparty.unbox_parity.di
 
 import android.app.Application
-import com.gorilla.smart_attendance.MyApplication
-import com.hsuanparty.unbox_parity.di.ActivityBuildersModule
-import com.hsuanparty.unbox_parity.di.AppModule
+import com.hsuanparty.unbox_parity.MyApplication
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton

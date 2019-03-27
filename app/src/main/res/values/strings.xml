@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">unbox_parity</string>
     <string name="action_settings">Settings</string>
+
+    <!--about facebook-->
+    <string name="facebook_app_id" translatable="false">2542636175809491</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb2542636175809491</string>
 </resources>

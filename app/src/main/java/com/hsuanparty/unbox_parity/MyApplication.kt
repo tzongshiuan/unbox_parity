@@ -1,8 +1,11 @@
-package com.gorilla.smart_attendance
+package com.hsuanparty.unbox_parity
 
 import android.app.Activity
 import android.app.Application
 import android.app.Fragment
+import com.facebook.FacebookSdk
+import com.facebook.appevents.AppEventsLogger
+import com.google.firebase.FirebaseApp
 import com.hsuanparty.unbox_parity.di.AppInjector
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -28,6 +31,10 @@ class MyApplication : Application(), HasActivityInjector, HasFragmentInjector {
 
         // Dagger2
         AppInjector.init(this)
+
+        FirebaseApp.initializeApp(this)
+        FacebookSdk.sdkInitialize(this)
+        AppEventsLogger.activateApp(this)
 
 //        Fabric.with(this, Crashlytics())
     }

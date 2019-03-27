@@ -80,4 +80,13 @@ dependencies {
 
     // Hsuan utils
     implementation 'com.github.tzongshiuan:utils:1.0'
+
+    // Firebase
+    implementation 'com.google.firebase:firebase-auth:16.2.0'
+    implementation 'com.google.firebase:firebase-core:16.0.8'
+
+    // Facebook Login
+    implementation 'com.facebook.android:facebook-login:4.41.0'
 }
+
+apply plugin: 'com.google.gms.google-services'
