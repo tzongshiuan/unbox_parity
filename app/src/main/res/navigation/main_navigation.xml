@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@+id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.hsuanparty.unbox_parity.view.ui.MainActivityFragment"
+        android:label="MainActivityFragment" >
+        <!--<action-->
+            <!--android:id="@+id/action_scsMainFragment_to_loginFragment"-->
+            <!--app:destination="@id/loginFragment" />-->
+        <!--<action-->
+            <!--android:id="@+id/action_scsMainFragment_to_motpFragment"-->
+            <!--app:destination="@id/motpFragment" />-->
+    </fragment>
+
+</navigation>
