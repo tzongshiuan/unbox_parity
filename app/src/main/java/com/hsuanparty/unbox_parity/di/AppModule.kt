@@ -1,6 +1,7 @@
 package com.hsuanparty.unbox_parity.di
 
 import android.app.Application
+import com.facebook.CallbackManager
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import dagger.Module
 import dagger.Provides
@@ -76,5 +77,11 @@ class AppModule(private val application: Application) {
     @Singleton
     fun provideFirebaseDbManager(): FirebaseDbManager {
         return FirebaseDbManager()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCallbackManager(): CallbackManager {
+        return CallbackManager.Factory.create()
     }
 }

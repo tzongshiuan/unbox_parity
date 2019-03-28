@@ -1,5 +1,6 @@
 package com.hsuanparty.unbox_parity.view.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,26 @@ import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import javax.inject.Inject
+import com.google.android.gms.common.util.IOUtils.toByteArray
+import android.content.pm.PackageManager
+import android.content.pm.PackageInfo
+import android.util.Base64
+import android.util.Log
+import com.facebook.internal.ImageRequest.getProfilePictureUri
+import com.facebook.Profile.getCurrentProfile
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import org.json.JSONException
+import androidx.databinding.adapters.TextViewBindingAdapter.setText
+import com.facebook.FacebookActivity
+import com.facebook.internal.ImageRequest.getProfilePictureUri
+import com.facebook.Profile.getCurrentProfile
+import com.facebook.GraphResponse
+import org.json.JSONObject
+import com.facebook.GraphRequest
+import com.facebook.login.LoginManager
+import java.io.IOException
+import java.util.*
 
 
 /**
@@ -30,11 +51,13 @@ class MainActivityFragment : Fragment(), Injectable {
     @Inject
     lateinit var mDbManager: FirebaseDbManager
 
+    @Inject
+    lateinit var mCallbackManager: CallbackManager
+
     private lateinit var mFragmentView: View
 
     private lateinit var mBinding: FragmentMainBinding
 
-    private lateinit var callbackManager: CallbackManager
     private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +95,13 @@ class MainActivityFragment : Fragment(), Injectable {
         super.onDestroy()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        LogMessage.D(TAG, "onActivityResult()")
+
+        mCallbackManager.onActivityResult(requestCode, resultCode, data)
+    }
+
     private fun initUI() {
         LogMessage.D(TAG, "initUI()")
 
@@ -84,19 +114,31 @@ class MainActivityFragment : Fragment(), Injectable {
     }
 
     private fun initFbLogin() {
+        mBinding.fbLoginButton.setReadPermissions("public_profile")
         mBinding.fbLoginButton.setReadPermissions("email")
-        mBinding.fbLoginButton.setReadPermissions("user_photos")
-        mBinding.fbLoginButton.setReadPermissions("user_location")
+        //mBinding.fbLoginButton.setReadPermissions("user_friends")
+        //mBinding.fbLoginButton.setReadPermissions("user_photos")
+        //mBinding.fbLoginButton.setReadPermissions("user_location")
         mBinding.fbLoginButton.fragment = this
 
-        callbackManager = CallbackManager.Factory.create()
         mAuth = FirebaseAuth.getInstance()
 
         // Callback registration
-        mBinding.fbLoginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+        mBinding.fbLoginButton.registerCallback(mCallbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(loginResult: LoginResult) {
                 val token = loginResult.accessToken
                 val credential = FacebookAuthProvider.getCredential(token.token)
+
+                LogMessage.D(TAG, "Facebook getApplicationId: " + token.applicationId);
+                LogMessage.D(TAG, "Facebook getUserId: " + token.userId)
+                LogMessage.D(TAG, "Facebook getExpires: " + token.expires)
+                LogMessage.D(TAG, "Facebook getLastRefresh: " + token.lastRefresh)
+                LogMessage.D(TAG, "Facebook getToken: " + token.token)
+                LogMessage.D(TAG, "Facebook getSource: " + token.source)
+                LogMessage.D(TAG, "Facebook getRecentlyGrantedPermissions: " + loginResult.recentlyGrantedPermissions)
+                LogMessage.D(TAG, "Facebook getRecentlyDeniedPermissions: " + loginResult.recentlyDeniedPermissions)
+
+                sendFbInfoRequest(token)
 
                 activity?.let {
                     mAuth.signInWithCredential(credential)
@@ -122,17 +164,65 @@ class MainActivityFragment : Fragment(), Injectable {
             }
         })
 
-        val fbProfile = Profile.getCurrentProfile()
-        val accessTokenTracker = object: AccessTokenTracker() {
-            override fun onCurrentAccessTokenChanged(oldAccessToken: AccessToken?, currentAccessToken: AccessToken?) {
-                if (currentAccessToken == null) {
-                    mAuth.signOut()
-                    // TODO
-                    // message.setText("請登入");
+
+        mBinding.fbLogoutBtn.setOnClickListener {
+            // To logout Facebook programmatically
+            LoginManager.getInstance().logOut()
+
+//            val fbProfile = Profile.getCurrentProfile()
+//            if (fbProfile != null) {
+//                // 取得用戶大頭照
+//                val userPhoto = fbProfile.getProfilePictureUri(300, 300)
+//                val id = fbProfile.id
+//                val name = fbProfile.name
+//                LogMessage.D(TAG, "Facebook userPhoto: $userPhoto")
+//                LogMessage.D(TAG, "Facebook id: $id")
+//                LogMessage.D(TAG, "Facebook name: $name")
+//            }
+
+            // If user had logged in, token would not be null
+//            val token = AccessToken.getCurrentAccessToken()
+//            if (token != null) {
+//                sendFbInfoRequest(token)
+//            }
+        }
+    }
+
+    private fun sendFbInfoRequest(token: AccessToken) {
+        val graphRequest = GraphRequest.newMeRequest(
+            token
+        ) { jObj, response ->
+            try {
+                if (response.connection.responseCode == 200) {
+                    val id = jObj.getLong("id")
+                    val name = jObj.getString("name")
+                    val email = jObj.getString("email")
+                    Log.d(TAG, "Facebook id:$id")
+                    Log.d(TAG, "Facebook name:$name")
+                    Log.d(TAG, "Facebook email:$email")
+                    // 此時如果登入成功，就可以順便取得用戶大頭照
+                    val profile = Profile.getCurrentProfile()
+                    // 設定大頭照大小
+                    val userPhoto = profile.getProfilePictureUri(300, 300)
+//                            Glide.with(this@FacebookActivity)
+//                                .load(userPhoto.toString())
+//                                .crossFade()
+//                                .into(mImgPhoto)
+                    //mTextDescription.setText(String.format(Locale.TAIWAN, "Name:%s\nE-mail:%s", name, email))
                 }
+            } catch (e: IOException) {
+                e.printStackTrace()
+            } catch (e: JSONException) {
+                e.printStackTrace()
             }
         }
 
-        // FirebaseAuth.getInstance().signOut()
+        // https://developers.facebook.com/docs/android/graph?locale=zh_TW
+        // 如果要取得email，需透過添加參數的方式來獲取(如下)
+        // 不添加只能取得id & name
+        val parameters = Bundle()
+        parameters.putString("fields", "id,name,email")
+        graphRequest.parameters = parameters
+        graphRequest.executeAsync()
     }
 }

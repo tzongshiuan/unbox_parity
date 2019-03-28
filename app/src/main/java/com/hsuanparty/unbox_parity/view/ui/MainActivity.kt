@@ -1,5 +1,6 @@
 package com.hsuanparty.unbox_parity.view.ui
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.IntentFilter
@@ -8,12 +9,15 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.util.Base64
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.facebook.CallbackManager
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.Constants
@@ -23,6 +27,9 @@ import com.hsuanparty.unbox_parity.utils.networkChecker.NetworkChangeReceiver
 import com.hsuanparty.unbox_parity.utils.networkChecker.NetworkState
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
+import kotlinx.android.synthetic.main.content_main.*
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import javax.inject.Inject
 
 
@@ -55,6 +62,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
 
+    @Inject
+    lateinit var mCallbackManager: CallbackManager
+
     private val networkReceiver: NetworkChangeReceiver by lazy { NetworkChangeReceiver() }
 
     private var networkDialog: AlertDialog? = null
@@ -75,6 +85,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
         setContentView(com.hsuanparty.unbox_parity.R.layout.activity_main)
 
         initUI()
+        initSettings()
 
         NetworkState.isNetworkConnected.observe(this, Observer {
             LogMessage.D(TAG, "Is network connected = ${it!!}")
@@ -157,7 +168,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         LogMessage.D(TAG, "onActivityResult()")
-        //callbackManager.onActivityResult(requestCode, resultCode, data)
+
+        val fragment = supportFragmentManager.findFragmentById(R.id.mainFragment)
+        fragment?.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun showNetworkCheckDialog() {
@@ -199,7 +212,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
                 if (grantResults.isNotEmpty() && isAllGrant) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    initSettings()
                 } else {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
@@ -217,7 +229,30 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
     }
 
     private fun initSettings() {
-        
+        //getFbHash()
+    }
+
+    /**
+     * keytool -exportcert -alias YOUR_RELEASE_KEY_ALIAS -keystore YOUR_RELEASE_KEY_PATH | openssl sha1 -binary | openssl base64
+     */
+    @SuppressLint("PackageManagerGetSignatures")
+    private fun getFbHash() {
+        // Add code to print out the key hash
+        try {
+            val info = packageManager.getPackageInfo(
+                "com.hsuanparty.unbox_parity",
+                PackageManager.GET_SIGNATURES
+            )
+            for (signature in info.signatures) {
+                val md = MessageDigest.getInstance("SHA")
+                md.update(signature.toByteArray())
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT))
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+
+        } catch (e: NoSuchAlgorithmException) {
+
+        }
     }
 
     override fun supportFragmentInjector() = dispatchingAndroidInjector
