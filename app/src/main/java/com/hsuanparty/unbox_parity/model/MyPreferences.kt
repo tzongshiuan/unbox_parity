@@ -20,6 +20,9 @@ class MyPreferences @Inject constructor(val context: Context) : PreferencesHelpe
 
     override var developer = ""
 
+    // no need to save into sharedPreferences
+    override var authStatus = AuthStatus.AUTH_NONE
+
     private fun packPreferencesToJson(): JSONObject {
         val jSetting = JSONObject()
         jSetting.put(SETTING_DEVELOPER, developer)

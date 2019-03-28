@@ -20,6 +20,7 @@ import android.widget.Toast
 import org.json.JSONException
 import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
+import com.hsuanparty.unbox_parity.model.AuthStatus
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import java.io.IOException
@@ -63,6 +64,8 @@ class MainActivityFragment : Fragment(), Injectable {
 
         mBinding = FragmentMainBinding.inflate(inflater, container, false)
         initUI()
+
+        initSetting()
 
         return mBinding.root
     }
@@ -175,12 +178,6 @@ class MainActivityFragment : Fragment(), Injectable {
 //                LogMessage.D(TAG, "Facebook id: $id")
 //                LogMessage.D(TAG, "Facebook name: $name")
 //            }
-
-            // If user had logged in, token would not be null
-//            val token = AccessToken.getCurrentAccessToken()
-//            if (token != null) {
-//                sendFbInfoRequest(token)
-//            }
         }
     }
 
@@ -224,18 +221,30 @@ class MainActivityFragment : Fragment(), Injectable {
 
     private fun initAnonymousAuth() {
         mBinding.anonymousLoginBtn.setOnClickListener {
-            val currentUser = mAuth.currentUser
-            if (currentUser != null) {
-                LogMessage.D(TAG, "Has already auth with anonymous account")
-            } else {
-                mAuth.signInAnonymously().addOnCompleteListener { authResult ->
-                    if (authResult.isSuccessful) {
-                        Toast.makeText(context, "匿名登入成功 uid:\n" + mAuth.currentUser?.uid, Toast.LENGTH_LONG).show()
-                    } else {
-                        Toast.makeText(context, "匿名登入失敗", Toast.LENGTH_LONG).show()
-                    }
+            mAuth.signInAnonymously().addOnCompleteListener { authResult ->
+                if (authResult.isSuccessful) {
+                    Toast.makeText(context, "匿名登入成功 uid:\n" + mAuth.currentUser?.uid, Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, "匿名登入失敗", Toast.LENGTH_LONG).show()
                 }
             }
+        }
+    }
+
+    private fun initSetting() {
+        // If user had logged in facebook, token would not be null
+        val token = AccessToken.getCurrentAccessToken()
+        if (token != null) {
+            LogMessage.D(TAG, "Has already auth with facebook account")
+            sendFbInfoRequest(token)
+            mPreferences.authStatus = AuthStatus.AUTH_FACEBOOK
+            return
+        }
+
+        val currentUser = mAuth.currentUser
+        if (currentUser != null) {
+            LogMessage.D(TAG, "Has already auth with anonymous account")
+            mPreferences.authStatus = AuthStatus.AUTH_ANONYMOUS
         }
     }
 }
