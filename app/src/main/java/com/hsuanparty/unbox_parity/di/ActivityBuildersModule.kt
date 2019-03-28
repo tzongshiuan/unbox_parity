@@ -1,6 +1,5 @@
 package com.hsuanparty.unbox_parity.di
 
-import com.hsuanparty.unbox_parity.di.FragmentBuildersModule
 import com.hsuanparty.unbox_parity.view.ui.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector

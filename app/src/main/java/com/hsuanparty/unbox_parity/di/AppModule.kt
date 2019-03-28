@@ -1,9 +1,10 @@
 package com.hsuanparty.unbox_parity.di
 
 import android.app.Application
-import com.hsuanparty.unbox_parity.di.ViewModelModule
+import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import dagger.Module
 import dagger.Provides
+import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Singleton
 
 /**
@@ -65,9 +66,15 @@ class AppModule(private val application: Application) {
         return application
     }
 
-//    @Provides
-//    @Singleton
-//    fun provideContext(application: Application): Context {
-//        return application
-//    }
+    @Provides
+    @Singleton
+    fun provideCompositeDisposable(): CompositeDisposable {
+        return CompositeDisposable()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseDbManager(): FirebaseDbManager {
+        return FirebaseDbManager()
+    }
 }

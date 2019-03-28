@@ -2,7 +2,7 @@ package com.hsuanparty.unbox_parity
 
 import android.app.Activity
 import android.app.Application
-import android.app.Fragment
+import androidx.fragment.app.Fragment
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.google.firebase.FirebaseApp
@@ -10,11 +10,11 @@ import com.hsuanparty.unbox_parity.di.AppInjector
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
-import dagger.android.HasFragmentInjector
+import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
 @Suppress("DEPRECATION")
-class MyApplication : Application(), HasActivityInjector, HasFragmentInjector {
+class MyApplication : Application(), HasActivityInjector, HasSupportFragmentInjector {
 
     @Inject
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
@@ -43,7 +43,7 @@ class MyApplication : Application(), HasActivityInjector, HasFragmentInjector {
         return activityInjector
     }
 
-    override fun fragmentInjector(): AndroidInjector<Fragment>? {
+    override fun supportFragmentInjector(): AndroidInjector<Fragment>? {
         return fragmentInjector
     }
 }

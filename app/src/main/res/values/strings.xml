@@ -1,8 +1,15 @@
 <resources>
-    <string name="app_name">unbox_parity</string>
+    <string name="appName">unbox_parity</string>
     <string name="action_settings">Settings</string>
 
     <!--about facebook-->
     <string name="facebook_app_id" translatable="false">2542636175809491</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb2542636175809491</string>
+
+    <!--Common Strings-->
+    <string name="txt_ok">OK</string>
+
+    <!--MainActivity-->
+    <string name="txt_network_check">Network Check</string>
+    <string name="msg_network_check">Please confirm the network connection status.</string>
 </resources>

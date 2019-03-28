@@ -1,21 +1,19 @@
 package com.hsuanparty.unbox_parity.view.ui
 
-import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.facebook.*
-import com.hsuanparty.unbox_parity.utils.LogMessage
-import com.hsuanparty.unbox_parity.R
-import com.hsuanparty.unbox_parity.databinding.FragmentMainBinding
 import com.facebook.login.LoginResult
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.hsuanparty.unbox_parity.databinding.FragmentMainBinding
+import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.FirebaseDbManager
+import com.hsuanparty.unbox_parity.utils.LogMessage
+import javax.inject.Inject
 
 
 /**
@@ -23,11 +21,14 @@ import com.google.firebase.auth.FirebaseAuth
  * Created on: 2019/3/27
  * Description: A placeholder fragment containing a simple view.
  */
-class MainActivityFragment : Fragment() {
+class MainActivityFragment : Fragment(), Injectable {
 
     companion object {
         private val TAG = MainActivityFragment::class.java.simpleName
     }
+
+    @Inject
+    lateinit var mDbManager: FirebaseDbManager
 
     private lateinit var mFragmentView: View
 
@@ -75,6 +76,11 @@ class MainActivityFragment : Fragment() {
         LogMessage.D(TAG, "initUI()")
 
         initFbLogin()
+
+//        mDbManager.setSingleValueEvent()
+        mDbManager.setChildEvent()
+//        mDbManager.add()
+        mDbManager.clearAll()
     }
 
     private fun initFbLogin() {

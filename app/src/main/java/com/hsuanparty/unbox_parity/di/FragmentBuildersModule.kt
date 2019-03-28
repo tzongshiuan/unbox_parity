@@ -1,5 +1,6 @@
 package com.hsuanparty.unbox_parity.di
 
+import com.hsuanparty.unbox_parity.view.ui.MainActivityFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -9,6 +10,6 @@ import dagger.android.ContributesAndroidInjector
  */
 @Module
 abstract class FragmentBuildersModule {
-//    @ContributesAndroidInjector
-//    abstract fun contributeReserveFragment(): ReserveFragment
+    @ContributesAndroidInjector
+    abstract fun contributeMainActivityFragment(): MainActivityFragment
 }
