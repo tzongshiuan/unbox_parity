@@ -20,6 +20,7 @@ import androidx.lifecycle.Observer
 import com.facebook.CallbackManager
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
@@ -64,6 +65,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
 
     @Inject
     lateinit var mCallbackManager: CallbackManager
+
+    @Inject
+    lateinit var mPreferences: PreferencesHelper
 
     private val networkReceiver: NetworkChangeReceiver by lazy { NetworkChangeReceiver() }
 
@@ -115,6 +119,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
     override fun onResume() {
         LogMessage.D(TAG, "onResume()")
         super.onResume()
+
+        mPreferences.readPreferences()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -130,6 +136,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
     override fun onStop() {
         LogMessage.D(TAG, "onStop()")
         super.onStop()
+
+        mPreferences.savePreferences()
     }
 
     override fun onDestroy() {

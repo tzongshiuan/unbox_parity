@@ -1,9 +1,12 @@
 package com.hsuanparty.unbox_parity.di
 
 import android.app.Application
+import android.content.Context
 import com.facebook.CallbackManager
 import com.google.firebase.auth.FirebaseAuth
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
+import com.hsuanparty.unbox_parity.model.MyPreferences
+import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable
@@ -66,6 +69,18 @@ class AppModule(private val application: Application) {
     @Singleton
     fun provideApplication(): Application {
         return application
+    }
+
+    @Provides
+    @Singleton
+    fun provideContext(application: Application): Context {
+        return application
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferencesHelper(myPreferences: MyPreferences): PreferencesHelper {
+        return myPreferences
     }
 
     @Provides

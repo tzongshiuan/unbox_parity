@@ -20,6 +20,8 @@ import android.widget.Toast
 import org.json.JSONException
 import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
+import com.hsuanparty.unbox_parity.model.MyPreferences
+import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import java.io.IOException
 
 
@@ -42,6 +44,9 @@ class MainActivityFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var mAuth: FirebaseAuth
+
+    @Inject
+    lateinit var mPreferences: PreferencesHelper
 
     private lateinit var mFragmentView: View
 
