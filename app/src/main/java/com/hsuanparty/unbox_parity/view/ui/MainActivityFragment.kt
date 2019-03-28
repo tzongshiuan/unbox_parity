@@ -15,26 +15,12 @@ import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import javax.inject.Inject
-import com.google.android.gms.common.util.IOUtils.toByteArray
-import android.content.pm.PackageManager
-import android.content.pm.PackageInfo
-import android.util.Base64
 import android.util.Log
-import com.facebook.internal.ImageRequest.getProfilePictureUri
-import com.facebook.Profile.getCurrentProfile
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
+import android.widget.Toast
 import org.json.JSONException
-import androidx.databinding.adapters.TextViewBindingAdapter.setText
-import com.facebook.FacebookActivity
-import com.facebook.internal.ImageRequest.getProfilePictureUri
-import com.facebook.Profile.getCurrentProfile
-import com.facebook.GraphResponse
-import org.json.JSONObject
 import com.facebook.GraphRequest
 import com.facebook.login.LoginManager
 import java.io.IOException
-import java.util.*
 
 
 /**
@@ -54,11 +40,12 @@ class MainActivityFragment : Fragment(), Injectable {
     @Inject
     lateinit var mCallbackManager: CallbackManager
 
+    @Inject
+    lateinit var mAuth: FirebaseAuth
+
     private lateinit var mFragmentView: View
 
     private lateinit var mBinding: FragmentMainBinding
-
-    private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
@@ -105,7 +92,9 @@ class MainActivityFragment : Fragment(), Injectable {
     private fun initUI() {
         LogMessage.D(TAG, "initUI()")
 
-        initFbLogin()
+        initGoogleAuth()
+        initFacebookAuth()
+        initAnonymousAuth()
 
 //        mDbManager.setSingleValueEvent()
         mDbManager.setChildEvent()
@@ -113,15 +102,17 @@ class MainActivityFragment : Fragment(), Injectable {
         mDbManager.clearAll()
     }
 
-    private fun initFbLogin() {
+    private fun initGoogleAuth() {
+
+    }
+
+    private fun initFacebookAuth() {
         mBinding.fbLoginButton.setReadPermissions("public_profile")
         mBinding.fbLoginButton.setReadPermissions("email")
         //mBinding.fbLoginButton.setReadPermissions("user_friends")
         //mBinding.fbLoginButton.setReadPermissions("user_photos")
         //mBinding.fbLoginButton.setReadPermissions("user_location")
         mBinding.fbLoginButton.fragment = this
-
-        mAuth = FirebaseAuth.getInstance()
 
         // Callback registration
         mBinding.fbLoginButton.registerCallback(mCallbackManager, object : FacebookCallback<LoginResult> {
@@ -224,5 +215,22 @@ class MainActivityFragment : Fragment(), Injectable {
         parameters.putString("fields", "id,name,email")
         graphRequest.parameters = parameters
         graphRequest.executeAsync()
+    }
+
+    private fun initAnonymousAuth() {
+        mBinding.anonymousLoginBtn.setOnClickListener {
+            val currentUser = mAuth.currentUser
+            if (currentUser != null) {
+                LogMessage.D(TAG, "Has already auth with anonymous account")
+            } else {
+                mAuth.signInAnonymously().addOnCompleteListener { authResult ->
+                    if (authResult.isSuccessful) {
+                        Toast.makeText(context, "匿名登入成功 uid:\n" + mAuth.currentUser?.uid, Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(context, "匿名登入失敗", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
     }
 }
