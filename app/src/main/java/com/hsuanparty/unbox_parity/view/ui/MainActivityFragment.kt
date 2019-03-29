@@ -236,17 +236,6 @@ class MainActivityFragment : Fragment(), Injectable {
             LoginManager.getInstance().logOut()
 
             firebaseSingOut()
-
-//            val fbProfile = Profile.getCurrentProfile()
-//            if (fbProfile != null) {
-//                // 取得用戶大頭照
-//                val userPhoto = fbProfile.getProfilePictureUri(300, 300)
-//                val id = fbProfile.id
-//                val name = fbProfile.name
-//                LogMessage.D(TAG, "Facebook userPhoto: $userPhoto")
-//                LogMessage.D(TAG, "Facebook id: $id")
-//                LogMessage.D(TAG, "Facebook name: $name")
-//            }
         }
     }
 
@@ -270,7 +259,17 @@ class MainActivityFragment : Fragment(), Injectable {
 //                                .load(userPhoto.toString())
 //                                .crossFade()
 //                                .into(mImgPhoto)
-                    //mTextDescription.setText(String.format(Locale.TAIWAN, "Name:%s\nE-mail:%s", name, email))
+
+//                    val fbProfile = Profile.getCurrentProfile()
+//                    if (fbProfile != null) {
+//                        // 取得用戶大頭照
+//                        val userPhoto = fbProfile.getProfilePictureUri(300, 300)
+//                        val id = fbProfile.id
+//                        val name = fbProfile.name
+//                        LogMessage.D(TAG, "Facebook userPhoto: $userPhoto")
+//                        LogMessage.D(TAG, "Facebook id: $id")
+//                        LogMessage.D(TAG, "Facebook name: $name")
+//                    }
                 }
             } catch (e: IOException) {
                 e.printStackTrace()

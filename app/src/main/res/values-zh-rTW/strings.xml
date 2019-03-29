@@ -12,4 +12,5 @@
     <!--MainActivity-->
     <string name="txt_network_check">Network Check</string>
     <string name="msg_network_check">Please confirm the network connection status.</string>
+    <string name="txt_login_anonymous">匿名登入</string>
 </resources>

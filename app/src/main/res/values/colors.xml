@@ -29,4 +29,7 @@
     <color name="white">#FFFFFF</color>
     <color name="transparent">#00000000</color>
     <color name="trans_white">#00FFFFFF</color>
+
+    <!--Button-->
+    <color name="login_btn_background">#28282B</color>
 </resources>

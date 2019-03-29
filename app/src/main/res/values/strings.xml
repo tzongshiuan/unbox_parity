@@ -12,4 +12,7 @@
     <!--MainActivity-->
     <string name="txt_network_check">Network Check</string>
     <string name="msg_network_check">Please confirm the network connection status.</string>
+
+    <!--MainActivityFragment-->
+    <string name="txt_login_anonymous">Log in Anonymously</string>
 </resources>
