@@ -9,7 +9,12 @@
               android:name="com.hsuanparty.unbox_parity.view.ui.MainActivityFragment"
               android:label="MainActivityFragment"
               tools:layout="@layout/fragment_main">
-        <action android:id="@+id/action_mainActivityFragment_to_searchFragment" app:destination="@id/searchFragment"/>
+        <action android:id="@+id/action_mainActivityFragment_to_searchFragment"
+                app:destination="@id/searchFragment"
+                app:enterAnim="@android:anim/slide_in_left"
+                app:exitAnim="@android:anim/slide_out_right"
+                app:popEnterAnim="@android:anim/slide_in_left"
+                app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
 
     <fragment android:id="@+id/searchFragment"
