@@ -12,27 +12,52 @@
             tools:showIn="@layout/activity_main"
             tools:context=".view.ui.MainActivityFragment">
 
-        <com.facebook.login.widget.LoginButton
-                android:id="@+id/fbLoginButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp"
-                android:textSize="18sp"
+        <com.shobhitpuri.custombuttons.GoogleSignInButton
+                android:id="@+id/googleLoginButton"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:textSize="16sp"
+                app:isDarkTheme="true"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
+        <com.facebook.login.widget.LoginButton
+                android:id="@+id/fbLoginButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginStart="64dp"
+                android:layout_marginEnd="64dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/googleLoginButton"/>
+
         <Button
                 android:id="@+id/anonymousLoginBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
                 android:text="Anonymous Login"
+                android:textSize="16sp"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="60dp"
+                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fbLoginButton" />
+
+        <Button
+                android:id="@+id/googleLogoutBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Google Logout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
         <Button
                 android:id="@+id/fbLogoutBtn"
@@ -41,7 +66,7 @@
                 android:text="FB Logout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/googleLogoutBtn"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

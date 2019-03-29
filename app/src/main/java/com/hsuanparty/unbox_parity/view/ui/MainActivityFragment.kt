@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.facebook.*
 import com.facebook.login.LoginResult
-import com.google.firebase.auth.FacebookAuthProvider
-import com.google.firebase.auth.FirebaseAuth
 import com.hsuanparty.unbox_parity.databinding.FragmentMainBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
@@ -24,6 +22,19 @@ import com.hsuanparty.unbox_parity.model.AuthStatus
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import java.io.IOException
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
+import com.facebook.FacebookSdk.getApplicationContext
+import android.R
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.*
+import io.reactivex.internal.util.HalfSerializer.onComplete
 
 
 /**
@@ -35,6 +46,8 @@ class MainActivityFragment : Fragment(), Injectable {
 
     companion object {
         private val TAG = MainActivityFragment::class.java.simpleName
+
+        private const val GOOGLE_SIGN_IN = 128
     }
 
     @Inject
@@ -49,9 +62,14 @@ class MainActivityFragment : Fragment(), Injectable {
     @Inject
     lateinit var mPreferences: PreferencesHelper
 
+    @Inject
+    lateinit var mGso: GoogleSignInOptions
+
     private lateinit var mFragmentView: View
 
     private lateinit var mBinding: FragmentMainBinding
+
+    private lateinit var mGoogleApiClient: GoogleApiClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
@@ -94,6 +112,18 @@ class MainActivityFragment : Fragment(), Injectable {
         super.onActivityResult(requestCode, resultCode, data)
         LogMessage.D(TAG, "onActivityResult()")
 
+        if (requestCode == GOOGLE_SIGN_IN){
+            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+            if (result.isSuccess){
+                val account = result.signInAccount
+                //取得使用者並試登入
+                if (account != null) {
+                    firebaseAuthWithGoogle(account)
+                }
+            }
+            return
+        }
+
         mCallbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -111,7 +141,44 @@ class MainActivityFragment : Fragment(), Injectable {
     }
 
     private fun initGoogleAuth() {
+        mGoogleApiClient = GoogleApiClient.Builder(getApplicationContext())
+            .enableAutoManage(activity!!) {
+                Toast.makeText(context, "Google", Toast.LENGTH_LONG).show()
+            }
+            .addApi(Auth.GOOGLE_SIGN_IN_API, mGso)
+            .build()
 
+        mBinding.googleLoginButton.setOnClickListener {
+            val signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
+            startActivityForResult(signInIntent, GOOGLE_SIGN_IN)
+        }
+
+        mBinding.googleLogoutBtn.setOnClickListener {
+            // Google 登出
+            GoogleSignIn.getClient(activity!!, mGso).signOut().addOnCompleteListener {
+                Toast.makeText(context, "SingOut", Toast.LENGTH_LONG).show()
+            }
+            firebaseSingOut()
+        }
+    }
+
+    //登入 Firebase
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount){
+        val credential = GoogleAuthProvider.getCredential(account.idToken,null)
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(activity!!,
+                    OnCompleteListener<AuthResult> { task ->
+                        if (!task.isSuccessful) {
+                            Toast.makeText(context, "Failed", Toast.LENGTH_LONG).show()
+                        }else {
+                            Toast.makeText(context, "SingIn name:"+account.displayName, Toast.LENGTH_LONG).show()
+                        }
+                    })
+    }
+
+    private fun firebaseSingOut() {
+        // Firebase 登出
+        mAuth.signOut()
     }
 
     private fun initFacebookAuth() {
@@ -167,6 +234,8 @@ class MainActivityFragment : Fragment(), Injectable {
         mBinding.fbLogoutBtn.setOnClickListener {
             // To logout Facebook programmatically
             LoginManager.getInstance().logOut()
+
+            firebaseSingOut()
 
 //            val fbProfile = Profile.getCurrentProfile()
 //            if (fbProfile != null) {
@@ -232,10 +301,23 @@ class MainActivityFragment : Fragment(), Injectable {
     }
 
     private fun initSetting() {
+        // If google api client is connected, user had logged in with google account before
+        val account = GoogleSignIn.getLastSignedInAccount(context)
+        if (account != null) {
+            LogMessage.D(TAG, "Has already auth with \"Google\" account")
+            mPreferences.authStatus = AuthStatus.AUTH_GOOGLE
+
+            LogMessage.D(TAG, "account.idToken: ${account.idToken}")
+            LogMessage.D(TAG, "account.displayName: ${account.displayName}")
+            LogMessage.D(TAG, "account.email: ${account.email}")
+            LogMessage.D(TAG, "account.photoUrl: ${account.photoUrl}")
+            return
+        }
+
         // If user had logged in facebook, token would not be null
         val token = AccessToken.getCurrentAccessToken()
         if (token != null) {
-            LogMessage.D(TAG, "Has already auth with facebook account")
+            LogMessage.D(TAG, "Has already auth with \"Facebook\" account")
             sendFbInfoRequest(token)
             mPreferences.authStatus = AuthStatus.AUTH_FACEBOOK
             return
@@ -243,7 +325,7 @@ class MainActivityFragment : Fragment(), Injectable {
 
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
-            LogMessage.D(TAG, "Has already auth with anonymous account")
+            LogMessage.D(TAG, "Has already auth with \"Anonymous\" account")
             mPreferences.authStatus = AuthStatus.AUTH_ANONYMOUS
         }
     }

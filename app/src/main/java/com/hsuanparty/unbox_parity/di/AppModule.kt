@@ -3,7 +3,9 @@ package com.hsuanparty.unbox_parity.di
 import android.app.Application
 import android.content.Context
 import com.facebook.CallbackManager
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.model.PreferencesHelper
@@ -105,5 +107,14 @@ class AppModule(private val application: Application) {
     @Singleton
     fun provideCallbackManager(): CallbackManager {
         return CallbackManager.Factory.create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGoogleSignInOptions(application: Application): GoogleSignInOptions {
+        return GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(application.getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build()
     }
 }
