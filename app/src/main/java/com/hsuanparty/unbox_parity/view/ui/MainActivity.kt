@@ -119,6 +119,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
         LogMessage.D(TAG, "onResume()")
         super.onResume()
 
+        if (mPreferences.isFinishApp) {
+            mPreferences.isFinishApp = false
+            this.finish()
+        }
+
         mPreferences.readPreferences()
     }
 

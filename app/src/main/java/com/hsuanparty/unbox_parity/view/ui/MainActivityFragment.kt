@@ -363,7 +363,7 @@ class MainActivityFragment : Fragment(), Injectable {
             mBinding.googleLoginButton.isEnabled = true
             mBinding.fbLoginButton.isEnabled = true
             mBinding.anonymousLoginBtn.isEnabled = true
-            Navigation.findNavController(mBinding.root).navigate(R.id.action_mainActivityFragment_to_searchFragment)
+            Navigation.findNavController(mBinding.root).navigate(R.id.action_mainActivityFragment_to_unboxParityActivity)
         }
     }
 }

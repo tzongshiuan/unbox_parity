@@ -13,13 +13,13 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="206" />
-                            <option name="y" value="220" />
+                            <option name="x" value="-762" />
+                            <option name="y" value="181" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_mainActivityFragment_to_searchFragment">
+                            <entry key="action_mainActivityFragment_to_unboxParityActivity">
                               <value>
                                 <LayoutPositions />
                               </value>
@@ -29,13 +29,13 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="searchFragment">
+                  <entry key="unboxParityActivity">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="507" />
-                            <option name="y" value="214" />
+                            <option name="x" value="-406" />
+                            <option name="y" value="183" />
                           </Point>
                         </option>
                       </LayoutPositions>

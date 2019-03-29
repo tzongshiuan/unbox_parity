@@ -5,6 +5,7 @@ interface PreferencesHelper {
     var developer: String
 
     var authStatus: Int
+    var isFinishApp: Boolean
 
     fun readPreferences()
     fun savePreferences()

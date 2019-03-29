@@ -9,16 +9,17 @@
               android:name="com.hsuanparty.unbox_parity.view.ui.MainActivityFragment"
               android:label="MainActivityFragment"
               tools:layout="@layout/fragment_main">
-        <action android:id="@+id/action_mainActivityFragment_to_searchFragment"
-                app:destination="@id/searchFragment"
+        <action android:id="@+id/action_mainActivityFragment_to_unboxParityActivity"
+                app:destination="@id/unboxParityActivity"
                 app:enterAnim="@android:anim/slide_in_left"
                 app:exitAnim="@android:anim/slide_out_right"
                 app:popEnterAnim="@android:anim/slide_in_left"
                 app:popExitAnim="@android:anim/slide_out_right"/>
     </fragment>
 
-    <fragment android:id="@+id/searchFragment"
-              android:name="com.hsuanparty.unbox_parity.view.ui.search.SearchFragment"
-              android:label="SearchFragment"
-              tools:layout="@layout/search_fragment"/>
+    <activity android:id="@+id/unboxParityActivity"
+              android:name="com.hsuanparty.unbox_parity.view.ui.UnboxParityActivity"
+              android:label="activity_unbox_parity"
+              tools:layout="@layout/activity_unbox_parity"/>
+
 </navigation>
