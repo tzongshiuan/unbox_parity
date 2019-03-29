@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_navigation"
-    app:startDestination="@+id/mainFragment">
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/main_navigation"
+            app:startDestination="@+id/mainActivityFragment">
 
-    <fragment
-        android:id="@+id/mainFragment"
-        android:name="com.hsuanparty.unbox_parity.view.ui.MainActivityFragment"
-        android:label="MainActivityFragment" >
-        <!--<action-->
-            <!--android:id="@+id/action_scsMainFragment_to_loginFragment"-->
-            <!--app:destination="@id/loginFragment" />-->
-        <!--<action-->
-            <!--android:id="@+id/action_scsMainFragment_to_motpFragment"-->
-            <!--app:destination="@id/motpFragment" />-->
+    <fragment android:id="@+id/mainActivityFragment"
+              android:name="com.hsuanparty.unbox_parity.view.ui.MainActivityFragment"
+              android:label="MainActivityFragment"
+              tools:layout="@layout/fragment_main">
+        <action android:id="@+id/action_mainActivityFragment_to_searchFragment" app:destination="@id/searchFragment"/>
     </fragment>
 
+    <fragment android:id="@+id/searchFragment"
+              android:name="com.hsuanparty.unbox_parity.view.ui.search.SearchFragment"
+              android:label="SearchFragment"
+              tools:layout="@layout/search_fragment"/>
 </navigation>

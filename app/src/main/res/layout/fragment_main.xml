@@ -10,7 +10,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@mipmap/home_background"
-            tools:showIn="@layout/activity_main"
             tools:context=".view.ui.MainActivityFragment">
 
         <ImageView
@@ -36,6 +35,19 @@
                 android:scaleType="fitCenter"
                 android:src="@mipmap/ic_app_subtitle"
                 android:contentDescription="TODO"/>
+
+        <TextView
+                android:id="@+id/loadText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_load_data"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appSubtitle"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/googleLoginButton"/>
 
         <com.shobhitpuri.custombuttons.GoogleSignInButton
                 android:id="@+id/googleLoginButton"

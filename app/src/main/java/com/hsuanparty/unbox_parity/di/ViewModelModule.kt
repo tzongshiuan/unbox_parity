@@ -1,6 +1,7 @@
 package com.hsuanparty.unbox_parity.di
 
 import androidx.lifecycle.ViewModel
+import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -12,8 +13,8 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class ViewModelModule {
 
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(LogInViewModel::class)
-//    abstract fun bindLogInViewModel(logInViewModel: LogInViewModel): ViewModel
+    @Binds
+    @IntoMap
+    @ViewModelKey(SearchViewModel::class)
+    abstract fun bindSearchViewModel(searchViewModel: SearchViewModel): ViewModel
 }

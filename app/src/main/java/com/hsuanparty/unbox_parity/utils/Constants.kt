@@ -6,5 +6,7 @@ package com.hsuanparty.unbox_parity.utils
  * Description:
  */
 object Constants {
-    const val SPLASH_DELAY_TIME = 3000L
+    const val PERMISSON_DENY_CLOSE_TIME = 3000L
+
+    const val LOAD_DATA_TIME = 3000L
 }

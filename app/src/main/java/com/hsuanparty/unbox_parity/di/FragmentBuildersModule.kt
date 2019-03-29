@@ -1,6 +1,7 @@
 package com.hsuanparty.unbox_parity.di
 
 import com.hsuanparty.unbox_parity.view.ui.MainActivityFragment
+import com.hsuanparty.unbox_parity.view.ui.search.SearchFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -12,4 +13,7 @@ import dagger.android.ContributesAndroidInjector
 abstract class FragmentBuildersModule {
     @ContributesAndroidInjector
     abstract fun contributeMainActivityFragment(): MainActivityFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeSearchFragment(): SearchFragment
 }

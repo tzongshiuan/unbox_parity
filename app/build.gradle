@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: "kotlin-kapt"
 
+apply plugin: 'androidx.navigation.safeargs'
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -53,6 +55,9 @@ dependencies {
     implementation 'android.arch.navigation:navigation-ui:1.0.0'
 
     // unit test
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha03'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.19.0'
     testImplementation 'org.mockito:mockito-inline:2.19.0'
@@ -80,6 +85,7 @@ dependencies {
 
     // Hsuan utils
     implementation 'com.github.tzongshiuan:utils:1.0'
+    implementation 'com.github.tzongshiuan:text_animation:1.1'
 
     // Firebase
     implementation 'com.google.firebase:firebase-auth:16.2.0'

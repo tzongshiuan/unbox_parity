@@ -28,7 +28,6 @@ import com.hsuanparty.unbox_parity.utils.networkChecker.NetworkChangeReceiver
 import com.hsuanparty.unbox_parity.utils.networkChecker.NetworkState
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
-import kotlinx.android.synthetic.main.content_main.*
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import javax.inject.Inject
@@ -124,7 +123,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
     }
 
     override fun onNewIntent(intent: Intent?) {
-        LogMessage.D(TAG, "onNewIntent(), action = ${intent?.action}")
+        //LogMessage.D(TAG, "onNewIntent(), action = ${intent?.action}")
         super.onNewIntent(intent)
     }
 
@@ -148,7 +147,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
     }
 
     override fun onUserInteraction() {
-        LogMessage.D(TAG, "onUserInteraction()")
+        //LogMessage.D(TAG, "onUserInteraction()")
         super.onUserInteraction()
     }
 
@@ -177,7 +176,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
         super.onActivityResult(requestCode, resultCode, data)
         LogMessage.D(TAG, "onActivityResult()")
 
-        val fragment = supportFragmentManager.findFragmentById(R.id.mainFragment)
+        val fragment = supportFragmentManager.findFragmentById(R.id.mainActivityFragment)
         fragment?.onActivityResult(requestCode, resultCode, data)
     }
 
@@ -224,7 +223,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Toast.makeText(this, "Request permission failed, forced to close app", Toast.LENGTH_SHORT).show()
-                    SimpleDelayTask.after(Constants.SPLASH_DELAY_TIME) {
+                    SimpleDelayTask.after(Constants.PERMISSON_DENY_CLOSE_TIME) {
                         this.finish()
                     }
                 }

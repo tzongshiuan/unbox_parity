@@ -2,39 +2,41 @@ package com.hsuanparty.unbox_parity.view.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import com.facebook.*
-import com.facebook.login.LoginResult
-import com.hsuanparty.unbox_parity.databinding.FragmentMainBinding
-import com.hsuanparty.unbox_parity.di.Injectable
-import com.hsuanparty.unbox_parity.model.FirebaseDbManager
-import com.hsuanparty.unbox_parity.utils.LogMessage
-import javax.inject.Inject
-import android.util.Log
 import android.widget.Toast
-import org.json.JSONException
-import com.facebook.GraphRequest
-import com.facebook.login.LoginManager
-import com.hsuanparty.unbox_parity.model.AuthStatus
-import com.hsuanparty.unbox_parity.model.MyPreferences
-import com.hsuanparty.unbox_parity.model.PreferencesHelper
-import java.io.IOException
-import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import com.facebook.*
 import com.facebook.FacebookSdk.getApplicationContext
-import android.R
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.*
-import io.reactivex.internal.util.HalfSerializer.onComplete
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FacebookAuthProvider
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
+import com.hsuanparty.unbox_parity.R
+import com.hsuanparty.unbox_parity.databinding.FragmentMainBinding
+import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.AuthStatus
+import com.hsuanparty.unbox_parity.model.FirebaseDbManager
+import com.hsuanparty.unbox_parity.model.PreferencesHelper
+import com.hsuanparty.unbox_parity.utils.Constants
+import com.hsuanparty.unbox_parity.utils.LogMessage
+import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
+import com.tsunghsuanparty.textanimlib.slide.SlideAnimation
+import org.json.JSONException
+import java.io.IOException
+import javax.inject.Inject
 
 
 /**
@@ -69,7 +71,7 @@ class MainActivityFragment : Fragment(), Injectable {
 
     private lateinit var mBinding: FragmentMainBinding
 
-    private lateinit var mGoogleApiClient: GoogleApiClient
+    private var mGoogleApiClient: GoogleApiClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
@@ -134,6 +136,13 @@ class MainActivityFragment : Fragment(), Injectable {
         initFacebookAuth()
         initAnonymousAuth()
 
+        mBinding.loadText.visibility = View.GONE
+        val slideAnimation = SlideAnimation()
+        slideAnimation.initSettings(ContextCompat.getColor(context!!, R.color.white)
+            , ContextCompat.getColor(context!!, R.color.orange)
+            , SlideAnimation.ANIM_FAST)
+        slideAnimation.startAnimation(mBinding.loadText)
+
 //        mDbManager.setSingleValueEvent()
         mDbManager.setChildEvent()
 //        mDbManager.add()
@@ -141,12 +150,14 @@ class MainActivityFragment : Fragment(), Injectable {
     }
 
     private fun initGoogleAuth() {
-        mGoogleApiClient = GoogleApiClient.Builder(getApplicationContext())
-            .enableAutoManage(activity!!) {
-                Toast.makeText(context, "Google", Toast.LENGTH_LONG).show()
-            }
-            .addApi(Auth.GOOGLE_SIGN_IN_API, mGso)
-            .build()
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = GoogleApiClient.Builder(getApplicationContext())
+                .enableAutoManage(activity!!) {
+                    Toast.makeText(context, "Google", Toast.LENGTH_LONG).show()
+                }
+                .addApi(Auth.GOOGLE_SIGN_IN_API, mGso)
+                .build()
+        }
 
         mBinding.googleLoginButton.setOnClickListener {
             val signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
@@ -169,9 +180,10 @@ class MainActivityFragment : Fragment(), Injectable {
                 .addOnCompleteListener(activity!!,
                     OnCompleteListener<AuthResult> { task ->
                         if (!task.isSuccessful) {
-                            Toast.makeText(context, "Failed", Toast.LENGTH_LONG).show()
-                        }else {
-                            Toast.makeText(context, "SingIn name:"+account.displayName, Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, "Google sign in failed", Toast.LENGTH_LONG).show()
+                        } else {
+                            LogMessage.D(TAG, "Sing in name:"+account.displayName)
+                            startSearchFragment(AuthStatus.AUTH_GOOGLE)
                         }
                     })
     }
@@ -214,8 +226,9 @@ class MainActivityFragment : Fragment(), Injectable {
                             if (task.isSuccessful) {
                                 val user = mAuth.currentUser
                                 LogMessage.D(TAG, "user name = $user")
+                                startSearchFragment(AuthStatus.AUTH_FACEBOOK)
                             } else {
-                                LogMessage.D(TAG, "Login Failed")
+                                LogMessage.D(TAG, "Log in with facebook account failed")
                             }
                         }
                 }
@@ -291,7 +304,8 @@ class MainActivityFragment : Fragment(), Injectable {
         mBinding.anonymousLoginBtn.setOnClickListener {
             mAuth.signInAnonymously().addOnCompleteListener { authResult ->
                 if (authResult.isSuccessful) {
-                    Toast.makeText(context, "匿名登入成功 uid:\n" + mAuth.currentUser?.uid, Toast.LENGTH_LONG).show()
+                    LogMessage.D(TAG, "匿名登入成功 uid:" + mAuth.currentUser?.uid)
+                    startSearchFragment(AuthStatus.AUTH_ANONYMOUS)
                 } else {
                     Toast.makeText(context, "匿名登入失敗", Toast.LENGTH_LONG).show()
                 }
@@ -300,16 +314,20 @@ class MainActivityFragment : Fragment(), Injectable {
     }
 
     private fun initSetting() {
+        checkUserHadLogin()
+    }
+
+    private fun checkUserHadLogin() {
         // If google api client is connected, user had logged in with google account before
         val account = GoogleSignIn.getLastSignedInAccount(context)
         if (account != null) {
             LogMessage.D(TAG, "Has already auth with \"Google\" account")
-            mPreferences.authStatus = AuthStatus.AUTH_GOOGLE
-
             LogMessage.D(TAG, "account.idToken: ${account.idToken}")
             LogMessage.D(TAG, "account.displayName: ${account.displayName}")
             LogMessage.D(TAG, "account.email: ${account.email}")
             LogMessage.D(TAG, "account.photoUrl: ${account.photoUrl}")
+
+            startSearchFragment(AuthStatus.AUTH_GOOGLE)
             return
         }
 
@@ -318,14 +336,34 @@ class MainActivityFragment : Fragment(), Injectable {
         if (token != null) {
             LogMessage.D(TAG, "Has already auth with \"Facebook\" account")
             sendFbInfoRequest(token)
-            mPreferences.authStatus = AuthStatus.AUTH_FACEBOOK
+
+            startSearchFragment(AuthStatus.AUTH_FACEBOOK)
             return
         }
 
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
             LogMessage.D(TAG, "Has already auth with \"Anonymous\" account")
-            mPreferences.authStatus = AuthStatus.AUTH_ANONYMOUS
+
+            startSearchFragment(AuthStatus.AUTH_ANONYMOUS)
+        }
+    }
+
+    private fun startSearchFragment(authStatus: Int) {
+        LogMessage.D(TAG, "startSearchFragment(), autoStatus: $authStatus")
+
+        mPreferences.authStatus = authStatus
+
+        mBinding.loadText.visibility = View.VISIBLE
+        mBinding.googleLoginButton.isEnabled = false
+        mBinding.fbLoginButton.isEnabled = false
+        mBinding.anonymousLoginBtn.isEnabled = false
+        SimpleDelayTask.after(Constants.LOAD_DATA_TIME) {
+            mBinding.loadText.visibility = View.GONE
+            mBinding.googleLoginButton.isEnabled = true
+            mBinding.fbLoginButton.isEnabled = true
+            mBinding.anonymousLoginBtn.isEnabled = true
+            Navigation.findNavController(mBinding.root).navigate(R.id.action_mainActivityFragment_to_searchFragment)
         }
     }
 }
