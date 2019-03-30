@@ -69,6 +69,16 @@ class SearchFragment : Fragment(), Injectable {
     }
 
     private fun initUI() {
+        mBinding.searchBtn.setOnClickListener {
+            mBinding.searchEditText.setText("1212")
+        }
 
+        mBinding.speakBtn.setOnClickListener {
+            mBinding.searchEditText.setText("5566")
+        }
+
+        mBinding.segmentView.setOnSelectionChangedListener { identifier, value ->
+            LogMessage.D(TAG, "identifier: $identifier, value: $value")
+        }
     }
 }

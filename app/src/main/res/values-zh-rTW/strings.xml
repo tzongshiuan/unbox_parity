@@ -23,4 +23,7 @@
     <string name="txt_article_tab">文章</string>
     <string name="txt_parity_tab">比價</string>
     <string name="txt_setting_tab">設定</string>
+
+    <!--SearchFragment-->
+    <string name="txt_search_hint">搜尋商品</string>
 </resources>

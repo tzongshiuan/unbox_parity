@@ -32,4 +32,7 @@
 
     <!--Button-->
     <color name="login_btn_background">#28282B</color>
+
+    <color name="default_ascv_selected_color">#0099CC</color>
+    <color name="default_ascv_unselected_color">#FFFFFF</color>
 </resources>

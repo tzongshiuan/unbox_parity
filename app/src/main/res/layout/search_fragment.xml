@@ -12,8 +12,64 @@
             tools:showIn="@layout/activity_main"
             tools:context=".view.ui.search.SearchFragment">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="Search Fragment" tools:ignore="MissingConstraints"/>
+        <EditText
+                android:id="@+id/searchEditText"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="120dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/search_view_boarder"
+                android:hint="@string/txt_search_hint"
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+                android:inputType="textAutoComplete"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/searchBtn"
+                app:layout_constraintHorizontal_chainStyle="packed"/>
+
+        <ImageView
+                android:id="@+id/searchBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="20dp"
+                android:padding="8dp"
+                android:src="@drawable/btn_search_selector"
+                app:layout_constraintStart_toEndOf="@+id/searchEditText"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/speakBtn"/>
+
+        <ImageView
+                android:id="@+id/speakBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="120dp"
+                android:padding="8dp"
+                android:src="@drawable/btn_mic_selector"
+                app:layout_constraintStart_toEndOf="@+id/searchBtn"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/searchBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="searchEditText, searchBtn, speakBtn"/>
+
+        <com.hsuanparty.unbox_parity.view.customized.AndroidSegmentedControlView
+                android:id="@+id/segmentView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:ascv_defaultSelection="0"
+                app:ascv_unselectedTextColor="@color/navy"
+                app:ascv_selectedTextColor="@color/white"
+                app:ascv_selectedColor="@color/navy"
+                app:ascv_unselectedColor="@color/white"
+                app:ascv_items="@array/three_state_option"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
