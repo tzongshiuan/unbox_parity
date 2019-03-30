@@ -16,4 +16,11 @@
     <!--MainActivityFragment-->
     <string name="txt_load_data">資料讀取中…</string>
     <string name="txt_login_anonymous">匿名登入</string>
+
+    <!--UnboxParityActivity-->
+    <string name="txt_search_tab">搜尋</string>
+    <string name="txt_video_tab">影像</string>
+    <string name="txt_article_tab">文章</string>
+    <string name="txt_parity_tab">比價</string>
+    <string name="txt_setting_tab">設定</string>
 </resources>

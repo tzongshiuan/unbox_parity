@@ -42,8 +42,10 @@
             android:theme="@style/AppTheme">
         <activity
                 android:name=".view.ui.UnboxParityActivity"
-                android:label="@string/title_activity_unbox_parity">
+                android:label="@string/title_activity_unbox_parity"
+                android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
         <activity
                 android:name=".view.ui.MainActivity"
                 android:label="@string/appName"

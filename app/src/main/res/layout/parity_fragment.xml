@@ -10,10 +10,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:showIn="@layout/activity_main"
-            tools:context=".view.ui.search.SearchFragment">
+            tools:context=".view.ui.parity.ParityFragment">
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="Search Fragment" tools:ignore="MissingConstraints"/>
+                      android:text="Parity Fragment" tools:ignore="MissingConstraints"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

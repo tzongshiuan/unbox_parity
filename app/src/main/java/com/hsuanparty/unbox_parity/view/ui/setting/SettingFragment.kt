@@ -1,4 +1,4 @@
-package com.hsuanparty.unbox_parity.view.ui.search
+package com.hsuanparty.unbox_parity.view.ui.setting
 
 import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
@@ -7,20 +7,20 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.hsuanparty.unbox_parity.databinding.SettingFragmentBinding
 
-import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.LogMessage
 
-class SearchFragment : Fragment(), Injectable {
+class SettingFragment : Fragment(), Injectable{
 
     companion object {
-        private val TAG = SearchFragment::class.java.simpleName
+        private val TAG = SettingFragment::class.java.simpleName
     }
 
-    private lateinit var viewModel: SearchViewModel
+    private lateinit var viewModel: SettingViewModel
 
-    private lateinit var mBinding: SearchFragmentBinding
+    private lateinit var mBinding: SettingFragmentBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
@@ -32,7 +32,7 @@ class SearchFragment : Fragment(), Injectable {
         savedInstanceState: Bundle?
     ): View? {
         LogMessage.D(TAG, "onCreateView()")
-        mBinding = SearchFragmentBinding.inflate(inflater, container, false)
+        mBinding = SettingFragmentBinding.inflate(inflater, container, false)
         initUI()
 
         return mBinding.root
@@ -40,7 +40,7 @@ class SearchFragment : Fragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(SettingViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

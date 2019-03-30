@@ -1,6 +1,7 @@
 <resources>
     <string name="appName">unbox_parity</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_unbox_parity" translatable="false">UnboxParityActivity</string>
 
     <!--about facebook-->
     <string name="facebook_app_id" translatable="false">2542636175809491</string>
@@ -16,8 +17,11 @@
     <!--MainActivityFragment-->
     <string name="txt_load_data">Load Data…</string>
     <string name="txt_login_anonymous">Log in Anonymously</string>
-    <string name="title_activity_unbox_parity">UnboxParityActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+
+    <!--UnboxParityActivity-->
+    <string name="txt_search_tab">Search</string>
+    <string name="txt_video_tab">Video</string>
+    <string name="txt_article_tab">Article</string>
+    <string name="txt_parity_tab">Parity</string>
+    <string name="txt_setting_tab">Setting</string>
 </resources>
