@@ -13,9 +13,9 @@
         <attr name="ascv_identifier" format="string"/>
     </declare-styleable>
 
-    <string-array name="three_state_option">
-        <item>Option 1</item>
-        <item>Option 2</item>
-        <item>Option 3</item>
+    <string-array name="search_three_state_option">
+        <item>日排行</item>
+        <item>週排行</item>
+        <item>月排行</item>
     </string-array>
 </resources>
