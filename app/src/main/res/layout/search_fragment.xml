@@ -24,6 +24,7 @@
                 android:paddingStart="15dp"
                 android:paddingEnd="10dp"
                 android:inputType="textAutoComplete"
+                android:imeOptions="actionSearch"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/searchBtn"
