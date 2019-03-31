@@ -2,11 +2,9 @@ package com.hsuanparty.unbox_parity.view.ui.search
 
 import android.content.Context
 import android.content.Intent
-import android.hardware.input.InputManager
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,16 +13,23 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.lifecycle.Observer
 
 import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.LogMessage
+import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
+import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel.Companion.SEARCH_FINISH_STATUS
+import javax.inject.Inject
 
 class SearchFragment : Fragment(), Injectable {
 
     companion object {
         private val TAG = SearchFragment::class.java.simpleName
     }
+
+    @Inject
+    lateinit var factory: MyViewModelFactory
 
     private lateinit var viewModel: SearchViewModel
 
@@ -48,8 +53,25 @@ class SearchFragment : Fragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
-        // TODO: Use the ViewModel
+        viewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
+
+        viewModel.isWaitingLiveData.observe(this, Observer<Boolean> { isWaiting ->
+            if (isWaiting) {
+                mBinding.waitingDialog.setVisibleWithAnimate(true)
+            } else {
+                mBinding.waitingDialog.setVisibleImmediately(false)
+            }
+        })
+
+        viewModel.isSearchFinish.observe(this, Observer<Int> { status ->
+            when (status) {
+                SEARCH_FINISH_STATUS -> {
+                }
+
+                else -> {
+                }
+            }
+        })
     }
 
     override fun onResume() {

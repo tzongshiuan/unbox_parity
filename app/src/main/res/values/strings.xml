@@ -9,6 +9,7 @@
 
     <!--Common Strings-->
     <string name="txt_ok">OK</string>
+    <string name="txt_waiting">Please Waiting</string>
 
     <!--MainActivity-->
     <string name="txt_network_check">Network Check</string>

@@ -5,13 +5,17 @@ import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
+import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
 import com.hsuanparty.unbox_parity.view.ui.article.ArticleFragment
 import com.hsuanparty.unbox_parity.view.ui.parity.ParityFragment
 import com.hsuanparty.unbox_parity.view.ui.search.SearchFragment
+import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import com.hsuanparty.unbox_parity.view.ui.setting.SettingFragment
 import com.hsuanparty.unbox_parity.view.ui.video.VideoFragment
 import dagger.android.DispatchingAndroidInjector
@@ -37,40 +41,40 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     @Inject
     lateinit var mPreferences: MyPreferences
 
+    @Inject
+    lateinit var factory: MyViewModelFactory
+
+    @Inject
+    lateinit var searchViewModel: SearchViewModel
+
     private var curPageIndex = SEARCH_PAGE_INDEX
 
-//    private lateinit var searchFrag: SearchFragment
-//    private lateinit var videoFrag: VideoFragment
-//    private lateinit var articleFrag: ArticleFragment
-//    private lateinit var parityFrag: ParityFragment
-//    private lateinit var settingFrag: SettingFragment
-//
-//    private lateinit var serchPage: View
-//    private lateinit var videoPage: View
-//    private lateinit var articlePage: View
-//    private lateinit var parityPage: View
-//    private lateinit var settingPage: View
-
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        searchPage.view?.visibility = View.GONE
+        videoPage.view?.visibility = View.GONE
+        articlePage.view?.visibility = View.GONE
+        parityPage.view?.visibility = View.GONE
+        settingPage.view?.visibility = View.GONE
+
         when (item.itemId) {
             R.id.navigation_search -> {
-                setFragmentPage(SEARCH_PAGE_INDEX)
+                searchPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_video -> {
-                setFragmentPage(VIDEO_PAGE_INDEX)
+                videoPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_article -> {
-                setFragmentPage(ARTICLE_PAGE_INDEX)
+                articlePage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_parity -> {
-                setFragmentPage(PARITY_PAGE_INDEX)
+                parityPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
-                setFragmentPage(SETTING_PAGE_INDEX)
+                settingPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -84,6 +88,7 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
+        initViewModel()
         initUI()
     }
 
@@ -115,6 +120,19 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
         this.finish()
     }
 
+    private fun initViewModel() {
+        searchViewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
+        searchViewModel.isSearchFinish.observe(this, Observer<Int> { status ->
+            when (status) {
+                SearchViewModel.SEARCH_FINISH_STATUS -> {
+                    setFragmentPage(VIDEO_PAGE_INDEX)
+                }
+
+                else -> {}
+            }
+        })
+    }
+
     private fun initUI() {
         setFragmentPage(SEARCH_PAGE_INDEX)
     }
@@ -122,18 +140,22 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     private fun setFragmentPage(pageIndex: Int) {
         curPageIndex = pageIndex
 
-        searchPage.view?.visibility = View.GONE
-        videoPage.view?.visibility = View.GONE
-        articlePage.view?.visibility = View.GONE
-        parityPage.view?.visibility = View.GONE
-        settingPage.view?.visibility = View.GONE
-
         when (pageIndex) {
-            SEARCH_PAGE_INDEX -> searchPage.view?.visibility = View.VISIBLE
-            VIDEO_PAGE_INDEX -> videoPage.view?.visibility = View.VISIBLE
-            ARTICLE_PAGE_INDEX -> articlePage.view?.visibility = View.VISIBLE
-            PARITY_PAGE_INDEX -> parityPage.view?.visibility = View.VISIBLE
-            SETTING_PAGE_INDEX -> settingPage.view?.visibility = View.VISIBLE
+            SEARCH_PAGE_INDEX -> {
+                navigation.selectedItemId = R.id.navigation_search
+            }
+            VIDEO_PAGE_INDEX -> {
+                navigation.selectedItemId = R.id.navigation_video
+            }
+            ARTICLE_PAGE_INDEX -> {
+                navigation.selectedItemId = R.id.navigation_article
+            }
+            PARITY_PAGE_INDEX -> {
+                navigation.selectedItemId = R.id.navigation_parity
+            }
+            SETTING_PAGE_INDEX -> {
+                navigation.selectedItemId = R.id.navigation_setting
+            }
 
             else -> LogMessage.E(TAG, "Should not happen here...")
         }
