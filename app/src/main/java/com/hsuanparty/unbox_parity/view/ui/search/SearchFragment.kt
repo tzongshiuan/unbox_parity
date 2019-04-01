@@ -19,7 +19,6 @@ import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
-import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel.Companion.SEARCH_FINISH_STATUS
 import javax.inject.Inject
 
 class SearchFragment : Fragment(), Injectable {
@@ -65,7 +64,7 @@ class SearchFragment : Fragment(), Injectable {
 
         viewModel.isSearchFinish.observe(this, Observer<Int> { status ->
             when (status) {
-                SEARCH_FINISH_STATUS -> {
+                SearchViewModel.SEARCH_FINISH -> {
                 }
 
                 else -> {
@@ -121,6 +120,8 @@ class SearchFragment : Fragment(), Injectable {
         mBinding.segmentView.setOnSelectionChangedListener { identifier, value ->
             LogMessage.D(TAG, "identifier: $identifier, value: $value")
         }
+
+        mBinding.searchEditText.setText("dyson")
     }
 
     private fun hideKeyboard() {

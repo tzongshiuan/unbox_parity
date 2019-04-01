@@ -137,6 +137,9 @@ class MainActivityFragment : Fragment(), Injectable {
         initAnonymousAuth()
 
         mBinding.loadText.visibility = View.GONE
+        mBinding.googleLoginButton.isEnabled = true
+        mBinding.fbLoginButton.isEnabled = true
+        mBinding.anonymousLoginBtn.isEnabled = true
         val slideAnimation = SlideAnimation()
         slideAnimation.initSettings(ContextCompat.getColor(context!!, R.color.white)
             , ContextCompat.getColor(context!!, R.color.orange)
@@ -359,10 +362,6 @@ class MainActivityFragment : Fragment(), Injectable {
         mBinding.fbLoginButton.isEnabled = false
         mBinding.anonymousLoginBtn.isEnabled = false
         SimpleDelayTask.after(Constants.LOAD_DATA_TIME) {
-            mBinding.loadText.visibility = View.GONE
-            mBinding.googleLoginButton.isEnabled = true
-            mBinding.fbLoginButton.isEnabled = true
-            mBinding.anonymousLoginBtn.isEnabled = true
             Navigation.findNavController(mBinding.root).navigate(R.id.action_mainActivityFragment_to_unboxParityActivity)
         }
     }

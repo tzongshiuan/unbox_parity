@@ -31,6 +31,10 @@ android {
     }
 }
 
+configurations {
+    all*.exclude group: 'com.google.guava', module: 'listenablefuture'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -101,6 +105,19 @@ dependencies {
 
     // Youtube API
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.3'
+    //google client for android api dependency
+    //excluding org.apache.httpcomponents so as to resolve anonymity
+    implementation('com.google.api-client:google-api-client-android:1.25.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    //youtube data api v3 dependency
+    //excluding org.apache.httpcomponents so as to resolve anonymity
+    implementation('com.google.apis:google-api-services-youtube:v3-rev209-1.25.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+
+    //Picasso library dependency
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
 
 apply plugin: 'com.google.gms.google-services'

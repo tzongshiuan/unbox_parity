@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.hsuanparty.unbox_parity.R
 
 import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
@@ -18,6 +20,7 @@ import com.hsuanparty.unbox_parity.databinding.VideoFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
+import com.hsuanparty.unbox_parity.utils.youtube.YoutubeAdapter
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -60,8 +63,15 @@ class VideoFragment : Fragment(), Injectable{
 
         viewModel.isPerformExitFullScreen.observe(this, Observer { isExit ->
             if (isExit) {
-                mBinding.youtubeView.exitFullScreen()
+//                mBinding.youtubeView.exitFullScreen()
             }
+        })
+
+        viewModel.videoSearchResult.observe(this, Observer { result ->
+            (mBinding.recyclerView.adapter as YoutubeAdapter).mVideoList = result
+            mBinding.recyclerView.adapter?.notifyDataSetChanged()
+
+            viewModel.searchVideoFinished.postValue(true)
         })
     }
 
@@ -90,6 +100,11 @@ class VideoFragment : Fragment(), Injectable{
     }
 
     private fun initUI() {
+        val layoutManager = LinearLayoutManager(activity)
+        layoutManager.orientation = RecyclerView.VERTICAL
+        mBinding.recyclerView.layoutManager = layoutManager
+        mBinding.recyclerView.adapter = YoutubeAdapter()
+
         lifecycle.addObserver(mBinding.youtubeView)
         mBinding.youtubeView.addYouTubePlayerListener(object: AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {

@@ -17,6 +17,7 @@ import com.hsuanparty.unbox_parity.view.ui.article.ArticleFragment
 import com.hsuanparty.unbox_parity.view.ui.parity.ParityFragment
 import com.hsuanparty.unbox_parity.view.ui.search.SearchFragment
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
+import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel.Companion.SEARCH_FINISH
 import com.hsuanparty.unbox_parity.view.ui.setting.SettingFragment
 import com.hsuanparty.unbox_parity.view.ui.video.VideoFragment
 import com.hsuanparty.unbox_parity.view.ui.video.VideoViewModel
@@ -25,6 +26,10 @@ import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_unbox_parity.*
 import javax.inject.Inject
 
+/**
+ * Author: Tsung Hsuan, Lai
+ * Created on: 2019/3/29
+ */
 class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable {
 
     companion object {
@@ -134,9 +139,15 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
     private fun initViewModel() {
         searchViewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
+        videoViewModel = ViewModelProviders.of(this, factory).get(VideoViewModel::class.java)
+
         searchViewModel.isSearchFinish.observe(this, Observer<Int> { status ->
             when (status) {
-                SearchViewModel.SEARCH_FINISH_STATUS -> {
+                SearchViewModel.SEARCH_START -> {
+                    videoViewModel.searchVideo(this)
+                }
+
+                SearchViewModel.SEARCH_FINISH -> {
                     setFragmentPage(VIDEO_PAGE_INDEX)
                 }
 
@@ -144,7 +155,6 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
             }
         })
 
-        videoViewModel = ViewModelProviders.of(this, factory).get(VideoViewModel::class.java)
         videoViewModel.screenStatusLiveData.observe(this, Observer { status ->
             when (status) {
                 VideoViewModel.ENTER_FULL_SCREEN -> {
@@ -162,6 +172,13 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
                 }
 
                 else -> {}
+            }
+        })
+
+        videoViewModel.searchVideoFinished.observe(this, Observer { isFinish ->
+            if (isFinish) {
+                searchViewModel.isWaitingLiveData.value = false
+                searchViewModel.isSearchFinish.value = SEARCH_FINISH
             }
         })
     }

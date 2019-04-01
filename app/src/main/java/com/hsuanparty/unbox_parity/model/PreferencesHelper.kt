@@ -6,6 +6,7 @@ interface PreferencesHelper {
 
     var authStatus: Int
     var isFinishApp: Boolean
+    val lastSearchKeyword: String
 
     fun readPreferences()
     fun savePreferences()
