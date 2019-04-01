@@ -129,6 +129,6 @@ class SearchFragment : Fragment(), Injectable {
     }
 
     private fun performSearch() {
-        viewModel.search(mBinding.searchEditText.text.toString())
+        viewModel.search(mBinding.searchEditText.text.toString().trimStart().trimEnd())
     }
 }

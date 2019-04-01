@@ -22,6 +22,12 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
     val isSearchFinish: MutableLiveData<Int> = MutableLiveData()
 
     fun search(str: String) {
+        if (str.isEmpty()) {
+            LogMessage.D(TAG, "Search text is null or empty")
+            return
+        }
+
+
         LogMessage.D(TAG, "start search with string: $str")
 
         isWaitingLiveData.value = true
