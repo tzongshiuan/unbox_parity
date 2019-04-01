@@ -12,8 +12,15 @@
             tools:showIn="@layout/activity_main"
             tools:context=".view.ui.video.VideoFragment">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="Video Fragment" tools:ignore="MissingConstraints"/>
+            <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                    android:id="@+id/youtubeView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:autoPlay="false"
+                    app:showFullScreenButton="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

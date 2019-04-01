@@ -12,6 +12,10 @@ import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
 import com.hsuanparty.unbox_parity.databinding.VideoFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.LogMessage
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 
 class VideoFragment : Fragment(), Injectable{
 
@@ -70,6 +74,27 @@ class VideoFragment : Fragment(), Injectable{
     }
 
     private fun initUI() {
+        lifecycle.addObserver(mBinding.youtubeView)
+        mBinding.youtubeView.addYouTubePlayerListener(object: AbstractYouTubePlayerListener() {
+            override fun onReady(youTubePlayer: YouTubePlayer) {
+                LogMessage.D(TAG, "onReady()")
 
+                val videoId = "iit92tkX5wI"
+                youTubePlayer.cueVideo(videoId, 0f)
+            }
+
+            override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
+                LogMessage.D(TAG, "onStateChange(), state: $state")
+
+                when (state) {
+                    PlayerConstants.PlayerState.ENDED -> {
+                        val videoId = "iit92tkX5wI"
+                        youTubePlayer.cueVideo(videoId, 0f)
+                    }
+
+                    else -> {}
+                }
+            }
+        })
     }
 }

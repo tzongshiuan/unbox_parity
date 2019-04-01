@@ -98,6 +98,9 @@ dependencies {
 
     // Facebook Login
     implementation 'com.facebook.android:facebook-login:4.41.0'
+
+    // Youtube API
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.3'
 }
 
 apply plugin: 'com.google.gms.google-services'
