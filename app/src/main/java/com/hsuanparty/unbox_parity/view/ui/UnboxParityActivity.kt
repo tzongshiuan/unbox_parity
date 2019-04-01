@@ -1,5 +1,6 @@
 package com.hsuanparty.unbox_parity.view.ui
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,6 +19,7 @@ import com.hsuanparty.unbox_parity.view.ui.search.SearchFragment
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import com.hsuanparty.unbox_parity.view.ui.setting.SettingFragment
 import com.hsuanparty.unbox_parity.view.ui.video.VideoFragment
+import com.hsuanparty.unbox_parity.view.ui.video.VideoViewModel
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_unbox_parity.*
@@ -47,7 +49,12 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     @Inject
     lateinit var searchViewModel: SearchViewModel
 
+    @Inject
+    lateinit var videoViewModel: VideoViewModel
+
     private var curPageIndex = SEARCH_PAGE_INDEX
+
+    private var isFullScreen = false
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         searchPage.view?.visibility = View.GONE
@@ -115,6 +122,11 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     override fun onBackPressed() {
         LogMessage.D(TAG, "onBackPressed()")
 
+        if (isFullScreen) {
+            videoViewModel.performExitFullScreen()
+            return
+        }
+
         // TODO show message to ask user whether to leave App
         mPreferences.isFinishApp = true
         this.finish()
@@ -126,6 +138,27 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
             when (status) {
                 SearchViewModel.SEARCH_FINISH_STATUS -> {
                     setFragmentPage(VIDEO_PAGE_INDEX)
+                }
+
+                else -> {}
+            }
+        })
+
+        videoViewModel = ViewModelProviders.of(this, factory).get(VideoViewModel::class.java)
+        videoViewModel.screenStatusLiveData.observe(this, Observer { status ->
+            when (status) {
+                VideoViewModel.ENTER_FULL_SCREEN -> {
+                    LogMessage.D(TAG, "Player Enter FullScreen")
+                    navigation.visibility = View.GONE
+                    isFullScreen = true
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                }
+
+                VideoViewModel.EXIT_FULL_SCREEN -> {
+                    LogMessage.D(TAG, "Player Exit FullScreen")
+                    navigation.visibility = View.VISIBLE
+                    isFullScreen = false
+                    requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
                 }
 
                 else -> {}
