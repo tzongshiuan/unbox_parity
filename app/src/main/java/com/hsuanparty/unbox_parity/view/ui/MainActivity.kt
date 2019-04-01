@@ -229,7 +229,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                     Toast.makeText(this, "Request permission failed, forced to close app", Toast.LENGTH_SHORT).show()
-                    SimpleDelayTask.after(Constants.PERMISSON_DENY_CLOSE_TIME) {
+                    SimpleDelayTask.after(Constants.PERMISSION_DENY_CLOSE_TIME) {
                         this.finish()
                     }
                 }
