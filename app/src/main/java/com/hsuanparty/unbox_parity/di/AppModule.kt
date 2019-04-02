@@ -93,8 +93,8 @@ class AppModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun provideFirebaseDbManager(): FirebaseDbManager {
-        return FirebaseDbManager()
+    fun provideFirebaseDbManager(mAuth: FirebaseAuth): FirebaseDbManager {
+        return FirebaseDbManager(mAuth)
     }
 
     @Provides

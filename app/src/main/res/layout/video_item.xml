@@ -90,7 +90,7 @@
             <!--<TextView-->
                 <!--android:id="@+id/video_id"-->
                 <!--android:text="@{videoItem.id}"-->
-                <!--tools:text="Video ID : N/A"-->
+                <!--tools:text="VideoData ID : N/A"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:layout_below="@+id/video_title"-->

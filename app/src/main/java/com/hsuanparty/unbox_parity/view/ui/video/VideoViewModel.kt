@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel;
 import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.youtube.VideoItem
@@ -23,6 +24,9 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
 
     @Inject
     lateinit var mPreferences: MyPreferences
+
+    @Inject
+    lateinit var mDbManager: FirebaseDbManager
 
     val screenStatusLiveData: MutableLiveData<Int> = MutableLiveData()
 
@@ -70,5 +74,19 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
 
         mPreferences.curVideoItem = item
         curVideoItem.value = item
+    }
+
+    fun giveLike() {
+        val item = mPreferences.curVideoItem
+        LogMessage.D(TAG, "give like to video: ${item?.id}")
+
+        mDbManager.giveVideoLike(item)
+    }
+
+    fun retractLike() {
+        val item = mPreferences.curVideoItem
+        LogMessage.D(TAG, "retract like to video: ${item?.id}")
+
+        mDbManager.retractVideoLike(item)
     }
 }

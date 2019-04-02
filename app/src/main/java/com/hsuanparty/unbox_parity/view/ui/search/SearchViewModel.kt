@@ -3,6 +3,7 @@ package com.hsuanparty.unbox_parity.view.ui.search
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel;
 import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
@@ -22,6 +23,9 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
     @Inject
     lateinit var mPreferences: MyPreferences
 
+    @Inject
+    lateinit var mDbManager: FirebaseDbManager
+
     val isWaitingLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     val isSearchFinish: MutableLiveData<Int> = MutableLiveData()
@@ -37,5 +41,8 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
 
         isWaitingLiveData.value = true
         isSearchFinish.value = SEARCH_START
+
+        mDbManager.setVideoValueEvent()
+        mDbManager.setVideoChildValueEvent(item)
     }
 }

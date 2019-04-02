@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.databinding.VideoFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
@@ -23,7 +24,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstan
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
-import kotlinx.android.synthetic.main.video_fragment.*
 import javax.inject.Inject
 
 class VideoFragment : Fragment(), Injectable{
@@ -59,6 +59,9 @@ class VideoFragment : Fragment(), Injectable{
 
     @Inject
     lateinit var mPreferences: MyPreferences
+
+    @Inject
+    lateinit var mDbManager: FirebaseDbManager
 
     private lateinit var viewModel: VideoViewModel
 
@@ -111,6 +114,16 @@ class VideoFragment : Fragment(), Injectable{
         viewModel.curVideoItem.observe(this, Observer { videoItem ->
             mBinding.recyclerView.adapter?.notifyDataSetChanged()
             player?.loadVideo(videoItem.id!!, 0f)
+
+//            mBinding.isLike = mDbManager.isVideoDataExist(videoItem.id!!)
+
+            if (mDbManager.isVideoDataExist(videoItem.id!!)) {
+                mBinding.isLike = mDbManager.isUserLike()
+            } else {
+                // not find video data
+                mDbManager.addNewVideoData(videoItem)
+                mBinding.isLike = false
+            }
 
             mBinding.likeGroup.visibility = View.VISIBLE
         })
@@ -191,9 +204,14 @@ class VideoFragment : Fragment(), Injectable{
             }
         })
 
-        mBinding.isLike = false
         mBinding.likeLayout.setOnClickListener {
             mBinding.isLike = !mBinding.isLike!!
+
+            if (mBinding.isLike == true) {
+                viewModel.giveLike()
+            } else {
+                viewModel.retractLike()
+            }
         }
     }
 }

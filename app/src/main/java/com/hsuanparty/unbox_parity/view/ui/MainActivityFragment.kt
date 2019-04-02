@@ -145,11 +145,6 @@ class MainActivityFragment : Fragment(), Injectable {
             , ContextCompat.getColor(context!!, R.color.orange)
             , SlideAnimation.ANIM_FAST)
         slideAnimation.startAnimation(mBinding.loadText)
-
-//        mDbManager.setSingleValueEvent()
-        mDbManager.setChildEvent()
-//        mDbManager.add()
-        mDbManager.clearAll()
     }
 
     private fun initGoogleAuth() {

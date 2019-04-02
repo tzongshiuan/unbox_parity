@@ -10,23 +10,15 @@ import com.google.gson.annotations.SerializedName
 class User {
 
     @SerializedName("uid")
-    var uid = "6666"
+    var uid: String? = null
 
-    @SerializedName("name")
-    var name: String = "Hsuan"
-
-    @SerializedName("age")
-    var age: String = "30"
-
-    @SerializedName("tel")
-    var tel: String = "123123"
+    @SerializedName("dateTime")
+    var dateTime: Long = 0
 
     constructor()
 
-    constructor(uid: String, name: String, age: String, tel: String) {
+    constructor(uid: String, dateTime: Long) {
         this.uid = uid
-        this.name = name
-        this.age = age
-        this.tel = tel
+        this.dateTime = dateTime
     }
 }

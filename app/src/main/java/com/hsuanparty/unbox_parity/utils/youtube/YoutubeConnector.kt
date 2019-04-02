@@ -39,7 +39,7 @@ class YoutubeConnector(context: Context) {
         // the interface and provide a no-op function.
         youtube = YouTube.Builder(NetHttpTransport(), JacksonFactory(),
             HttpRequestInitializer { request ->
-                //initialize method helps to add any extra details that may be required to process the query
+                //initialize method helps to addNewVideoData any extra details that may be required to process the query
                 //setting package name and sha1 certificate to identify request by server
                 request.headers.set("X-Android-Package", PACKAGE_NAME)
                 request.headers.set("X-Android-Cert", SHA1)
@@ -168,7 +168,7 @@ class YoutubeConnector(context: Context) {
                     val thumbnail = singleVideo.snippet.thumbnails.high
 
                     //retrieving title,description,thumbnail url, id from the heirarchy of each resource
-                    //Video ID - id/videoId
+                    //VideoData ID - id/videoId
                     //Title - snippet/title
                     //Description - snippet/description
                     //Thumbnail - snippet/thumbnails/high/url
@@ -177,11 +177,11 @@ class YoutubeConnector(context: Context) {
                     item.description = singleVideo.snippet.description
                     item. thumbnailURL = thumbnail.url
 
-                    //adding one Video item to temporary array list
+                    //adding one VideoData item to temporary array list
                     tempSetItems.add(item)
 
-                    //for debug purpose printing one by one details of each Video that was found
-                    LogMessage.D(TAG, " Video Id" + rId.videoId)
+                    //for debug purpose printing one by one details of each VideoData that was found
+                    LogMessage.D(TAG, " VideoData Id" + rId.videoId)
                     LogMessage.D(TAG, " Title: " + singleVideo.snippet.title)
                     LogMessage.D(TAG, " Thumbnail: " + thumbnail.url)
                     LogMessage.D(TAG, " Description: " + singleVideo.snippet.description)
