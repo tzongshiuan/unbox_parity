@@ -113,19 +113,17 @@ class VideoFragment : Fragment(), Injectable{
 
         viewModel.curVideoItem.observe(this, Observer { videoItem ->
             mBinding.recyclerView.adapter?.notifyDataSetChanged()
-            player?.loadVideo(videoItem.id!!, 0f)
 
 //            mBinding.isLike = mDbManager.isVideoDataExist(videoItem.id!!)
 
-            if (mDbManager.isVideoDataExist(videoItem.id!!)) {
-                mBinding.isLike = mDbManager.isUserLike()
-            } else {
-                // not find video data
-                mDbManager.addNewVideoData(videoItem)
-                mBinding.isLike = false
-            }
-
+            mDbManager.checkUserLike(videoItem)
             mBinding.likeGroup.visibility = View.VISIBLE
+
+            player?.loadVideo(videoItem.id!!, 0f)
+        })
+
+        mDbManager.isUserLikeLiveData.observe(this, Observer { isUserLike ->
+            mBinding.isLike = isUserLike
         })
     }
 

@@ -1,6 +1,6 @@
 package com.hsuanparty.unbox_parity.model
 
-import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.hsuanparty.unbox_parity.di.Injectable
@@ -22,7 +22,15 @@ import com.google.firebase.database.ValueEventListener
 class FirebaseDbManager(private val mAuth: FirebaseAuth): Injectable {
     companion object {
         private val TAG = FirebaseDbManager::class.java.simpleName
+
+        private const val ACTION_NONE = 0
+        private const val ACTION_CHECK_USER_LIKE = 1
+        private const val ACTION_GIVE_LIKE = 2
+        private const val ACTION_DISTRACT_LIKE = 3
+//        private const val
     }
+
+    val isUserLikeLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     private var fireDB = FirebaseDatabase.getInstance()
 
@@ -31,49 +39,72 @@ class FirebaseDbManager(private val mAuth: FirebaseAuth): Injectable {
     private var videoIndex = 0
     private var userVideoIndex = 0
 
+    private var action = ACTION_NONE
+    private var curVideoItem: VideoItem? = null
+
     fun setVideoValueEvent() {
         dbVideoRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    videoList.clear()
+
                     for (item in dataSnapshot.children) {
                         val video = item.getValue(VideoData::class.java)
                         videoList.add(video!!)
                     }
                     //show()
                     LogMessage.D(TAG, "video list size = ${videoList.size}")
+
+                    when (action) {
+                        ACTION_CHECK_USER_LIKE -> {
+                            if (!isVideoDataExist(curVideoItem?.id!!)) {
+                                addNewVideoData()
+                            } else {
+                                isUserLikeLiveData.value = isUserLike()
+                            }
+                        }
+
+                        else -> {}
+                    }
                 }
             }
         })
     }
 
-    fun setVideoChildValueEvent(item: VideoItem?) {
-        // Need to set child event listeners for all child
-        val listener = object: ChildEventListener {
-            override fun onCancelled(p0: DatabaseError) {}
+//    fun setVideoChildValueEvent(videoData: VideoData) {
+//        // Need to set child event listeners for all child
+//        val listener = object: ChildEventListener {
+//            override fun onCancelled(p0: DatabaseError) {}
+//
+//            override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
+//
+//            override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
+//
+//            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+//                LogMessage.D(TAG, "onChildAdded()")
+////                val user = p0.getValue(User::class.java)
+//            }
+//
+//            override fun onChildRemoved(p0: DataSnapshot) {
+//                LogMessage.D(TAG, "onChildRemoved()")
+////                val video = p0.getValue(VideoData::class.java)
+////                videoList.remove(videoList.first { x -> x.videoId == video!!.videoId })
+//            }
+//        }
+//
+//        dbVideoRef.child(item?.id!!).child("likeUsers").addChildEventListener(listener)
+//
+//        dbVideoRef.child(item?.id!!).child("likeUsers").removeEventListener(listener)
+//    }
 
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {}
+    fun checkUserLike(videoItem: VideoItem) {
+        action = ACTION_CHECK_USER_LIKE
+        curVideoItem = videoItem
 
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {}
-
-            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                LogMessage.D(TAG, "onChildAdded()")
-//                val user = p0.getValue(User::class.java)
-            }
-
-            override fun onChildRemoved(p0: DataSnapshot) {
-                LogMessage.D(TAG, "onChildRemoved()")
-//                val video = p0.getValue(VideoData::class.java)
-//                videoList.remove(videoList.first { x -> x.videoId == video!!.videoId })
-            }
-        }
-        dbVideoRef.child(item?.id!!).child("likeUsers").addChildEventListener(listener)
-
-        dbVideoRef.child(item?.id!!).child("likeUsers").removeEventListener(listener)
+        setVideoValueEvent()
     }
-
-    fun removeVideoChildValueEvent()
 
     fun isVideoDataExist(videoId: String): Boolean {
         if (videoList.size == 0) {
@@ -104,26 +135,26 @@ class FirebaseDbManager(private val mAuth: FirebaseAuth): Injectable {
         return false
     }
 
-    fun addNewVideoData(item: VideoItem?) {
+    fun addNewVideoData() {
         val likeUsers: ArrayList<User> = ArrayList()
 
-        val uid = item?.id
-        val video = VideoData(uid!!, 0, item, likeUsers)
+        val uid = curVideoItem?.id
+        val video = VideoData(uid!!, 0, curVideoItem, likeUsers)
         dbVideoRef.child(uid).setValue(video)
         dbVideoRef.push()
     }
 
     fun giveVideoLike(item: VideoItem?) {
-        val user = User(mAuth.uid!!, System.currentTimeMillis())
-        val uid = item?.id
-
-        videoList[videoIndex].likeUsers.add(user)
-        dbVideoRef.child(uid!!).child("likeUsers").setValue(videoList[videoIndex].likeUsers)
-
-        videoList[videoIndex].count++
-        dbVideoRef.child(uid).child("count").setValue(videoList[videoIndex].count)
-
-        dbVideoRef.push()
+//        val user = User(mAuth.uid!!, System.currentTimeMillis())
+//        val uid = item?.id
+//
+//        videoList[videoIndex].likeUsers.add(user)
+//        dbVideoRef.child(uid!!).child("likeUsers").setValue(videoList[videoIndex].likeUsers)
+//
+//        videoList[videoIndex].count++
+//        dbVideoRef.child(uid).child("count").setValue(videoList[videoIndex].count)
+//
+//        dbVideoRef.push()
     }
 
     fun retractVideoLike(item: VideoItem?) {

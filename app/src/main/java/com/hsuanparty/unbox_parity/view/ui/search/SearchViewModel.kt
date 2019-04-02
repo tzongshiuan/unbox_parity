@@ -43,6 +43,5 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
         isSearchFinish.value = SEARCH_START
 
         mDbManager.setVideoValueEvent()
-        mDbManager.setVideoChildValueEvent(item)
     }
 }

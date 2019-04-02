@@ -72,6 +72,7 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
     fun playVideo(item: VideoItem?) {
         LogMessage.D(TAG, "play video, id: ${item?.id}, title: ${item?.title}")
 
+        mDbManager.setVideoValueEvent()
         mPreferences.curVideoItem = item
         curVideoItem.value = item
     }
