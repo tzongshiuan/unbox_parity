@@ -1,15 +1,18 @@
 package com.hsuanparty.unbox_parity.view.ui.video
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.databinding.VideoFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
@@ -20,12 +23,35 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstan
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
+import kotlinx.android.synthetic.main.video_fragment.*
 import javax.inject.Inject
 
 class VideoFragment : Fragment(), Injectable{
 
     companion object {
         private val TAG = VideoFragment::class.java.simpleName
+
+        private const val DEFAULT_VIDEO_ID = ""
+
+        @JvmStatic
+        @BindingAdapter("convertLikeText")
+        fun convertLikeText(view: TextView, isLike: Boolean) {
+            if (isLike) {
+                view.text = view.context.getString(R.string.txt_retract_recommendation)
+            } else {
+                view.text = view.context.getString(R.string.txt_give_recommendation)
+            }
+        }
+
+        @JvmStatic
+        @BindingAdapter("convertLikeIcon")
+        fun convertLikeIcon(view: ImageView, isLike: Boolean) {
+            if (isLike) {
+                view.setImageResource(R.mipmap.ic_heart_yes)
+            } else {
+                view.setImageResource(R.mipmap.ic_heart_no)
+            }
+        }
     }
 
     @Inject
@@ -71,14 +97,22 @@ class VideoFragment : Fragment(), Injectable{
 
         viewModel.videoSearchResult.observe(this, Observer { result ->
             (mBinding.recyclerView.adapter as YoutubeAdapter).mVideoList = result
+            (mBinding.recyclerView.adapter as YoutubeAdapter).selectIndex = -1
             mBinding.recyclerView.adapter?.notifyDataSetChanged()
 
             viewModel.searchVideoFinished.postValue(true)
+
+            // clear play video
+            player?.cueVideo(DEFAULT_VIDEO_ID, 0f)
+
+            mBinding.likeGroup.visibility = View.GONE
         })
 
         viewModel.curVideoItem.observe(this, Observer { videoItem ->
             mBinding.recyclerView.adapter?.notifyDataSetChanged()
             player?.loadVideo(videoItem.id!!, 0f)
+
+            mBinding.likeGroup.visibility = View.VISIBLE
         })
     }
 
@@ -103,12 +137,12 @@ class VideoFragment : Fragment(), Injectable{
 
         mPreferences.curVideoItem = null
         player = null
-        ((mBinding.recyclerView.adapter as YoutubeAdapter).mVideoList as ArrayList).clear()
+        ((mBinding.recyclerView.adapter as YoutubeAdapter).mVideoList as ArrayList<*>).clear()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//    }
 
     private fun initUI() {
         val layoutManager = LinearLayoutManager(activity)
@@ -126,7 +160,7 @@ class VideoFragment : Fragment(), Injectable{
                 if (!videoId.isNullOrEmpty()) {
                     youTubePlayer.loadVideo(videoId, 0f)
                 } else {
-                    youTubePlayer.cueVideo("", 0f)
+                    youTubePlayer.cueVideo(DEFAULT_VIDEO_ID, 0f)
                 }
             }
 
@@ -156,5 +190,10 @@ class VideoFragment : Fragment(), Injectable{
                 viewModel.exitFullScreen()
             }
         })
+
+        mBinding.isLike = false
+        mBinding.likeLayout.setOnClickListener {
+            mBinding.isLike = !mBinding.isLike!!
+        }
     }
 }

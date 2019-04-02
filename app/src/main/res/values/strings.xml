@@ -30,5 +30,7 @@
     <string name="txt_search_hint">Search Product</string>
 
     <!--VideoFragment-->
+    <string name="txt_give_recommendation">Give Recommendation</string>
+    <string name="txt_retract_recommendation">Retract Recommendation</string>
     <string name="txt_video_recommend_count">Recommend Count</string>
 </resources>

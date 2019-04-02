@@ -35,4 +35,8 @@
 
     <color name="default_ascv_selected_color">#0099CC</color>
     <color name="default_ascv_unselected_color">#FFFFFF</color>
+
+    <color name="like_button_pressed">#ff8a00</color>
+    <color name="like_button_focused">#ff8a00</color>
+    <color name="like_button_default">#1c76bb</color>
 </resources>
