@@ -38,7 +38,7 @@ class VideoFragment : Fragment(), Injectable{
 
     private lateinit var mBinding: VideoFragmentBinding
 
-    private lateinit var player: YouTubePlayer
+    private var player: YouTubePlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
@@ -78,7 +78,7 @@ class VideoFragment : Fragment(), Injectable{
 
         viewModel.curVideoItem.observe(this, Observer { videoItem ->
             mBinding.recyclerView.adapter?.notifyDataSetChanged()
-            player.loadVideo(videoItem.id!!, 0f)
+            player?.loadVideo(videoItem.id!!, 0f)
         })
     }
 
@@ -100,6 +100,10 @@ class VideoFragment : Fragment(), Injectable{
     override fun onDestroy() {
         LogMessage.D(TAG, "onDestroy()")
         super.onDestroy()
+
+        mPreferences.curVideoItem = null
+        player = null
+        ((mBinding.recyclerView.adapter as YoutubeAdapter).mVideoList as ArrayList).clear()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

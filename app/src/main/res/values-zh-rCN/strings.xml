@@ -27,4 +27,7 @@
 
     <!--SearchFragment-->
     <string name="txt_search_hint">搜尋商品</string>
+
+    <!--VideoFragment-->
+    <string name="txt_video_recommend_count">推薦數</string>
 </resources>

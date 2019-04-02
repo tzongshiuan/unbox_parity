@@ -4,7 +4,10 @@ import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +29,12 @@ class YoutubeAdapter: RecyclerView.Adapter<YoutubeAdapter.MyViewHolder>() {
 
     companion object {
         private val TAG = YoutubeAdapter::class.java.simpleName
+
+        @JvmStatic
+        @BindingAdapter("convertRecommendNumber")
+        fun convertRecommendNumber(view: TextView, count: Int) {
+            view.text = String.format("%06d", count)
+        }
     }
 
     var videoViewModel: VideoViewModel? = null

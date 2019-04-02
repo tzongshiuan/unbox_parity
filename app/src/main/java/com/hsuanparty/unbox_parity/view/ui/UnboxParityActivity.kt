@@ -2,6 +2,7 @@ package com.hsuanparty.unbox_parity.view.ui
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -60,6 +61,8 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     private var curPageIndex = SEARCH_PAGE_INDEX
 
     private var isFullScreen = false
+
+    private var isSearchStart = false
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         searchPage.view?.visibility = View.GONE
@@ -144,10 +147,16 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
         searchViewModel.isSearchFinish.observe(this, Observer<Int> { status ->
             when (status) {
                 SearchViewModel.SEARCH_START -> {
+                    isSearchStart = true
                     videoViewModel.searchVideo(this)
                 }
 
                 SearchViewModel.SEARCH_FINISH -> {
+                    if (!isSearchStart) {
+                        return@Observer
+                    }
+                    isSearchStart = false
+
                     setFragmentPage(VIDEO_PAGE_INDEX)
                 }
 
@@ -188,6 +197,8 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     }
 
     private fun setFragmentPage(pageIndex: Int) {
+        LogMessage.D(TAG, "setFragmentPage: $pageIndex")
+
         curPageIndex = pageIndex
 
         when (pageIndex) {

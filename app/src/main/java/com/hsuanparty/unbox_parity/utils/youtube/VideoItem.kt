@@ -22,4 +22,6 @@ class VideoItem {
     //stores the url of thumbnail of video
     //getter and setter methods for thumbnail url
     var thumbnailURL: String? = null
+
+    var recommendNum = 0
 }

@@ -28,4 +28,7 @@
 
     <!--SearchFragment-->
     <string name="txt_search_hint">Search Product</string>
+
+    <!--VideoFragment-->
+    <string name="txt_video_recommend_count">Recommend Count</string>
 </resources>
