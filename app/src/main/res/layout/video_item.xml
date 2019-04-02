@@ -54,24 +54,24 @@
                 android:layout_below="@+id/video_thumbnail" />
 
             <!-- TextView used to show id of the searched video -->
-            <TextView
-                android:id="@+id/video_id"
-                android:text="@{videoItem.id}"
-                tools:text="Video ID : N/A"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/video_title"
-                android:textAppearance="@style/TextAppearance.AppCompat"
-                android:fontFamily="sans-serif-condensed"
-                android:textStyle="normal|italic"
-                android:textSize="14sp" />
+            <!--<TextView-->
+                <!--android:id="@+id/video_id"-->
+                <!--android:text="@{videoItem.id}"-->
+                <!--tools:text="Video ID : N/A"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/video_title"-->
+                <!--android:textAppearance="@style/TextAppearance.AppCompat"-->
+                <!--android:fontFamily="sans-serif-condensed"-->
+                <!--android:textStyle="normal|italic"-->
+                <!--android:textSize="14sp" />-->
 
             <!-- TextView used to show short description of the searched video -->
             <TextView
                 android:id="@+id/video_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/video_id"
+                android:layout_below="@+id/video_title"
                 android:text="@{videoItem.description}"
                 tools:text="Video Description"
                 android:textAppearance="@style/TextAppearance.AppCompat"

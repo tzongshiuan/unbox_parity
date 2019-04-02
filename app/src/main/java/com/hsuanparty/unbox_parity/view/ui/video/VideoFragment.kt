@@ -1,23 +1,18 @@
 package com.hsuanparty.unbox_parity.view.ui.video
 
 import android.content.Intent
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.hsuanparty.unbox_parity.R
-
-import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
 import com.hsuanparty.unbox_parity.databinding.VideoFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeAdapter
@@ -25,7 +20,6 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstan
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerFullScreenListener
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener
 import javax.inject.Inject
 
 class VideoFragment : Fragment(), Injectable{
@@ -37,9 +31,14 @@ class VideoFragment : Fragment(), Injectable{
     @Inject
     lateinit var factory: MyViewModelFactory
 
+    @Inject
+    lateinit var mPreferences: MyPreferences
+
     private lateinit var viewModel: VideoViewModel
 
     private lateinit var mBinding: VideoFragmentBinding
+
+    private lateinit var player: YouTubePlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
@@ -58,8 +57,11 @@ class VideoFragment : Fragment(), Injectable{
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        LogMessage.D(TAG, "onActivityCreated()")
         super.onActivityCreated(savedInstanceState)
+
         viewModel = ViewModelProviders.of(this, factory).get(VideoViewModel::class.java)
+        (mBinding.recyclerView.adapter as YoutubeAdapter).videoViewModel = viewModel
 
         viewModel.isPerformExitFullScreen.observe(this, Observer { isExit ->
             if (isExit) {
@@ -72,6 +74,11 @@ class VideoFragment : Fragment(), Injectable{
             mBinding.recyclerView.adapter?.notifyDataSetChanged()
 
             viewModel.searchVideoFinished.postValue(true)
+        })
+
+        viewModel.curVideoItem.observe(this, Observer { videoItem ->
+            mBinding.recyclerView.adapter?.notifyDataSetChanged()
+            player.loadVideo(videoItem.id!!, 0f)
         })
     }
 
@@ -110,8 +117,13 @@ class VideoFragment : Fragment(), Injectable{
             override fun onReady(youTubePlayer: YouTubePlayer) {
                 LogMessage.D(TAG, "onReady()")
 
-                val videoId = "iit92tkX5wI"
-                youTubePlayer.cueVideo(videoId, 0f)
+                player = youTubePlayer
+                val videoId = mPreferences.curVideoItem?.id
+                if (!videoId.isNullOrEmpty()) {
+                    youTubePlayer.loadVideo(videoId, 0f)
+                } else {
+                    youTubePlayer.cueVideo("", 0f)
+                }
             }
 
             override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
@@ -119,8 +131,7 @@ class VideoFragment : Fragment(), Injectable{
 
                 when (state) {
                     PlayerConstants.PlayerState.ENDED -> {
-                        val videoId = "iit92tkX5wI"
-                        youTubePlayer.cueVideo(videoId, 0f)
+                        youTubePlayer.cueVideo(mPreferences.curVideoItem?.id!!, 0f)
                     }
 
                     else -> {}
@@ -133,15 +144,6 @@ class VideoFragment : Fragment(), Injectable{
                 LogMessage.D(TAG, "Player Enter FullScreen")
 
                 viewModel.enterFullScreen()
-
-//                val controller = mBinding.youtubeView.getPlayerUiController()
-//                val exitBtn = Button(context)
-//                exitBtn.text = "Exit"
-//                exitBtn.setOnClickListener {
-//                    LogMessage.D(TAG, "Click exit fullscreen button")
-//                    mBinding.youtubeView.exitFullScreen()
-//                }
-//                controller.addView(exitBtn)
             }
 
             override fun onYouTubePlayerExitFullScreen() {

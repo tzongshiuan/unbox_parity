@@ -3,6 +3,7 @@ package com.hsuanparty.unbox_parity.model
 import android.content.Context
 import android.util.Log
 import com.hsuanparty.unbox_parity.utils.DefaultSettings
+import com.hsuanparty.unbox_parity.utils.youtube.VideoItem
 import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,6 +25,7 @@ class MyPreferences @Inject constructor(val context: Context) : PreferencesHelpe
     override var authStatus = AuthStatus.AUTH_NONE
     override var isFinishApp = false
     override var lastSearchKeyword = ""
+    override var curVideoItem: VideoItem? = null
 
     private fun packPreferencesToJson(): JSONObject {
         val jSetting = JSONObject()

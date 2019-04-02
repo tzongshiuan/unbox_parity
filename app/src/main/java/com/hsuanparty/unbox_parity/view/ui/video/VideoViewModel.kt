@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel;
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
+import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.youtube.VideoItem
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector
 import javax.inject.Inject
@@ -30,6 +31,8 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
     val videoSearchResult: MutableLiveData<List<VideoItem>> = MutableLiveData()
 
     val searchVideoFinished: MutableLiveData<Boolean> = MutableLiveData()
+
+    val curVideoItem: MutableLiveData<VideoItem> = MutableLiveData()
 
     fun enterFullScreen() {
         screenStatusLiveData.value = ENTER_FULL_SCREEN
@@ -60,5 +63,12 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
             }
             //starting the thread
         }.start()
+    }
+
+    fun playVideo(item: VideoItem?) {
+        LogMessage.D(TAG, "play video, id: ${item?.id}, title: ${item?.title}")
+
+        mPreferences.curVideoItem = item
+        curVideoItem.value = item
     }
 }
