@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.databinding.VideoFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
-import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
@@ -60,8 +59,8 @@ class VideoFragment : Fragment(), Injectable{
     @Inject
     lateinit var mPreferences: MyPreferences
 
-    @Inject
-    lateinit var mDbManager: FirebaseDbManager
+    //@Inject
+    //lateinit var mDbManager: FirebaseDbManager
 
     private lateinit var viewModel: VideoViewModel
 
@@ -107,23 +106,11 @@ class VideoFragment : Fragment(), Injectable{
 
             // clear play video
             player?.cueVideo(DEFAULT_VIDEO_ID, 0f)
-
-            mBinding.likeGroup.visibility = View.GONE
         })
 
         viewModel.curVideoItem.observe(this, Observer { videoItem ->
             mBinding.recyclerView.adapter?.notifyDataSetChanged()
-
-//            mBinding.isLike = mDbManager.isVideoDataExist(videoItem.id!!)
-
-            mDbManager.checkUserLike(videoItem)
-            mBinding.likeGroup.visibility = View.VISIBLE
-
             player?.loadVideo(videoItem.id!!, 0f)
-        })
-
-        mDbManager.isUserLikeLiveData.observe(this, Observer { isUserLike ->
-            mBinding.isLike = isUserLike
         })
     }
 
@@ -201,15 +188,5 @@ class VideoFragment : Fragment(), Injectable{
                 viewModel.exitFullScreen()
             }
         })
-
-        mBinding.likeLayout.setOnClickListener {
-            mBinding.isLike = !mBinding.isLike!!
-
-            if (mBinding.isLike == true) {
-                viewModel.giveLike()
-            } else {
-                viewModel.retractLike()
-            }
-        }
     }
 }

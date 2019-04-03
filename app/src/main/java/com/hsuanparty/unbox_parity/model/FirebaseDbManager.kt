@@ -42,7 +42,7 @@ class FirebaseDbManager(private val mAuth: FirebaseAuth): Injectable {
     private var action = ACTION_NONE
     private var curVideoItem: VideoItem? = null
 
-    fun setVideoValueEvent() {
+    private fun setVideoValueEvent() {
         dbVideoRef.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {}
 
@@ -106,7 +106,7 @@ class FirebaseDbManager(private val mAuth: FirebaseAuth): Injectable {
         setVideoValueEvent()
     }
 
-    fun isVideoDataExist(videoId: String): Boolean {
+    private fun isVideoDataExist(videoId: String): Boolean {
         if (videoList.size == 0) {
             return false
         }
@@ -135,7 +135,7 @@ class FirebaseDbManager(private val mAuth: FirebaseAuth): Injectable {
         return false
     }
 
-    fun addNewVideoData() {
+    private fun addNewVideoData() {
         val likeUsers: ArrayList<User> = ArrayList()
 
         val uid = curVideoItem?.id

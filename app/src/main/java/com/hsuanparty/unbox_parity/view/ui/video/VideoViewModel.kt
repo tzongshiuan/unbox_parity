@@ -72,22 +72,7 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
     fun playVideo(item: VideoItem?) {
         LogMessage.D(TAG, "play video, id: ${item?.id}, title: ${item?.title}")
 
-        mDbManager.setVideoValueEvent()
         mPreferences.curVideoItem = item
         curVideoItem.value = item
-    }
-
-    fun giveLike() {
-        val item = mPreferences.curVideoItem
-        LogMessage.D(TAG, "give like to video: ${item?.id}")
-
-        mDbManager.giveVideoLike(item)
-    }
-
-    fun retractLike() {
-        val item = mPreferences.curVideoItem
-        LogMessage.D(TAG, "retract like to video: ${item?.id}")
-
-        mDbManager.retractVideoLike(item)
     }
 }

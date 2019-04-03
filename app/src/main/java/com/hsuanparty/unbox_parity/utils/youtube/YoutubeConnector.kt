@@ -48,7 +48,7 @@ class YoutubeConnector(context: Context) {
         try {
 
             // Define the API request for retrieving search results.
-            query = youtube.search().list("id,snippet")
+            query = youtube.search().list("id, snippet, statistics")
 
             //setting API key to query
             // Set your developer key from the {{ Google Cloud Console }} for

@@ -41,7 +41,5 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
 
         isWaitingLiveData.value = true
         isSearchFinish.value = SEARCH_START
-
-        mDbManager.setVideoValueEvent()
     }
 }

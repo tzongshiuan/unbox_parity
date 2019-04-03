@@ -34,44 +34,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/youtubeView"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <LinearLayout
-                    android:id="@+id/likeLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:background="@drawable/btn_like_selector"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/youtubeView">
-
-                <Button
-                        android:id="@+id/likeBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="@color/transparent"
-                        android:clickable="false"
-                        app:convertLikeText="@{isLike}"
-                        tools:text="@string/txt_give_recommendation"
-                        android:textColor="@color/white"/>
-
-                <ImageView
-                        android:id="@+id/likeImage"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_gravity="center"
-                        app:convertLikeIcon="@{isLike}"
-                        tools:src="@mipmap/ic_heart_no"/>
-            </LinearLayout>
-
-            <androidx.constraintlayout.widget.Group
-                    android:id="@+id/likeGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="likeLayout"
-                    android:visibility="gone"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
