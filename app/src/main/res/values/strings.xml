@@ -25,6 +25,7 @@
     <string name="txt_article_tab">Article</string>
     <string name="txt_parity_tab">Parity</string>
     <string name="txt_setting_tab">Setting</string>
+    <string name="txt_need_search_first">Please do search before seeing the results.</string>
 
     <!--SearchFragment-->
     <string name="txt_search_hint">Search Product</string>

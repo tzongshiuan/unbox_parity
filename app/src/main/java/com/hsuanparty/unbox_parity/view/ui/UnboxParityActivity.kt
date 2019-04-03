@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -64,7 +65,18 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
     private var isSearchStart = false
 
+    // Need to be search first to enter video/article/parity pages
+    private var isEverSearch = false
+
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        if (!isEverSearch &&
+            item.itemId != R.id.navigation_search &&
+            item.itemId != R.id.navigation_setting) {
+            Toast.makeText(this, getString(R.string.txt_need_search_first), Toast.LENGTH_SHORT).show()
+            return@OnNavigationItemSelectedListener false
+        }
+
+
         searchPage.view?.visibility = View.GONE
         videoPage.view?.visibility = View.GONE
         articlePage.view?.visibility = View.GONE
@@ -156,6 +168,10 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
                         return@Observer
                     }
                     isSearchStart = false
+
+                    if (!isEverSearch) {
+                        isEverSearch = true
+                    }
 
                     setFragmentPage(VIDEO_PAGE_INDEX)
                 }
