@@ -7,17 +7,27 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.hsuanparty.unbox_parity.databinding.ParityFragmentBinding
 
 import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.LogMessage
+import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
+import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
+import javax.inject.Inject
 
 class ParityFragment : Fragment(), Injectable{
 
     companion object {
         private val TAG = ParityFragment::class.java.simpleName
     }
+
+    @Inject
+    lateinit var factory: MyViewModelFactory
+
+    @Inject
+    lateinit var searchViewModel: SearchViewModel
 
     private lateinit var viewModel: ParityViewModel
 
@@ -41,8 +51,23 @@ class ParityFragment : Fragment(), Injectable{
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        searchViewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
+        searchViewModel.isSearchFinish.observe(this, Observer<Int> { status ->
+            when (status) {
+                SearchViewModel.SEARCH_START -> {
+                    mBinding.noDataGroup.visibility = View.VISIBLE
+                }
+
+                SearchViewModel.SEARCH_FINISH -> {
+                    mBinding.noDataGroup.visibility = View.GONE
+                }
+
+                else -> {}
+            }
+        })
+
         viewModel = ViewModelProviders.of(this).get(ParityViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     override fun onResume() {

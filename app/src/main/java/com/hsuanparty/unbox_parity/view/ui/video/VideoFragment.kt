@@ -19,6 +19,8 @@ import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeAdapter
+import com.hsuanparty.unbox_parity.view.ui.UnboxParityActivity
+import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -57,10 +59,10 @@ class VideoFragment : Fragment(), Injectable{
     lateinit var factory: MyViewModelFactory
 
     @Inject
-    lateinit var mPreferences: MyPreferences
+    lateinit var searchViewModel: SearchViewModel
 
-    //@Inject
-    //lateinit var mDbManager: FirebaseDbManager
+    @Inject
+    lateinit var mPreferences: MyPreferences
 
     private lateinit var viewModel: VideoViewModel
 
@@ -87,6 +89,21 @@ class VideoFragment : Fragment(), Injectable{
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onActivityCreated()")
         super.onActivityCreated(savedInstanceState)
+
+        searchViewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
+        searchViewModel.isSearchFinish.observe(this, Observer<Int> { status ->
+            when (status) {
+                SearchViewModel.SEARCH_START -> {
+                    mBinding.noDataGroup.visibility = View.VISIBLE
+                }
+
+                SearchViewModel.SEARCH_FINISH -> {
+                    mBinding.noDataGroup.visibility = View.GONE
+                }
+
+                else -> {}
+            }
+        })
 
         viewModel = ViewModelProviders.of(this, factory).get(VideoViewModel::class.java)
         (mBinding.recyclerView.adapter as YoutubeAdapter).videoViewModel = viewModel

@@ -2,26 +2,19 @@ package com.hsuanparty.unbox_parity.view.ui
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
-import com.hsuanparty.unbox_parity.view.ui.article.ArticleFragment
-import com.hsuanparty.unbox_parity.view.ui.parity.ParityFragment
-import com.hsuanparty.unbox_parity.view.ui.search.SearchFragment
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel.Companion.SEARCH_FINISH
-import com.hsuanparty.unbox_parity.view.ui.setting.SettingFragment
-import com.hsuanparty.unbox_parity.view.ui.video.VideoFragment
 import com.hsuanparty.unbox_parity.view.ui.video.VideoViewModel
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -65,18 +58,7 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
     private var isSearchStart = false
 
-    // Need to be search first to enter video/article/parity pages
-    private var isEverSearch = false
-
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        if (!isEverSearch &&
-            item.itemId != R.id.navigation_search &&
-            item.itemId != R.id.navigation_setting) {
-            Toast.makeText(this, getString(R.string.txt_need_search_first), Toast.LENGTH_SHORT).show()
-            return@OnNavigationItemSelectedListener false
-        }
-
-
         searchPage.view?.visibility = View.GONE
         videoPage.view?.visibility = View.GONE
         articlePage.view?.visibility = View.GONE
@@ -168,10 +150,6 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
                         return@Observer
                     }
                     isSearchStart = false
-
-                    if (!isEverSearch) {
-                        isEverSearch = true
-                    }
 
                     setFragmentPage(VIDEO_PAGE_INDEX)
                 }
