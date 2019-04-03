@@ -48,15 +48,34 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     android:orientation="vertical">
 
                 <TextView
+                        android:id="@+id/videoViewCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/txt_video_view_count"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"/>
+
+                <TextView
+                        android:id="@+id/viewCountNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        app:convertRecommendNumber="@{videoItem.viewCount}"
+                        tools:text="123456"
+                        android:textColor="@color/blue"
+                        android:textSize="16sp"/>
+
+                <TextView
                         android:id="@+id/videoRecommend"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         android:text="@string/txt_video_recommend_count"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
@@ -65,8 +84,8 @@
                         android:id="@+id/recommendNum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        app:convertRecommendNumber="@{videoItem.recommendNum}"
+                        android:layout_marginTop="5dp"
+                        app:convertRecommendNumber="@{videoItem.likeCount}"
                         tools:text="123456"
                         android:textColor="@color/blue"
                         android:textSize="16sp"/>

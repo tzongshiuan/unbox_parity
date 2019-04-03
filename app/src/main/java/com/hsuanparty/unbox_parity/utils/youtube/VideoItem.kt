@@ -23,5 +23,7 @@ class VideoItem {
     //getter and setter methods for thumbnail url
     var thumbnailURL: String? = null
 
-    var recommendNum = 0
+    var viewCount = 0
+
+    var likeCount = 0
 }

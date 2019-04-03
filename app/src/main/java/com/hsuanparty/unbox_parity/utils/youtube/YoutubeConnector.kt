@@ -27,7 +27,6 @@ class YoutubeConnector(context: Context) {
     private var query: YouTube.Search.List? = null
 
     init {
-
         //Youtube.Builder returns an instance of a new builder
         //Parameters:
         //transport - HTTP transport
@@ -46,9 +45,8 @@ class YoutubeConnector(context: Context) {
             }).setApplicationName("SearchYoutube").build()
 
         try {
-
             // Define the API request for retrieving search results.
-            query = youtube.search().list("id, snippet, statistics")
+            query = youtube.search().list("id,snippet")
 
             //setting API key to query
             // Set your developer key from the {{ Google Cloud Console }} for
@@ -115,6 +113,84 @@ class YoutubeConnector(context: Context) {
 
     }
 
+    //method for filling our array list
+    private fun setItemsList(iteratorSearchResults: Iterator<SearchResult>): List<VideoItem> {
+
+        //temporary list to store the raw data from the returned results
+        val tempSetItems = ArrayList<VideoItem>()
+
+        //if no result then printing appropriate output
+        if (!iteratorSearchResults.hasNext()) {
+            LogMessage.D(TAG, " There aren't any results for your query.")
+        }
+
+        //iterating through all search results
+        //hasNext() method returns true until it has no elements left to iterate
+        while (iteratorSearchResults.hasNext()) {
+
+            //next() method returns single instance of current video item
+            //and returns next item everytime it is called
+            //SearchResult is Youtube's custom result type which can be used to retrieve data of each video item
+            val singleVideo = iteratorSearchResults.next()
+
+            //getId() method returns the resource ID of one video in the result obtained
+            val rId = singleVideo.id
+
+            // Confirm that the result represents a video. Otherwise, the
+            // item will not contain a video ID.
+            //getKind() returns which type of resource it is which can be video, playlist or channel
+            if (rId.kind == "youtube#video") {
+
+                //object of VideoItem class that can be added to array list
+                val item = VideoItem()
+
+                //getting High quality thumbnail object
+                //URL of thumbnail is in the heirarchy snippet/thumbnails/high/url
+                val thumbnail = singleVideo.snippet.thumbnails.high
+
+                //retrieving title,description,thumbnail url, id from the heirarchy of each resource
+                //VideoData ID - id/videoId
+                //Title - snippet/title
+                //Description - snippet/description
+                //Thumbnail - snippet/thumbnails/high/url
+                item.id = singleVideo.id.videoId
+                item.title = singleVideo.snippet.title
+                item.description = singleVideo.snippet.description
+                item. thumbnailURL = thumbnail.url
+
+                requestVideoStatistic(item)
+
+                //adding one VideoData item to temporary array list
+                tempSetItems.add(item)
+
+                //for debug purpose printing one by one details of each VideoData that was found
+                LogMessage.D(TAG, " VideoData Id" + rId.videoId)
+                LogMessage.D(TAG, " Title: " + singleVideo.snippet.title)
+                LogMessage.D(TAG, " Thumbnail: " + thumbnail.url)
+                LogMessage.D(TAG, " Description: " + singleVideo.snippet.description)
+                LogMessage.D(TAG, " View Count: " + item.viewCount)
+                LogMessage.D(TAG, " Like Count: " + item.likeCount)
+                LogMessage.D(TAG, "\n-------------------------------------------------------------\n")
+            }
+        }
+        return tempSetItems
+    }
+
+    private fun requestVideoStatistic(item: VideoItem) {
+        val videoRequest = youtube.videos().list("statistics")
+        videoRequest.id = item.id
+        videoRequest.fields = "items/statistics"
+        videoRequest.key = KEY
+        val videoList = videoRequest.execute().items
+
+        if (videoList != null && videoList.size > 0) {
+            val video = videoList[0]
+            val statistics = video.statistics
+            item.viewCount = statistics.viewCount.toInt()
+            item.likeCount = statistics.likeCount.toInt()
+        }
+    }
+
     companion object {
         private val TAG = YoutubeConnector::class.java.simpleName
 
@@ -131,64 +207,5 @@ class YoutubeConnector(context: Context) {
 
         //maximum results that should be downloaded via the YouTube data API at a time
         private const val MAX_RESULTS: Long = 30
-
-        //method for filling our array list
-        private fun setItemsList(iteratorSearchResults: Iterator<SearchResult>): List<VideoItem> {
-
-            //temporary list to store the raw data from the returned results
-            val tempSetItems = ArrayList<VideoItem>()
-
-            //if no result then printing appropriate output
-            if (!iteratorSearchResults.hasNext()) {
-                LogMessage.D(TAG, " There aren't any results for your query.")
-            }
-
-            //iterating through all search results
-            //hasNext() method returns true until it has no elements left to iterate
-            while (iteratorSearchResults.hasNext()) {
-
-                //next() method returns single instance of current video item
-                //and returns next item everytime it is called
-                //SearchResult is Youtube's custom result type which can be used to retrieve data of each video item
-                val singleVideo = iteratorSearchResults.next()
-
-                //getId() method returns the resource ID of one video in the result obtained
-                val rId = singleVideo.id
-
-                // Confirm that the result represents a video. Otherwise, the
-                // item will not contain a video ID.
-                //getKind() returns which type of resource it is which can be video, playlist or channel
-                if (rId.kind == "youtube#video") {
-
-                    //object of VideoItem class that can be added to array list
-                    val item = VideoItem()
-
-                    //getting High quality thumbnail object
-                    //URL of thumbnail is in the heirarchy snippet/thumbnails/high/url
-                    val thumbnail = singleVideo.snippet.thumbnails.high
-
-                    //retrieving title,description,thumbnail url, id from the heirarchy of each resource
-                    //VideoData ID - id/videoId
-                    //Title - snippet/title
-                    //Description - snippet/description
-                    //Thumbnail - snippet/thumbnails/high/url
-                    item.id = singleVideo.id.videoId
-                    item.title = singleVideo.snippet.title
-                    item.description = singleVideo.snippet.description
-                    item. thumbnailURL = thumbnail.url
-
-                    //adding one VideoData item to temporary array list
-                    tempSetItems.add(item)
-
-                    //for debug purpose printing one by one details of each VideoData that was found
-                    LogMessage.D(TAG, " VideoData Id" + rId.videoId)
-                    LogMessage.D(TAG, " Title: " + singleVideo.snippet.title)
-                    LogMessage.D(TAG, " Thumbnail: " + thumbnail.url)
-                    LogMessage.D(TAG, " Description: " + singleVideo.snippet.description)
-                    LogMessage.D(TAG, "\n-------------------------------------------------------------\n")
-                }
-            }
-            return tempSetItems
-        }
     }
 }

@@ -33,7 +33,12 @@ class YoutubeAdapter: RecyclerView.Adapter<YoutubeAdapter.MyViewHolder>() {
         @JvmStatic
         @BindingAdapter("convertRecommendNumber")
         fun convertRecommendNumber(view: TextView, count: Int) {
-            view.text = String.format("%06d", count)
+            if (count < 10000) {
+                view.text = String.format("%d", count)
+            } else {
+                val thousand = count/1000
+                view.text = String.format("%d.%d萬", thousand/10, thousand%10)
+            }
         }
     }
 

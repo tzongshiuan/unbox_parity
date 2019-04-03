@@ -32,25 +32,25 @@ class VideoFragment : Fragment(), Injectable{
 
         private const val DEFAULT_VIDEO_ID = ""
 
-        @JvmStatic
-        @BindingAdapter("convertLikeText")
-        fun convertLikeText(view: TextView, isLike: Boolean) {
-            if (isLike) {
-                view.text = view.context.getString(R.string.txt_retract_recommendation)
-            } else {
-                view.text = view.context.getString(R.string.txt_give_recommendation)
-            }
-        }
-
-        @JvmStatic
-        @BindingAdapter("convertLikeIcon")
-        fun convertLikeIcon(view: ImageView, isLike: Boolean) {
-            if (isLike) {
-                view.setImageResource(R.mipmap.ic_heart_yes)
-            } else {
-                view.setImageResource(R.mipmap.ic_heart_no)
-            }
-        }
+//        @JvmStatic
+//        @BindingAdapter("convertLikeText")
+//        fun convertLikeText(view: TextView, isLike: Boolean) {
+//            if (isLike) {
+//                view.text = view.context.getString(R.string.txt_retract_recommendation)
+//            } else {
+//                view.text = view.context.getString(R.string.txt_give_recommendation)
+//            }
+//        }
+//
+//        @JvmStatic
+//        @BindingAdapter("convertLikeIcon")
+//        fun convertLikeIcon(view: ImageView, isLike: Boolean) {
+//            if (isLike) {
+//                view.setImageResource(R.mipmap.ic_heart_yes)
+//            } else {
+//                view.setImageResource(R.mipmap.ic_heart_no)
+//            }
+//        }
     }
 
     @Inject
