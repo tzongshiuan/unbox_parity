@@ -1,14 +1,19 @@
 package com.hsuanparty.unbox_parity.utils.youtube
 
 import android.content.Context
+import android.provider.Contacts.SettingsColumns.KEY
+import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
+import com.google.api.client.util.DateTime
 import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.model.SearchResult
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import java.io.IOException
-import java.util.ArrayList
+import java.security.spec.MGF1ParameterSpec.SHA1
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Author: Tsung Hsuan, Lai
@@ -104,13 +109,83 @@ class YoutubeConnector(context: Context) {
                 items = setItemsList(results.iterator())
             }
 
+            for (item in items) {
+                requestVideoStatistic(item)
+                LogMessage.D(TAG, " VideoData Id" + item.id)
+                LogMessage.D(TAG, " Title: " + item.title)
+                LogMessage.D(TAG, " View Count: " + item.viewCount)
+                LogMessage.D(TAG, " Like Count: " + item.likeCount)
+            }
+
             return items
         } catch (e: IOException) {
             //catch exception and print on console
             LogMessage.D(TAG, "Could not search: $e")
             return null
         }
+    }
 
+    private fun getPreviousWeek(): DateTime {
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.WEEK_OF_YEAR, -1)
+        return DateTime(cal.time)
+    }
+
+    private fun getPreviousMonth(): DateTime {
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.MONTH, -1)
+        return DateTime(cal.time)
+    }
+
+    private fun getPreviousYear(): DateTime {
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.YEAR, -1)
+
+        return DateTime(cal.time)
+    }
+
+    fun searchHotVideo(dateRange: Int): List<VideoItem>? {
+        //setting keyword to query
+        query?.q = "開箱"
+
+        //max results that should be returned
+        query?.maxResults = HOT_MAX_RESULTS
+
+        query?.publishedAfter = getPreviousWeek()
+
+        query?.order = "viewCount"
+
+        try {
+            //executing prepared query and calling Youtube API
+            val response = query?.execute()!!
+
+            //retrieving list from response received
+            //getItems method returns a list from the response which is originally in the form of JSON
+            val results = response.items
+
+            //list of type VideoItem for saving all data individually
+            var items: List<VideoItem> = ArrayList()
+
+            //check if result is found and call our setItemsList method
+            if (results != null) {
+                //iterator method returns a Iterator instance which can be used to iterate through all values in list
+                items = setItemsList(results.iterator())
+            }
+
+            for (item in items) {
+                requestVideoStatistic(item)
+                LogMessage.D(TAG, " VideoData Id: " + item.id)
+                LogMessage.D(TAG, " Title: " + item.title)
+                LogMessage.D(TAG, " View Count: " + item.viewCount)
+                LogMessage.D(TAG, " Like Count: " + item.likeCount)
+            }
+
+            return items
+        } catch (e: IOException) {
+            //catch exception and print on console
+            LogMessage.D(TAG, "Could not search: $e")
+            return null
+        }
     }
 
     //method for filling our array list
@@ -158,18 +233,14 @@ class YoutubeConnector(context: Context) {
                 item.description = singleVideo.snippet.description
                 item. thumbnailURL = thumbnail.url
 
-                requestVideoStatistic(item)
-
                 //adding one VideoData item to temporary array list
                 tempSetItems.add(item)
 
                 //for debug purpose printing one by one details of each VideoData that was found
-                LogMessage.D(TAG, " VideoData Id" + rId.videoId)
+                LogMessage.D(TAG, " VideoData Id: " + rId.videoId)
                 LogMessage.D(TAG, " Title: " + singleVideo.snippet.title)
                 LogMessage.D(TAG, " Thumbnail: " + thumbnail.url)
                 LogMessage.D(TAG, " Description: " + singleVideo.snippet.description)
-                LogMessage.D(TAG, " View Count: " + item.viewCount)
-                LogMessage.D(TAG, " Like Count: " + item.likeCount)
                 LogMessage.D(TAG, "\n-------------------------------------------------------------\n")
             }
         }
@@ -187,7 +258,9 @@ class YoutubeConnector(context: Context) {
             val video = videoList[0]
             val statistics = video.statistics
             item.viewCount = statistics.viewCount.toInt()
-            item.likeCount = statistics.likeCount.toInt()
+            if (statistics.likeCount != null) {
+                item.likeCount = statistics.likeCount.toInt()
+            }
         }
     }
 
@@ -207,5 +280,11 @@ class YoutubeConnector(context: Context) {
 
         //maximum results that should be downloaded via the YouTube data API at a time
         private const val MAX_RESULTS: Long = 30
+
+        private const val HOT_MAX_RESULTS: Long = 10
+
+        const val WEEKLY_HOT_VIDEO = 0
+        const val MONTHLY_HOT_VIDEO = 1
+        const val YEARLY_HOT_VIDEO = 2
     }
 }

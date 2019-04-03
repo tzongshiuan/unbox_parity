@@ -3,8 +3,7 @@
     <string name="action_settings">Settings</string>
 
     <!--about facebook-->
-    <string name="facebook_app_id" translatable="false">2542636175809491</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb2542636175809491</string>
+    <string name="facebook_app_id">2542636175809491</string>
 
     <!--Common Strings-->
     <string name="txt_ok">OK</string>

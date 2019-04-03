@@ -4,6 +4,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="curHotStatus"
+            type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -86,11 +89,33 @@
                 app:layout_constraintTop_toBottomOf="@+id/guideSearch"/>
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rankItemsView"
+                android:id="@+id/weekRankView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="10dp"
-                android:background="@color/aqua"
+                app:convertWeekRankView="@{curHotStatus}"
+                app:layout_constraintTop_toBottomOf="@+id/segmentView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/monthRankView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                app:convertMonthRankView="@{curHotStatus}"
+                app:layout_constraintTop_toBottomOf="@+id/segmentView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/yearRankView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                app:convertYearRankView="@{curHotStatus}"
                 app:layout_constraintTop_toBottomOf="@+id/segmentView"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -4,8 +4,8 @@
     <string name="title_activity_unbox_parity" translatable="false">UnboxParityActivity</string>
 
     <!--about facebook-->
-    <string name="facebook_app_id" translatable="false">2542636175809491</string>
-    <string name="fb_login_protocol_scheme" translatable="false">fb2542636175809491</string>
+    <string name="facebook_app_id">2542636175809491</string>
+    <string name="fb_login_protocol_scheme">fb2542636175809491</string>
 
     <!--Common Strings-->
     <string name="txt_ok">OK</string>

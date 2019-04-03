@@ -10,6 +10,9 @@ interface PreferencesHelper {
     var isFinishApp: Boolean
     var lastSearchKeyword: String
     var curVideoItem: VideoItem?
+    val weekHotVideoList: ArrayList<VideoItem>
+    val monthHotVideoList: ArrayList<VideoItem>
+    val yearHotVideoList: ArrayList<VideoItem>
 
     fun readPreferences()
     fun savePreferences()

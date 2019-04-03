@@ -18,6 +18,7 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
 
         const val SEARCH_START = 0
         const val SEARCH_FINISH = 1
+        const val SWITCH_TO_VIDEO_PAGE = 2
     }
 
     @Inject

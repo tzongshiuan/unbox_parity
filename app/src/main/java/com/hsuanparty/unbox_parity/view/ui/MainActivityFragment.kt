@@ -33,6 +33,8 @@ import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
+import com.hsuanparty.unbox_parity.utils.youtube.VideoItem
+import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector
 import com.tsunghsuanparty.textanimlib.slide.SlideAnimation
 import org.json.JSONException
 import java.io.IOException
@@ -72,6 +74,8 @@ class MainActivityFragment : Fragment(), Injectable {
     private lateinit var mBinding: FragmentMainBinding
 
     private var mGoogleApiClient: GoogleApiClient? = null
+
+    private var isSearchFinish = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
@@ -181,7 +185,7 @@ class MainActivityFragment : Fragment(), Injectable {
                             Toast.makeText(context, "Google sign in failed", Toast.LENGTH_LONG).show()
                         } else {
                             LogMessage.D(TAG, "Sing in name:"+account.displayName)
-                            startSearchFragment(AuthStatus.AUTH_GOOGLE)
+                            initData(AuthStatus.AUTH_GOOGLE)
                         }
                     })
     }
@@ -224,7 +228,7 @@ class MainActivityFragment : Fragment(), Injectable {
                             if (task.isSuccessful) {
                                 val user = mAuth.currentUser
                                 LogMessage.D(TAG, "user name = $user")
-                                startSearchFragment(AuthStatus.AUTH_FACEBOOK)
+                                initData(AuthStatus.AUTH_FACEBOOK)
                             } else {
                                 LogMessage.D(TAG, "Log in with facebook account failed")
                             }
@@ -303,7 +307,7 @@ class MainActivityFragment : Fragment(), Injectable {
             mAuth.signInAnonymously().addOnCompleteListener { authResult ->
                 if (authResult.isSuccessful) {
                     LogMessage.D(TAG, "匿名登入成功 uid:" + mAuth.currentUser?.uid)
-                    startSearchFragment(AuthStatus.AUTH_ANONYMOUS)
+                    initData(AuthStatus.AUTH_ANONYMOUS)
                 } else {
                     Toast.makeText(context, "匿名登入失敗", Toast.LENGTH_LONG).show()
                 }
@@ -325,7 +329,7 @@ class MainActivityFragment : Fragment(), Injectable {
             LogMessage.D(TAG, "account.email: ${account.email}")
             LogMessage.D(TAG, "account.photoUrl: ${account.photoUrl}")
 
-            startSearchFragment(AuthStatus.AUTH_GOOGLE)
+            initData(AuthStatus.AUTH_GOOGLE)
             return
         }
 
@@ -335,7 +339,7 @@ class MainActivityFragment : Fragment(), Injectable {
             LogMessage.D(TAG, "Has already auth with \"Facebook\" account")
             sendFbInfoRequest(token)
 
-            startSearchFragment(AuthStatus.AUTH_FACEBOOK)
+            initData(AuthStatus.AUTH_FACEBOOK)
             return
         }
 
@@ -343,12 +347,12 @@ class MainActivityFragment : Fragment(), Injectable {
         if (currentUser != null) {
             LogMessage.D(TAG, "Has already auth with \"Anonymous\" account")
 
-            startSearchFragment(AuthStatus.AUTH_ANONYMOUS)
+            initData(AuthStatus.AUTH_ANONYMOUS)
         }
     }
 
-    private fun startSearchFragment(authStatus: Int) {
-        LogMessage.D(TAG, "startSearchFragment(), autoStatus: $authStatus")
+    private fun initData(authStatus: Int) {
+        LogMessage.D(TAG, "initData(), autoStatus: $authStatus")
 
         mPreferences.authStatus = authStatus
 
@@ -356,8 +360,40 @@ class MainActivityFragment : Fragment(), Injectable {
         mBinding.googleLoginButton.isEnabled = false
         mBinding.fbLoginButton.isEnabled = false
         mBinding.anonymousLoginBtn.isEnabled = false
+
+        object : Thread() {
+            //implementing run method
+            override fun run() {
+                //create our YoutubeConnector class's object with Activity context as argument
+                val yc = YoutubeConnector(context!!)
+
+                //calling the YoutubeConnector's search method by entered keyword
+                //and saving the results in list of type VideoItem class
+                mPreferences.weekHotVideoList.clear()
+                mPreferences.weekHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.WEEKLY_HOT_VIDEO) as ArrayList)
+
+                mPreferences.monthHotVideoList.clear()
+                mPreferences.monthHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.MONTHLY_HOT_VIDEO) as ArrayList)
+
+                mPreferences.yearHotVideoList.clear()
+                mPreferences.yearHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.YEARLY_HOT_VIDEO) as ArrayList)
+
+                isSearchFinish = true
+            }
+            //starting the thread
+        }.start()
+
+        startSearchFragment()
+    }
+
+    private fun startSearchFragment() {
         SimpleDelayTask.after(Constants.LOAD_DATA_TIME) {
-            Navigation.findNavController(mBinding.root).navigate(R.id.action_mainActivityFragment_to_unboxParityActivity)
+            if (isSearchFinish) {
+                Navigation.findNavController(mBinding.root)
+                    .navigate(R.id.action_mainActivityFragment_to_unboxParityActivity)
+            } else {
+                startSearchFragment()
+            }
         }
     }
 }

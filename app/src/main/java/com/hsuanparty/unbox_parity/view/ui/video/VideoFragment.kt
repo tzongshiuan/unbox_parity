@@ -128,6 +128,9 @@ class VideoFragment : Fragment(), Injectable{
         viewModel.curVideoItem.observe(this, Observer { videoItem ->
             mBinding.recyclerView.adapter?.notifyDataSetChanged()
             player?.loadVideo(videoItem.id!!, 0f)
+
+            // jump to video page forcibly
+            searchViewModel.isSearchFinish.value = SearchViewModel.SWITCH_TO_VIDEO_PAGE
         })
     }
 

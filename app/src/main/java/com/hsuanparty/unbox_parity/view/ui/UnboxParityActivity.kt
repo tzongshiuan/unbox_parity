@@ -67,22 +67,27 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
         when (item.itemId) {
             R.id.navigation_search -> {
+                curPageIndex = SEARCH_PAGE_INDEX
                 searchPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_video -> {
+                curPageIndex = VIDEO_PAGE_INDEX
                 videoPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_article -> {
+                curPageIndex = ARTICLE_PAGE_INDEX
                 articlePage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_parity -> {
+                curPageIndex = PARITY_PAGE_INDEX
                 parityPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_setting -> {
+                curPageIndex = SETTING_PAGE_INDEX
                 settingPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
@@ -154,6 +159,12 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
                     setFragmentPage(VIDEO_PAGE_INDEX)
                 }
 
+                SearchViewModel.SWITCH_TO_VIDEO_PAGE -> {
+                    if (curPageIndex != VIDEO_PAGE_INDEX) {
+                        setFragmentPage(VIDEO_PAGE_INDEX)
+                    }
+                }
+
                 else -> {}
             }
         })
@@ -192,8 +203,6 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
     private fun setFragmentPage(pageIndex: Int) {
         LogMessage.D(TAG, "setFragmentPage: $pageIndex")
-
-        curPageIndex = pageIndex
 
         when (pageIndex) {
             SEARCH_PAGE_INDEX -> {
