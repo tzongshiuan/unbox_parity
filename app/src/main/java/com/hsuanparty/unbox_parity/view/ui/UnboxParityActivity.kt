@@ -13,6 +13,8 @@ import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
+import com.hsuanparty.unbox_parity.view.ui.article.ArticleViewModel
+import com.hsuanparty.unbox_parity.view.ui.parity.ParityViewModel
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel.Companion.SEARCH_FINISH
 import com.hsuanparty.unbox_parity.view.ui.video.VideoViewModel
@@ -51,6 +53,12 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
     @Inject
     lateinit var videoViewModel: VideoViewModel
+
+    @Inject
+    lateinit var articleViewModel: ArticleViewModel
+
+    @Inject
+    lateinit var parityViewModel: ParityViewModel
 
     private var curPageIndex = SEARCH_PAGE_INDEX
 
@@ -142,12 +150,18 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     private fun initViewModel() {
         searchViewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
         videoViewModel = ViewModelProviders.of(this, factory).get(VideoViewModel::class.java)
+        articleViewModel = ViewModelProviders.of(this, factory).get(ArticleViewModel::class.java)
+        parityViewModel = ViewModelProviders.of(this, factory).get(ParityViewModel::class.java)
 
         searchViewModel.isSearchFinish.observe(this, Observer<Int> { status ->
             when (status) {
                 SearchViewModel.SEARCH_START -> {
                     isSearchStart = true
                     videoViewModel.searchVideo(this)
+
+                    // TODO search article
+
+                    // TODO search parity
                 }
 
                 SearchViewModel.SEARCH_FINISH -> {

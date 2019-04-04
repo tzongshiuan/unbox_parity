@@ -7,6 +7,7 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.model.MyPreferences
+import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.youtube.VideoItem
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector
@@ -67,7 +68,12 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
 
                 //calling the YoutubeConnector's search method by entered keyword
                 //and saving the results in list of type VideoItem class
-                videoSearchResult.postValue(yc.search(mPreferences.lastSearchKeyword + " 開箱"))
+                if (!Constants.IS_SKIP_SEARCH) {
+                    videoSearchResult.postValue(yc.search(mPreferences.lastSearchKeyword + " 開箱"))
+                } else {
+                    val list: ArrayList<VideoItem> = ArrayList()
+                    videoSearchResult.postValue(list)
+                }
             }
             //starting the thread
         }.start()
