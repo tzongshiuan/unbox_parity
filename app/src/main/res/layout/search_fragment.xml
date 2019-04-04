@@ -89,7 +89,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/guideSearch"/>
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/weekRankView"
+                android:id="@+id/dayRankView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="10dp"
@@ -100,7 +100,7 @@
                 app:layout_constraintEnd_toEndOf="parent"/>
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/monthRankView"
+                android:id="@+id/weekRankView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="10dp"
@@ -111,7 +111,7 @@
                 app:layout_constraintEnd_toEndOf="parent"/>
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/yearRankView"
+                android:id="@+id/monthRankView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_margin="10dp"

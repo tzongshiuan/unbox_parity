@@ -4,6 +4,9 @@ import android.app.Application
 import android.content.Context
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
+import com.google.api.client.util.ExponentialBackOff
+import com.google.api.services.youtube.YouTubeScopes
 import com.google.firebase.auth.FirebaseAuth
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
@@ -12,7 +15,9 @@ import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable
+import java.util.*
 import javax.inject.Singleton
+
 
 /**
  * Author: Tsung Hsuan, Lai
@@ -113,8 +118,17 @@ class AppModule(private val application: Application) {
     @Singleton
     fun provideGoogleSignInOptions(application: Application): GoogleSignInOptions {
         return GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(application.getString(R.string.default_web_client_id))
+                .requestIdToken("576027263638-pp1r05g8drjdoo3d4nlrdjh715f9t0ej.apps.googleusercontent.com")
+                //.requestIdToken("1014829811389-34sg1at4j0b6c9iuc1b31an5l46i76to.apps.googleusercontent.com")
                 .requestEmail()
                 .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideGoogleAccountCredential(application: Application): GoogleAccountCredential {
+        val credential = GoogleAccountCredential.usingOAuth2(application, Arrays.asList(YouTubeScopes.YOUTUBE, YouTubeScopes.YOUTUBE_READONLY))
+        credential.backOff = ExponentialBackOff()
+        return credential
     }
 }

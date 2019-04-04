@@ -105,6 +105,7 @@ dependencies {
 
     // Youtube API
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:10.0.3'
+    implementation 'pub.devrel:easypermissions:0.3.0'
     //google client for android api dependency
     //excluding org.apache.httpcomponents so as to resolve anonymity
     implementation('com.google.api-client:google-api-client-android:1.25.0') {

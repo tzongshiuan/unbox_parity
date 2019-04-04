@@ -61,8 +61,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintVertical_bias="0.720"/>
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintVertical_bias="0.750"/>
 
         <com.facebook.login.widget.LoginButton
                 android:id="@+id/fbLoginButton"
@@ -74,7 +74,8 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/googleLoginButton"/>
+                app:layout_constraintTop_toBottomOf="@+id/googleLoginButton"
+                android:visibility="visible"/>
 
         <Button
                 android:id="@+id/anonymousLoginBtn"
@@ -90,7 +91,8 @@
                 android:layout_marginTop="20dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fbLoginButton" />
+                app:layout_constraintTop_toBottomOf="@+id/fbLoginButton"
+                android:visibility="visible" />
 
         <Button
                 android:id="@+id/googleLogoutBtn"
@@ -100,7 +102,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="invisible"/>
+                android:visibility="visible"/>
 
         <Button
                 android:id="@+id/fbLogoutBtn"

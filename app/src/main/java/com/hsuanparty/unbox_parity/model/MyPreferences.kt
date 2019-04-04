@@ -26,9 +26,9 @@ class MyPreferences @Inject constructor(val context: Context) : PreferencesHelpe
     override var isFinishApp = false
     override var lastSearchKeyword = ""
     override var curVideoItem: VideoItem? = null
+    override val dayHotVideoList: ArrayList<VideoItem> = ArrayList()
     override val weekHotVideoList: ArrayList<VideoItem> = ArrayList()
     override val monthHotVideoList: ArrayList<VideoItem> = ArrayList()
-    override val yearHotVideoList: ArrayList<VideoItem> = ArrayList()
 
     private fun packPreferencesToJson(): JSONObject {
         val jSetting = JSONObject()

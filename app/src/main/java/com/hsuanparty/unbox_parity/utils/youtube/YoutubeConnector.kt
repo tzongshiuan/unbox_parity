@@ -3,6 +3,7 @@ package com.hsuanparty.unbox_parity.utils.youtube
 import android.content.Context
 import android.provider.Contacts.SettingsColumns.KEY
 import android.provider.ContactsContract.Directory.PACKAGE_NAME
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.client.json.jackson2.JacksonFactory
@@ -14,13 +15,14 @@ import java.io.IOException
 import java.security.spec.MGF1ParameterSpec.SHA1
 import java.text.SimpleDateFormat
 import java.util.*
+import com.google.api.services.youtube.model.ChannelListResponse
 
 /**
  * Author: Tsung Hsuan, Lai
  * Created on: 2019/4/1
  * Description:
  */
-class YoutubeConnector(context: Context) {
+class YoutubeConnector(credential: GoogleAccountCredential) {
 
     //Youtube object for executing api related queries through Youtube Data API
     private val youtube: YouTube
@@ -30,6 +32,8 @@ class YoutubeConnector(context: Context) {
     //By default, a search result set identifies matching video, channel, and playlist resources,
     //but you can also configure queries to only retrieve a specific type of resource
     private var query: YouTube.Search.List? = null
+
+    var mCredential: GoogleAccountCredential? = null
 
     init {
         //Youtube.Builder returns an instance of a new builder
@@ -41,6 +45,20 @@ class YoutubeConnector(context: Context) {
         // argument is required, but since we don't need anything
         // initialized when the HttpRequest is initialized, we override
         // the interface and provide a no-op function.
+
+//        youtube = YouTube.Builder(NetHttpTransport(), JacksonFactory(), credential).setApplicationName("UnboxParity").build()
+
+//        val parameters = HashMap<String, String>()
+//        parameters.put("part", "snippet")
+//        parameters.put("maxResults", "3")
+//        parameters.put("q", "Mozart")
+//        parameters.put("type", "video")
+//        val request = youtube.search().list(parameters.get("part").toString())
+//        request.maxResults = 3
+//        request.setQ(parameters.get("q").toString())
+//        request.setType(parameters.get("type").toString())
+//        val response = request.execute()
+
         youtube = YouTube.Builder(NetHttpTransport(), JacksonFactory(),
             HttpRequestInitializer { request ->
                 //initialize method helps to addNewVideoData any extra details that may be required to process the query
@@ -51,7 +69,7 @@ class YoutubeConnector(context: Context) {
 
         try {
             // Define the API request for retrieving search results.
-            query = youtube.search().list("id,snippet")
+            query = youtube.search().list("id, snippet")
 
             //setting API key to query
             // Set your developer key from the {{ Google Cloud Console }} for
@@ -75,13 +93,19 @@ class YoutubeConnector(context: Context) {
             //-description of video
             //high quality thumbnail url of the video
             query?.fields = "items(id/kind,id/videoId,snippet/title,snippet/description,snippet/thumbnails/high/url)"
-
         } catch (e: IOException) {
 
             //printing stack trace if error occurs
             LogMessage.D(TAG, "Could not initialize: $e")
         }
+    }
 
+    fun checkPermission() {
+        val request = youtube.search().list("snippet")
+        request.maxResults = 3
+        request.q = "開箱"
+        request.type = "video"
+        request.execute()
     }
 
     fun search(keywords: String): List<VideoItem>? {
@@ -125,6 +149,13 @@ class YoutubeConnector(context: Context) {
         }
     }
 
+    private fun getPreviousDay(): DateTime {
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.DAY_OF_YEAR, -1)
+
+        return DateTime(cal.time)
+    }
+
     private fun getPreviousWeek(): DateTime {
         val cal = Calendar.getInstance()
         cal.add(Calendar.WEEK_OF_YEAR, -1)
@@ -137,13 +168,6 @@ class YoutubeConnector(context: Context) {
         return DateTime(cal.time)
     }
 
-    private fun getPreviousYear(): DateTime {
-        val cal = Calendar.getInstance()
-        cal.add(Calendar.YEAR, -1)
-
-        return DateTime(cal.time)
-    }
-
     fun searchHotVideo(dateRange: Int): List<VideoItem>? {
         //setting keyword to query
         query?.q = "開箱"
@@ -151,7 +175,12 @@ class YoutubeConnector(context: Context) {
         //max results that should be returned
         query?.maxResults = HOT_MAX_RESULTS
 
-        query?.publishedAfter = getPreviousWeek()
+        when (dateRange) {
+            DAILY_HOT_VIDEO -> query?.publishedAfter = getPreviousDay()
+            WEEKLY_HOT_VIDEO -> query?.publishedAfter = getPreviousWeek()
+            MONTHLY_HOT_VIDEO -> query?.publishedAfter = getPreviousMonth()
+            else -> {}
+        }
 
         query?.order = "viewCount"
 
@@ -270,7 +299,8 @@ class YoutubeConnector(context: Context) {
         //Developer API key a developer can obtain after creating a new project in google developer console
         //Developer has to enable YouTube Data API v3 in the project
         //Add credentials and then provide the Application's package name and SHA fingerprint
-        const val KEY = "AIzaSyA2GiVQoczSOT1DUOEJrxY1CD6lIxEtibo"
+        //const val KEY = "AIzaSyA2GiVQoczSOT1DUOEJrxY1CD6lIxEtibo"
+        const val KEY = "AIzaSyB9oPetnpe9tU3uyw--NYiJrJUPjfExlic"
 
         //Package name of the app that will call the YouTube Data API
         const val PACKAGE_NAME = "com.hsuanparty.unbox_parity"
@@ -283,8 +313,8 @@ class YoutubeConnector(context: Context) {
 
         private const val HOT_MAX_RESULTS: Long = 10
 
-        const val WEEKLY_HOT_VIDEO = 0
-        const val MONTHLY_HOT_VIDEO = 1
-        const val YEARLY_HOT_VIDEO = 2
+        const val DAILY_HOT_VIDEO = 0
+        const val WEEKLY_HOT_VIDEO = 1
+        const val MONTHLY_HOT_VIDEO = 2
     }
 }

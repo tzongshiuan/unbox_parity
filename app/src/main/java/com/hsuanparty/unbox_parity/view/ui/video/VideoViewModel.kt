@@ -3,6 +3,7 @@ package com.hsuanparty.unbox_parity.view.ui.video
 import android.app.Activity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.model.MyPreferences
@@ -27,6 +28,9 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
 
     @Inject
     lateinit var mDbManager: FirebaseDbManager
+
+    @Inject
+    lateinit var mCredential: GoogleAccountCredential
 
     val screenStatusLiveData: MutableLiveData<Int> = MutableLiveData()
 
@@ -59,7 +63,7 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
             //implementing run method
             override fun run() {
                 //create our YoutubeConnector class's object with Activity context as argument
-                val yc = YoutubeConnector(activity)
+                val yc = YoutubeConnector(mCredential)
 
                 //calling the YoutubeConnector's search method by entered keyword
                 //and saving the results in list of type VideoItem class

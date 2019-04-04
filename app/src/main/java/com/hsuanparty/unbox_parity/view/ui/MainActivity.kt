@@ -79,7 +79,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
         android.Manifest.permission.ACCESS_FINE_LOCATION,
         android.Manifest.permission.ACCESS_COARSE_LOCATION,
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        android.Manifest.permission.RECORD_AUDIO
+        android.Manifest.permission.RECORD_AUDIO,
+        android.Manifest.permission.GET_ACCOUNTS
     )
 
     @Suppress("DEPRECATION")
@@ -180,7 +181,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        LogMessage.D(TAG, "onActivityResult()")
+        LogMessage.D(TAG, "onActivityResult(), requestCode: $requestCode, resultCode: $resultCode")
 
         val fragment = supportFragmentManager.findFragmentById(R.id.mainActivityFragment)
         fragment?.onActivityResult(requestCode, resultCode, data)
