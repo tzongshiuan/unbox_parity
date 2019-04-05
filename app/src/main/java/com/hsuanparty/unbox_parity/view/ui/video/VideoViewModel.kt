@@ -9,7 +9,7 @@ import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
-import com.hsuanparty.unbox_parity.utils.youtube.VideoItem
+import com.hsuanparty.unbox_parity.model.VideoItem
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector
 import javax.inject.Inject
 import javax.inject.Singleton

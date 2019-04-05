@@ -1,5 +1,7 @@
 package com.hsuanparty.unbox_parity.view.ui
 
+import android.app.SearchManager
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
@@ -32,11 +34,12 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     companion object {
         private val TAG = UnboxParityActivity::class.java.simpleName
 
-        private const val SEARCH_PAGE_INDEX  = 0
-        private const val VIDEO_PAGE_INDEX   = 1
-        private const val ARTICLE_PAGE_INDEX = 2
-        private const val PARITY_PAGE_INDEX  = 3
-        private const val SETTING_PAGE_INDEX = 4
+        private const val SEARCH_PAGE_INDEX   = 0
+        private const val VIDEO_PAGE_INDEX    = 1
+        private const val ARTICLE_PAGE_INDEX  = 2
+        private const val PARITY_PAGE_INDEX   = 3
+        private const val SETTING_PAGE_INDEX  = 4
+        private const val GOOGLE_SEARCH_INDEX = 5
     }
 
     @Inject
@@ -134,6 +137,11 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
         super.onDestroy()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        LogMessage.D(TAG, "onActivityResult(), requestCode: $requestCode, resultCode: $resultCode")
+    }
+
     override fun onBackPressed() {
         LogMessage.D(TAG, "onBackPressed()")
 
@@ -159,7 +167,8 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
                     isSearchStart = true
                     videoViewModel.searchVideo(this)
 
-                    // TODO search article
+                    // Search article
+                    articleViewModel.searchArticle(this)
 
                     // TODO search parity
                 }

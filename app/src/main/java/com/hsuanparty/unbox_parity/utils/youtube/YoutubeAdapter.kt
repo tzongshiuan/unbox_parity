@@ -1,24 +1,17 @@
 package com.hsuanparty.unbox_parity.utils.youtube
 
-import android.app.Activity
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.databinding.VideoItemBinding
-import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.VideoItem
 import com.hsuanparty.unbox_parity.utils.LogMessage
-import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
 import com.hsuanparty.unbox_parity.view.ui.video.VideoViewModel
 import com.squareup.picasso.Picasso
-import javax.inject.Inject
 
 /**
  * Author: Tsung Hsuan, Lai

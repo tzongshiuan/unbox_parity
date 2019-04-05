@@ -1,8 +1,5 @@
 package com.hsuanparty.unbox_parity.model
 
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.hsuanparty.unbox_parity.utils.youtube.VideoItem
-
 
 interface PreferencesHelper {
     var developer: String

@@ -1,8 +1,5 @@
 package com.hsuanparty.unbox_parity.utils.youtube
 
-import android.content.Context
-import android.provider.Contacts.SettingsColumns.KEY
-import android.provider.ContactsContract.Directory.PACKAGE_NAME
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -12,10 +9,8 @@ import com.google.api.services.youtube.YouTube
 import com.google.api.services.youtube.model.SearchResult
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import java.io.IOException
-import java.security.spec.MGF1ParameterSpec.SHA1
-import java.text.SimpleDateFormat
 import java.util.*
-import com.google.api.services.youtube.model.ChannelListResponse
+import com.hsuanparty.unbox_parity.model.VideoItem
 
 /**
  * Author: Tsung Hsuan, Lai

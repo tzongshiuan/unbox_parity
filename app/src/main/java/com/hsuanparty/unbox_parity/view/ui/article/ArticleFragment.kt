@@ -7,10 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
+import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.databinding.ArticleFragmentBinding
 
-import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
@@ -21,6 +23,51 @@ class ArticleFragment : Fragment(), Injectable{
 
     companion object {
         private val TAG = ArticleFragment::class.java.simpleName
+
+        const val DATE_RANGE_NONE  = 0
+        const val DATE_RANGE_WEEK  = 1
+        const val DATE_RANGE_MONTH = 2
+        const val DATE_RANGE_YEAR  = 3
+
+        @JvmStatic
+        @BindingAdapter("convertNoneDateRange")
+        fun convertNoneDateRange(view: RecyclerView, curDateRange: Int) {
+            if (curDateRange == DATE_RANGE_NONE) {
+                view.visibility = View.VISIBLE
+            } else {
+                view.visibility = View.GONE
+            }
+        }
+
+        @JvmStatic
+        @BindingAdapter("convertWeekDateRange")
+        fun convertWeekDateRange(view: RecyclerView, curDateRange: Int) {
+            if (curDateRange == DATE_RANGE_WEEK) {
+                view.visibility = View.VISIBLE
+            } else {
+                view.visibility = View.GONE
+            }
+        }
+
+        @JvmStatic
+        @BindingAdapter("convertMonthDateRange")
+        fun convertMonthDateRange(view: RecyclerView, curDateRange: Int) {
+            if (curDateRange == DATE_RANGE_MONTH) {
+                view.visibility = View.VISIBLE
+            } else {
+                view.visibility = View.GONE
+            }
+        }
+
+        @JvmStatic
+        @BindingAdapter("convertYearDateRange")
+        fun convertYearDateRange(view: RecyclerView, curDateRange: Int) {
+            if (curDateRange == DATE_RANGE_YEAR) {
+                view.visibility = View.VISIBLE
+            } else {
+                view.visibility = View.GONE
+            }
+        }
     }
 
     @Inject
@@ -68,6 +115,11 @@ class ArticleFragment : Fragment(), Injectable{
         })
 
         viewModel = ViewModelProviders.of(this).get(ArticleViewModel::class.java)
+        viewModel.articleNoneResult.observe(this, Observer { list ->
+//            (mBinding.recyclerView.adapter as YoutubeAdapter).mVideoList = result
+//            (mBinding.recyclerView.adapter as YoutubeAdapter).selectIndex = -1
+//            mBinding.recyclerView.adapter?.notifyDataSetChanged()
+        })
     }
 
     override fun onResume() {
@@ -95,6 +147,30 @@ class ArticleFragment : Fragment(), Injectable{
     }
 
     private fun initUI() {
+        mBinding.segmentView.setOnSelectionChangedListener { identifier, value ->
+            LogMessage.D(TAG, "identifier: $identifier, value: $value")
 
+            val array = resources.getStringArray(R.array.article_state_option)
+
+            when (value) {
+                array[0] -> {
+                    mBinding.curDateRange = DATE_RANGE_NONE
+                }
+
+                array[1] -> {
+                    mBinding.curDateRange = DATE_RANGE_WEEK
+                }
+
+                array[2] -> {
+                    mBinding.curDateRange = DATE_RANGE_MONTH
+                }
+
+                array[3] -> {
+                    mBinding.curDateRange = DATE_RANGE_YEAR
+                }
+
+                else -> {}
+            }
+        }
     }
 }

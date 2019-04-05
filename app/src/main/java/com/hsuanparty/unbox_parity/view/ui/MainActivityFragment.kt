@@ -1,10 +1,7 @@
 package com.hsuanparty.unbox_parity.view.ui
 
 import android.Manifest
-import android.accounts.AccountManager
 import android.app.Activity.RESULT_OK
-import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -27,10 +24,7 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.api.client.googleapis.extensions.android.accounts.GoogleAccountManager
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
-import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
-import com.google.api.services.youtube.YouTubeScopes
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
@@ -44,7 +38,6 @@ import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
-import com.hsuanparty.unbox_parity.utils.youtube.VideoItem
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector
 import com.tsunghsuanparty.textanimlib.slide.SlideAnimation
 import org.json.JSONException

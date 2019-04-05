@@ -18,4 +18,11 @@
         <item>週排行</item>
         <item>月排行</item>
     </string-array>
+
+    <string-array name="article_state_option">
+        <item>無限制</item>
+        <item>最近一週</item>
+        <item>最近一月</item>
+        <item>最近一年</item>
+    </string-array>
 </resources>

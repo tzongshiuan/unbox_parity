@@ -1,7 +1,6 @@
 package com.hsuanparty.unbox_parity.model
 
 import com.google.gson.annotations.SerializedName
-import com.hsuanparty.unbox_parity.utils.youtube.VideoItem
 
 /**
  * Author: Tsung Hsuan, Lai

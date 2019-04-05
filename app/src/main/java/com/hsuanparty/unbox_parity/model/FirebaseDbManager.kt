@@ -5,7 +5,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.LogMessage
-import com.hsuanparty.unbox_parity.utils.youtube.VideoItem
 import javax.inject.Singleton
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DataSnapshot

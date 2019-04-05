@@ -7,7 +7,7 @@
     <data>
         <variable
                 name="videoItem"
-                type="com.hsuanparty.unbox_parity.utils.youtube.VideoItem" />
+                type="com.hsuanparty.unbox_parity.model.VideoItem" />
     </data>
 
     <!-- CardView helps design a mini layout in the form of cards -->

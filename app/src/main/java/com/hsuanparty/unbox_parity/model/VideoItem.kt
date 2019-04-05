@@ -1,4 +1,4 @@
-package com.hsuanparty.unbox_parity.utils.youtube
+package com.hsuanparty.unbox_parity.model
 
 /**
  * Author: Tsung Hsuan, Lai
