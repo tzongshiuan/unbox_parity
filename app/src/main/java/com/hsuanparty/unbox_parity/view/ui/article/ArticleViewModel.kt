@@ -13,6 +13,10 @@ import java.net.MalformedURLException
 import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
+import androidx.core.content.ContextCompat.startActivity
+import android.content.Intent
+import android.net.Uri
+
 
 @Singleton
 class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
@@ -25,7 +29,7 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
         private const val SEARCH_FILTER_YEAR  = "&tbs=qdr:y"
         private const val SEARCH_FILTER_EXCLUDE = "&as_eq=\"video\"+\"購物\""
 
-        private const val MAX_RESULT = 10
+        private const val MAX_RESULT = 20
         private const val BASE_SEARCH_URL = "https://www.google.com/search?tbas=0&source=lnt&num=$MAX_RESULT$SEARCH_FILTER_EXCLUDE"
 
         private const val URL_PREFIX = "/url?q="
@@ -39,7 +43,11 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
     val articleMonthResult: MutableLiveData<ArrayList<ArticleItem>> = MutableLiveData()
     val articleYearResult: MutableLiveData<ArrayList<ArticleItem>> = MutableLiveData()
 
+    val showArticleContent: MutableLiveData<ArticleItem> = MutableLiveData()
+
+    var activity: Activity? = null
     fun searchArticle(activity: Activity) {
+        this.activity = activity
         searchWithDateRange(ArticleFragment.DATE_RANGE_NONE)
         searchWithDateRange(ArticleFragment.DATE_RANGE_WEEK)
         searchWithDateRange(ArticleFragment.DATE_RANGE_MONTH)
@@ -90,12 +98,12 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
 
                 //LogMessage.D(TAG, html)
 
-                parseSearchArticleResult(html)
+                parseSearchArticleResult(html, dateRange)
             }
         }.start()
     }
 
-    private fun parseSearchArticleResult(html: String) {
+    private fun parseSearchArticleResult(html: String, dateRange: Int) {
         // These tokens are adequate for parsing the HTML from Google. First,
         // find a heading-3 element with an "r" class. Then find the next anchor
         // with the desired link. The last token indicates the end of the URL
@@ -160,11 +168,31 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
                 items.add(item)
             }
 
-            articleNoneResult.postValue(items)
+            when (dateRange) {
+                ArticleFragment.DATE_RANGE_NONE -> articleNoneResult.postValue(items)
+                ArticleFragment.DATE_RANGE_WEEK -> articleWeekResult.postValue(items)
+                ArticleFragment.DATE_RANGE_MONTH -> articleMonthResult.postValue(items)
+                ArticleFragment.DATE_RANGE_YEAR -> articleYearResult.postValue(items)
+                else -> {}
+            }
         } catch (e: MalformedURLException) {
-            throw IOException("Failed to parse Google links.")
+            e.printStackTrace()
+            //throw IOException("Failed to parse Google links.")
         } catch (e: IndexOutOfBoundsException) {
-            throw IOException("Failed to parse Google links.")
+            e.printStackTrace()
+            //throw IOException("Failed to parse Google links.")
         }
+    }
+
+    fun showUrlContent(articleItem: ArticleItem?) {
+        LogMessage.D(TAG, "show url: ${articleItem?.url}, title: ${articleItem?.title}")
+
+        // Open the browser to show url content
+        //val uri = Uri.parse(articleItem?.url.toString())
+        //val browserIntent = Intent(Intent.ACTION_VIEW, uri)
+        //activity?.startActivity(browserIntent)
+
+        // Use embedded webview to get much better user experience
+        showArticleContent.value = articleItem
     }
 }

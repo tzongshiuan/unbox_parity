@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,6 +16,7 @@ import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
+import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
 import com.hsuanparty.unbox_parity.view.ui.article.ArticleViewModel
 import com.hsuanparty.unbox_parity.view.ui.parity.ParityViewModel
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
@@ -68,6 +70,8 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     private var isFullScreen = false
 
     private var isSearchStart = false
+
+    private var isBackPress = false
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         searchPage.view?.visibility = View.GONE
@@ -150,7 +154,16 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
             return
         }
 
-        // TODO show message to ask user whether to leave App
+        // Show message to ask user whether to leave App
+        if (!isBackPress) {
+            isBackPress = true
+            Toast.makeText(this, getString(R.string.msg_ask_user_leave_app), Toast.LENGTH_LONG).show()
+            SimpleDelayTask.after(2000) {
+                isBackPress = false
+            }
+            return
+        }
+
         mPreferences.isFinishApp = true
         this.finish()
     }
@@ -170,7 +183,8 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
                     // Search article
                     articleViewModel.searchArticle(this)
 
-                    // TODO search parity
+                    // Search parity
+                    parityViewModel.searchParity(this)
                 }
 
                 SearchViewModel.SEARCH_FINISH -> {

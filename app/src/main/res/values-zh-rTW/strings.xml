@@ -25,6 +25,7 @@
     <string name="txt_parity_tab">比價</string>
     <string name="txt_setting_tab">設定</string>
     <string name="txt_need_search_first">請您先進行搜尋的動作</string>
+    <string name="msg_ask_user_leave_app">如果您想要離開app，請再點擊一次返回鍵</string>
 
     <!--SearchFragment-->
     <string name="txt_search_hint">搜尋商品</string>
@@ -34,4 +35,9 @@
     <string name="txt_retract_recommendation">收回推薦</string>
     <string name="txt_video_view_count">觀看數</string>
     <string name="txt_video_recommend_count">推薦數</string>
+
+    <!--ArticleFragment-->
+    <string name="txt_previous_page">上一頁</string>
+    <string name="txt_close_page">關閉頁面</string>
+    <string name="txt_next_page">下一頁</string>
 </resources>

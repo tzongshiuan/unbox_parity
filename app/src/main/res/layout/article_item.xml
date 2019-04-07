@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+                name="articleItem"
+                type="com.hsuanparty.unbox_parity.model.ArticleItem" />
+    </data>
+
+    <!-- CardView helps design a mini layout in the form of cards -->
+    <!-- Cards provide an easy way to contain a group of views while providing a consistent style for the container -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="10dp"
+        android:layout_margin="16dp">
+
+        <!-- RelativeLayout places views with respect to each other -->
+        <RelativeLayout
+            android:id="@+id/article_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp" >
+
+            <!-- TextView used to show title of the searched video -->
+            <TextView
+                android:id="@+id/video_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@{articleItem.title}"
+                android:textColor="@color/light_blue"
+                tools:text="Article Title"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+                android:textSize="18sp"
+                android:textStyle="normal|bold"
+                android:maxLines="2" />
+
+            <!-- TextView used to show short description of the searched video -->
+            <TextView
+                android:id="@+id/video_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/video_title"
+                android:text="@{articleItem.description}"
+                android:textColor="@color/black"
+                tools:text="Article Description"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+                android:textSize="12sp"
+                android:maxLines="4" />
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

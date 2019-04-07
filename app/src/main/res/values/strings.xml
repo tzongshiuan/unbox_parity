@@ -27,6 +27,7 @@
     <string name="txt_parity_tab">Parity</string>
     <string name="txt_setting_tab">Setting</string>
     <string name="txt_need_search_first">Please do search before seeing the results.</string>
+    <string name="msg_ask_user_leave_app">If you want to exit app, press back again.</string>
 
     <!--SearchFragment-->
     <string name="txt_search_hint">Search Product</string>
@@ -36,4 +37,9 @@
     <string name="txt_retract_recommendation">Retract Recommendation</string>
     <string name="txt_video_view_count">View Count</string>
     <string name="txt_video_recommend_count">Recommend Count</string>
+
+    <!--ArticleFragment-->
+    <string name="txt_previous_page">Previous Page</string>
+    <string name="txt_close_page">Close Page</string>
+    <string name="txt_next_page">Next Page</string>
 </resources>

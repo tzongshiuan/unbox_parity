@@ -60,13 +60,56 @@
                 app:ascv_items="@array/article_state_option"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="invisible"/>
+
+        <!--上一頁/下一頁/關閉 button-->
+        <LinearLayout
+                android:id="@+id/webControlLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:orientation="horizontal">
+
+            <Button
+                    android:id="@+id/previousBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_web_control_selector"
+                    android:text="@string/txt_previous_page"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"/>
+
+            <Button
+                    android:id="@+id/closeBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_web_control_selector"
+                    android:text="@string/txt_close_page"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"/>
+
+            <Button
+                    android:id="@+id/nextBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_web_control_selector"
+                    android:text="@string/txt_next_page"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"/>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/noneView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="10dp"
+                android:layout_marginBottom="60dp"
                 app:convertNoneDateRange="@{curDateRange}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -77,7 +120,7 @@
                 android:id="@+id/weekView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="10dp"
+                android:layout_marginBottom="60dp"
                 app:convertWeekDateRange="@{curDateRange}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +131,7 @@
                 android:id="@+id/monthView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="10dp"
+                android:layout_marginBottom="60dp"
                 app:convertMonthDateRange="@{curDateRange}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -99,12 +142,35 @@
                 android:id="@+id/yearView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="10dp"
+                android:layout_marginBottom="60dp"
                 app:convertYearDateRange="@{curDateRange}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/segmentView"
                 app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <WebView
+                android:id='@+id/webView'
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/webControlLayout"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.constraintlayout.widget.Group
+                android:id="@+id/articleGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="segmentView"/>
+
+        <androidx.constraintlayout.widget.Group
+                android:id="@+id/webGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="webControlLayout, webView"
+                android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -7,15 +7,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebChromeClient
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.databinding.ArticleFragmentBinding
 
 import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.ArticleItem
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
+import com.hsuanparty.unbox_parity.utils.MyWebViewClient
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import javax.inject.Inject
 
@@ -80,6 +84,8 @@ class ArticleFragment : Fragment(), Injectable{
 
     private lateinit var mBinding: ArticleFragmentBinding
 
+    private var curFilterStatus = DATE_RANGE_NONE
+
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
         super.onCreate(savedInstanceState)
@@ -114,12 +120,36 @@ class ArticleFragment : Fragment(), Injectable{
             }
         })
 
-        viewModel = ViewModelProviders.of(this).get(ArticleViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, factory).get(ArticleViewModel::class.java)
         viewModel.articleNoneResult.observe(this, Observer { list ->
-//            (mBinding.recyclerView.adapter as YoutubeAdapter).mVideoList = result
-//            (mBinding.recyclerView.adapter as YoutubeAdapter).selectIndex = -1
-//            mBinding.recyclerView.adapter?.notifyDataSetChanged()
+            (mBinding.noneView.adapter as ArticleAdapter).mArticleList = list
+            (mBinding.noneView.adapter as ArticleAdapter).selectIndex = -1
+            mBinding.noneView.adapter?.notifyDataSetChanged()
         })
+
+        viewModel.articleWeekResult.observe(this, Observer { list ->
+            (mBinding.weekView.adapter as ArticleAdapter).mArticleList = list
+            (mBinding.weekView.adapter as ArticleAdapter).selectIndex = -1
+            mBinding.weekView.adapter?.notifyDataSetChanged()
+        })
+
+        viewModel.articleMonthResult.observe(this, Observer { list ->
+            (mBinding.monthView.adapter as ArticleAdapter).mArticleList = list
+            (mBinding.monthView.adapter as ArticleAdapter).selectIndex = -1
+            mBinding.monthView.adapter?.notifyDataSetChanged()
+        })
+
+        viewModel.articleYearResult.observe(this, Observer { list ->
+            (mBinding.yearView.adapter as ArticleAdapter).mArticleList = list
+            (mBinding.yearView.adapter as ArticleAdapter).selectIndex = -1
+            mBinding.yearView.adapter?.notifyDataSetChanged()
+        })
+
+        viewModel.showArticleContent.observe(this, Observer { articleItem ->
+            showUrlContent(articleItem)
+        })
+
+        initAdapters()
     }
 
     override fun onResume() {
@@ -147,6 +177,9 @@ class ArticleFragment : Fragment(), Injectable{
     }
 
     private fun initUI() {
+        mBinding.webView.settings.javaScriptEnabled = true
+        mBinding.webView.webViewClient = MyWebViewClient()
+
         mBinding.segmentView.setOnSelectionChangedListener { identifier, value ->
             LogMessage.D(TAG, "identifier: $identifier, value: $value")
 
@@ -154,23 +187,108 @@ class ArticleFragment : Fragment(), Injectable{
 
             when (value) {
                 array[0] -> {
+                    curFilterStatus = DATE_RANGE_NONE
                     mBinding.curDateRange = DATE_RANGE_NONE
                 }
 
                 array[1] -> {
+                    curFilterStatus = DATE_RANGE_WEEK
                     mBinding.curDateRange = DATE_RANGE_WEEK
                 }
 
                 array[2] -> {
+                    curFilterStatus = DATE_RANGE_MONTH
                     mBinding.curDateRange = DATE_RANGE_MONTH
                 }
 
                 array[3] -> {
+                    curFilterStatus = DATE_RANGE_YEAR
                     mBinding.curDateRange = DATE_RANGE_YEAR
                 }
 
                 else -> {}
             }
+        }
+
+        mBinding.previousBtn.setOnClickListener {
+            if (mBinding.webView.canGoBack()) {
+                mBinding.webView.goBack()
+            }
+        }
+
+        mBinding.closeBtn.setOnClickListener {
+            changeToArticleUI()
+        }
+
+        mBinding.nextBtn.setOnClickListener {
+            if (mBinding.webView.canGoForward()) {
+                mBinding.webView.goForward()
+            }
+        }
+    }
+
+    private fun initAdapters() {
+        // None filter
+        val layoutManager = LinearLayoutManager(activity)
+        layoutManager.orientation = RecyclerView.VERTICAL
+        mBinding.noneView.layoutManager = layoutManager
+        val adapter = ArticleAdapter()
+        adapter.articleViewModel = viewModel
+        mBinding.noneView.adapter = adapter
+
+        // Week filter
+        val layoutManager2 = LinearLayoutManager(activity)
+        layoutManager.orientation = RecyclerView.VERTICAL
+        mBinding.weekView.layoutManager = layoutManager2
+        val adapter2 = ArticleAdapter()
+        adapter2.articleViewModel = viewModel
+        mBinding.weekView.adapter = adapter2
+
+        // Month filter
+        val layoutManager3 = LinearLayoutManager(activity)
+        layoutManager.orientation = RecyclerView.VERTICAL
+        mBinding.monthView.layoutManager = layoutManager3
+        val adapter3 = ArticleAdapter()
+        adapter3.articleViewModel = viewModel
+        mBinding.monthView.adapter = adapter3
+
+        // Year filter
+        val layoutManager4 = LinearLayoutManager(activity)
+        layoutManager.orientation = RecyclerView.VERTICAL
+        mBinding.yearView.layoutManager = layoutManager4
+        val adapter4 = ArticleAdapter()
+        adapter4.articleViewModel = viewModel
+        mBinding.yearView.adapter = adapter4
+    }
+
+    private fun showUrlContent(articleItem: ArticleItem) {
+        mBinding.webView.loadUrl(articleItem.url?.toString())
+        changeToWebUI()
+    }
+
+    private fun changeToArticleUI() {
+        mBinding.articleGroup.visibility = View.VISIBLE
+        mBinding.webGroup.visibility = View.GONE
+
+        when (curFilterStatus) {
+            DATE_RANGE_NONE -> mBinding.noneView.visibility = View.VISIBLE
+            DATE_RANGE_WEEK -> mBinding.weekView.visibility = View.VISIBLE
+            DATE_RANGE_MONTH -> mBinding.monthView.visibility = View.VISIBLE
+            DATE_RANGE_YEAR -> mBinding.yearView.visibility = View.VISIBLE
+            else -> {}
+        }
+    }
+
+    private fun changeToWebUI() {
+        mBinding.articleGroup.visibility = View.GONE
+        mBinding.webGroup.visibility = View.VISIBLE
+
+        when (curFilterStatus) {
+            DATE_RANGE_NONE -> mBinding.noneView.visibility = View.GONE
+            DATE_RANGE_WEEK -> mBinding.weekView.visibility = View.GONE
+            DATE_RANGE_MONTH -> mBinding.monthView.visibility = View.GONE
+            DATE_RANGE_YEAR -> mBinding.yearView.visibility = View.GONE
+            else -> {}
         }
     }
 }
