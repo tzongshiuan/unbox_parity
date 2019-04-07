@@ -45,13 +45,15 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
 
     val showArticleContent: MutableLiveData<ArticleItem> = MutableLiveData()
 
-    var activity: Activity? = null
     fun searchArticle(activity: Activity) {
-        this.activity = activity
-        searchWithDateRange(ArticleFragment.DATE_RANGE_NONE)
-        searchWithDateRange(ArticleFragment.DATE_RANGE_WEEK)
-        searchWithDateRange(ArticleFragment.DATE_RANGE_MONTH)
-        searchWithDateRange(ArticleFragment.DATE_RANGE_YEAR)
+        object : Thread() {
+            override fun run() {
+                searchWithDateRange(ArticleFragment.DATE_RANGE_NONE)
+                searchWithDateRange(ArticleFragment.DATE_RANGE_WEEK)
+                searchWithDateRange(ArticleFragment.DATE_RANGE_MONTH)
+                searchWithDateRange(ArticleFragment.DATE_RANGE_YEAR)
+            }
+        }
 
 //        object : Thread() {
 //            override fun run() {
@@ -75,32 +77,27 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
     }
 
     private fun searchWithDateRange(dateRange: Int) {
-        object : Thread() {
-            override fun run() {
+        var path = BASE_SEARCH_URL + "&q=${mPreferences.lastSearchKeyword}+開箱" + SEARCH_FILTER_EXCLUDE
+        when (dateRange) {
+            ArticleFragment.DATE_RANGE_WEEK -> path += SEARCH_FILTER_WEEK
+            ArticleFragment.DATE_RANGE_MONTH -> path += SEARCH_FILTER_MONTH
+            ArticleFragment.DATE_RANGE_YEAR -> path += SEARCH_FILTER_YEAR
+            else -> {}
+        }
+        LogMessage.D(TAG, "Article search url: $path")
 
-                var path = BASE_SEARCH_URL + "&q=${mPreferences.lastSearchKeyword}+開箱" + SEARCH_FILTER_EXCLUDE
-                when (dateRange) {
-                    ArticleFragment.DATE_RANGE_WEEK -> path += SEARCH_FILTER_WEEK
-                    ArticleFragment.DATE_RANGE_MONTH -> path += SEARCH_FILTER_MONTH
-                    ArticleFragment.DATE_RANGE_YEAR -> path += SEARCH_FILTER_YEAR
-                    else -> {}
-                }
-                LogMessage.D(TAG, "Article search url: $path")
+        val url = URL(path)
+        //val url = URL("https://www.findprice.com.tw/g/dyson")
+        val connection = url.openConnection()
 
-                val url = URL(path)
-                //val url = URL("https://www.findprice.com.tw/g/dyson")
-                val connection = url.openConnection()
+        val agent = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+        connection.setRequestProperty("User-Agent", agent)
+        val stream = connection.getInputStream()
+        val html = stream.bufferedReader().use(BufferedReader::readText)
 
-                val agent = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-                connection.setRequestProperty("User-Agent", agent)
-                val stream = connection.getInputStream()
-                val html = stream.bufferedReader().use(BufferedReader::readText)
+        //LogMessage.D(TAG, html)
 
-                //LogMessage.D(TAG, html)
-
-                parseSearchArticleResult(html, dateRange)
-            }
-        }.start()
+        parseSearchArticleResult(html, dateRange)
     }
 
     private fun parseSearchArticleResult(html: String, dateRange: Int) {

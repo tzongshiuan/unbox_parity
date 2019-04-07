@@ -39,6 +39,7 @@ import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector
+import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnectorV2
 import com.tsunghsuanparty.textanimlib.slide.SlideAnimation
 import org.json.JSONException
 import pub.devrel.easypermissions.EasyPermissions
@@ -441,7 +442,7 @@ class MainActivityFragment : Fragment(), Injectable, EasyPermissions.PermissionC
         activity?.runOnUiThread {
             object : Thread() {
                 override fun run() {
-                    val yc = YoutubeConnector(mCredential)
+                    val yc = YoutubeConnectorV2("")
 
                     //calling the YoutubeConnector's search method by entered keyword
                     //and saving the results in list of type VideoItem class

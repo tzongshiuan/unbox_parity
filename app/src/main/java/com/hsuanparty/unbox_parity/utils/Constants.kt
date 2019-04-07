@@ -10,5 +10,5 @@ object Constants {
 
     const val LOAD_DATA_TIME = 2000L
 
-    const val IS_SKIP_SEARCH = true
+    const val IS_SKIP_SEARCH = false
 }
