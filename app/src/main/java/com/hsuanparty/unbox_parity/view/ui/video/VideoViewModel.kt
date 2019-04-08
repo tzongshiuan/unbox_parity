@@ -2,15 +2,15 @@ package com.hsuanparty.unbox_parity.view.ui.video
 
 import android.app.Activity
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.model.MyPreferences
+import com.hsuanparty.unbox_parity.model.VideoItem
 import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
-import com.hsuanparty.unbox_parity.model.VideoItem
-import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector
+import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnectorV2
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -64,12 +64,12 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
             //implementing run method
             override fun run() {
                 //create our YoutubeConnector class's object with Activity context as argument
-                val yc = YoutubeConnector(mCredential)
+                val yc = YoutubeConnectorV2(mPreferences.lastSearchKeyword)
 
                 //calling the YoutubeConnector's search method by entered keyword
                 //and saving the results in list of type VideoItem class
                 if (!Constants.IS_SKIP_SEARCH) {
-                    videoSearchResult.postValue(yc.search(mPreferences.lastSearchKeyword + " 開箱"))
+                    videoSearchResult.postValue(yc.search())
                 } else {
                     val list: ArrayList<VideoItem> = ArrayList()
                     videoSearchResult.postValue(list)

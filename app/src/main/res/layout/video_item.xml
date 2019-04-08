@@ -34,9 +34,7 @@
             <ImageView
                 android:id="@+id/video_thumbnail"
                 android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
+                android:layout_height="140dp"
                 android:src="@mipmap/ic_launcher"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
@@ -57,6 +55,7 @@
                         android:id="@+id/videoViewCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
                         android:text="@string/txt_video_view_count"
                         android:textColor="@color/black"
                         android:textSize="18sp"/>
@@ -78,7 +77,8 @@
                         android:layout_marginTop="5dp"
                         android:text="@string/txt_video_recommend_count"
                         android:textColor="@color/black"
-                        android:textSize="18sp"/>
+                        android:textSize="18sp"
+                        android:visibility="gone"/>
 
                 <TextView
                         android:id="@+id/recommendNum"
@@ -88,7 +88,8 @@
                         app:convertRecommendNumber="@{videoItem.likeCount}"
                         tools:text="123456"
                         android:textColor="@color/blue"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp"
+                        android:visibility="gone"/>
             </LinearLayout>
 
             <!-- TextView used to show title of the searched video -->
@@ -128,7 +129,7 @@
                 tools:text="Video Description"
                 android:textAppearance="@style/TextAppearance.AppCompat"
                 android:textSize="12sp"
-                android:maxLines="2" />
+                android:maxLines="3" />
 
         </RelativeLayout>
 

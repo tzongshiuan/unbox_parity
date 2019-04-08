@@ -42,7 +42,6 @@ import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnectorV2
 import com.tsunghsuanparty.textanimlib.slide.SlideAnimation
 import org.json.JSONException
-import pub.devrel.easypermissions.EasyPermissions
 import java.io.IOException
 import javax.inject.Inject
 
@@ -52,7 +51,7 @@ import javax.inject.Inject
  * Created on: 2019/3/27
  * Description: A placeholder fragment containing a simple view.
  */
-class MainActivityFragment : Fragment(), Injectable, EasyPermissions.PermissionCallbacks {
+class MainActivityFragment : Fragment(), Injectable {
     companion object {
         private val TAG = MainActivityFragment::class.java.simpleName
 
@@ -448,13 +447,13 @@ class MainActivityFragment : Fragment(), Injectable, EasyPermissions.PermissionC
                     //and saving the results in list of type VideoItem class
                     if (!Constants.IS_SKIP_SEARCH) {
                         mPreferences.dayHotVideoList.clear()
-                        mPreferences.dayHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.DAILY_HOT_VIDEO) as ArrayList)
+                        mPreferences.dayHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.DAILY_HOT_VIDEO, "開箱") as ArrayList)
 
                         mPreferences.weekHotVideoList.clear()
-                        mPreferences.weekHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.WEEKLY_HOT_VIDEO) as ArrayList)
+                        mPreferences.weekHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.WEEKLY_HOT_VIDEO, "開箱") as ArrayList)
 
                         mPreferences.monthHotVideoList.clear()
-                        mPreferences.monthHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.MONTHLY_HOT_VIDEO) as ArrayList)
+                        mPreferences.monthHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.MONTHLY_HOT_VIDEO, "開箱") as ArrayList)
                     }
 
                     isSearchFinish = true
@@ -514,16 +513,16 @@ class MainActivityFragment : Fragment(), Injectable, EasyPermissions.PermissionC
      */
     private fun chooseAccount() {
         LogMessage.D(TAG, "chooseAccount()")
-        if (EasyPermissions.hasPermissions(context!!, Manifest.permission.GET_ACCOUNTS)) {
-            val account = GoogleSignIn.getLastSignedInAccount(context)
-            if (account != null) {
-                mCredential.selectedAccountName = account.email
-                checkResultsFromApi()
-            } else {
-                // Start a dialog from which the user can choose an account
-                startActivityForResult(mCredential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER)
-            }
-        }
+//        if (EasyPermissions.hasPermissions(context!!, Manifest.permission.GET_ACCOUNTS)) {
+//            val account = GoogleSignIn.getLastSignedInAccount(context)
+//            if (account != null) {
+//                mCredential.selectedAccountName = account.email
+//                checkResultsFromApi()
+//            } else {
+//                // Start a dialog from which the user can choose an account
+//                startActivityForResult(mCredential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER)
+//            }
+//        }
 //        else {
 //            // Request the GET_ACCOUNTS permission via a user dialog
 //            EasyPermissions.requestPermissions(
@@ -554,11 +553,5 @@ class MainActivityFragment : Fragment(), Injectable, EasyPermissions.PermissionC
                 startSearchFragment()
             }
         }
-    }
-
-    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>?) {
-    }
-
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>?) {
     }
 }

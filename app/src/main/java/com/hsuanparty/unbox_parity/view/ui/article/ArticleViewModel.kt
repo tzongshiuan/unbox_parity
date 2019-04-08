@@ -16,6 +16,9 @@ import javax.inject.Singleton
 import androidx.core.content.ContextCompat.startActivity
 import android.content.Intent
 import android.net.Uri
+import android.text.Html
+import android.util.Log
+import androidx.core.text.HtmlCompat
 
 
 @Singleton
@@ -24,12 +27,12 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
     companion object {
         private val TAG = ArticleViewModel::class.java.simpleName
 
-        private const val SEARCH_FILTER_WEEK   = "&tbs=qdr:W"
+        private const val SEARCH_FILTER_WEEK   = "&tbs=qdr:w"
         private const val SEARCH_FILTER_MONTH = "&tbs=qdr:m"
         private const val SEARCH_FILTER_YEAR  = "&tbs=qdr:y"
         private const val SEARCH_FILTER_EXCLUDE = "&as_eq=\"video\"+\"購物\""
 
-        private const val MAX_RESULT = 20
+        private const val MAX_RESULT = 30
         private const val BASE_SEARCH_URL = "https://www.google.com/search?tbas=0&source=lnt&num=$MAX_RESULT$SEARCH_FILTER_EXCLUDE"
 
         private const val URL_PREFIX = "/url?q="
@@ -46,6 +49,8 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
     val showArticleContent: MutableLiveData<ArticleItem> = MutableLiveData()
 
     fun searchArticle(activity: Activity) {
+        LogMessage.D(TAG, "searchArticle()")
+
         object : Thread() {
             override fun run() {
                 searchWithDateRange(ArticleFragment.DATE_RANGE_NONE)
@@ -53,7 +58,7 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
                 searchWithDateRange(ArticleFragment.DATE_RANGE_MONTH)
                 searchWithDateRange(ArticleFragment.DATE_RANGE_YEAR)
             }
-        }
+        }.start()
 
 //        object : Thread() {
 //            override fun run() {
@@ -122,16 +127,22 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
             // above.
             var index = 0
             while (-1 != html.indexOf(token1, index)) {
-                var item = ArticleItem()
+                val item = ArticleItem()
                 index = html.indexOf(token1, index)
 
                 // URL
                 val result = html.indexOf(token2, index)
                 val urlStart = result + token2.length
                 val urlEnd = html.indexOf(token3, urlStart)
-                val urlText = html.substring(urlStart + URL_PREFIX.length, urlEnd)
+                val urlText = html.substring(urlStart, urlEnd)
 
-                val link = URL(urlText)
+                // skip item not belongs to normal results
+                if (!urlText.startsWith(URL_PREFIX)) {
+                    index = urlEnd + token3.length
+                    continue
+                }
+
+                val link = URL(urlText.substring(URL_PREFIX.length))
                 item.url = link
                 LogMessage.D(TAG, "Url: ${link.toURI()}")
                 index = urlEnd + token3.length
@@ -140,10 +151,9 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
                 val result2 = html.indexOf(titleToken1, index)
                 val titleStart = result2 + titleToken1.length
                 val titleEnd = html.indexOf(titleToken2, titleStart)
-                val title = html.substring(titleStart, titleEnd)
-                                .replace("<b>", "")
-                                .replace("</b>", "")
-                item.title = title
+                val title = HtmlCompat.fromHtml(html.substring(titleStart, titleEnd), HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+                item.title = title.toString()
                 LogMessage.D(TAG, "Title: $title")
                 index = titleEnd + titleToken2.length
 
@@ -151,14 +161,9 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
                 val result3 = html.indexOf(descToken1, index)
                 val descStart = result3 + descToken1.length
                 val descEnd = html.indexOf(descToken2, descStart)
-                val description = html.substring(descStart, descEnd)
-                                .replace("<b>", "")
-                                .replace("</b>", "")
-                                .replace("<br>", "")
-                                .replace("&nbsp;", "")
-                                .replace("&amp;", "&")
-                                .replace("\n", "")
-                item.description = description
+                val description = HtmlCompat.fromHtml(html.substring(descStart, descEnd), HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+                item.description = description.toString()
                 LogMessage.D(TAG, "Description: $description")
                 index = descEnd + descToken2.length
 
