@@ -4,9 +4,11 @@ import android.app.Activity
 import android.text.Spanned
 import android.text.SpannedString
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel;
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
+import com.hsuanparty.unbox_parity.model.ParityItem
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import java.io.BufferedReader
 import java.net.URL
@@ -24,6 +26,8 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
     @Inject
     lateinit var mPreferences: MyPreferences
+
+    val parityResult: MutableLiveData<ArrayList<ParityItem>> = MutableLiveData()
 
     fun searchParity(activity: Activity) {
         object : Thread() {
@@ -43,8 +47,14 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
                 //LogMessage.D(TAG, html)
 
-                //parseSearchArticleResult(html)
+                parseSearchArticleResult(html)
             }
         }.start()
+    }
+
+    private fun parseSearchArticleResult(html: String) {
+        val items: ArrayList<ParityItem> = ArrayList()
+
+        parityResult.postValue(items)
     }
 }

@@ -68,6 +68,13 @@ class ParityFragment : Fragment(), Injectable{
         })
 
         viewModel = ViewModelProviders.of(this).get(ParityViewModel::class.java)
+        viewModel.parityResult.observe(this, Observer { list ->
+            if (list.size == 0) {
+                // Not found any result
+            } else {
+                // TODO Show result on the UI
+            }
+        })
     }
 
     override fun onResume() {

@@ -40,4 +40,7 @@
     <string name="txt_previous_page">上一頁</string>
     <string name="txt_close_page">關閉頁面</string>
     <string name="txt_next_page">下一頁</string>
+
+    <!--ParityFragment-->
+    <string name="txt_not_found_parity">無找到任何比價結果</string>
 </resources>
