@@ -20,7 +20,7 @@
 
         <!-- RelativeLayout places views with respect to each other -->
         <RelativeLayout
-                android:id="@+id/video_view"
+                android:id="@+id/parity_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
@@ -37,21 +37,23 @@
                     android:layout_height="100dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentStart="true"
-                    android:layout_marginStart="30dp"
+                    android:layout_marginStart="10dp"
+                    android:padding="3dp"
+                    android:background="@color/dim_gray"
                     card_view:srcCompat="@color/colorPrimary" />
 
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="60dp"
+                    android:layout_marginEnd="20dp"
                     android:orientation="vertical">
 
                 <TextView
                         android:id="@+id/priceText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
+                        android:layout_marginTop="10dp"
                         app:convertParityPrice="@{parityItem.price}"
                         tools:text="@string/txt_video_view_count"
                         android:textColor="@color/black"
@@ -62,7 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        tools:text="前往賣場"
+                        android:text="前往賣場"
                         android:textColor="@color/blue"
                         android:textSize="16sp"/>
             </LinearLayout>

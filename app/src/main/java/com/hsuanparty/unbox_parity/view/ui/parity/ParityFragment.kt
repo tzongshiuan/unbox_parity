@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.hsuanparty.unbox_parity.databinding.ParityFragmentBinding
 
 import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
@@ -67,12 +69,18 @@ class ParityFragment : Fragment(), Injectable{
             }
         })
 
-        viewModel = ViewModelProviders.of(this).get(ParityViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, factory).get(ParityViewModel::class.java)
         viewModel.parityResult.observe(this, Observer { list ->
             if (list.size == 0) {
                 // Not found any result
+                mBinding.noResultGroup.visibility = View.VISIBLE
             } else {
-                // TODO Show result on the UI
+                // Show result on the UI
+                mBinding.noResultGroup.visibility = View.GONE
+                (mBinding.parityView.adapter as ParityAdapter).mParityList = list
+                (mBinding.parityView.adapter as ParityAdapter).selectIndex = -1
+                (mBinding.parityView.adapter as ParityAdapter).parityViewModel = viewModel
+                mBinding.parityView.adapter?.notifyDataSetChanged()
             }
         })
     }
@@ -102,6 +110,10 @@ class ParityFragment : Fragment(), Injectable{
     }
 
     private fun initUI() {
-
+        val layoutManager = LinearLayoutManager(activity)
+        layoutManager.orientation = RecyclerView.VERTICAL
+        mBinding.parityView.layoutManager = layoutManager
+        val adapter = ParityAdapter()
+        mBinding.parityView.adapter = adapter
     }
 }

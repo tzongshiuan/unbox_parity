@@ -1,6 +1,9 @@
 package com.hsuanparty.unbox_parity.view.ui.parity
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.Spanned
 import android.text.SpannedString
 import androidx.core.text.HtmlCompat
@@ -32,7 +35,10 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
     val parityResult: MutableLiveData<ArrayList<ParityItem>> = MutableLiveData()
 
+    var mActivity: Activity? = null
+
     fun searchParity(activity: Activity) {
+        mActivity = activity
         object : Thread() {
             override fun run() {
 
@@ -139,5 +145,13 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
             e.printStackTrace()
             //throw IOException("Failed to parse Google links.")
         }
+    }
+
+    fun showPlatform(parityItem: ParityItem?) {
+        LogMessage.D(TAG, "Uri: ${parityItem?.url.toString()}")
+
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(parityItem?.url.toString())
+        mActivity?.startActivity(intent)
     }
 }
