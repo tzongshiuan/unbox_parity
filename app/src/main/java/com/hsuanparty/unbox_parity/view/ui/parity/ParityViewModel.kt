@@ -1,8 +1,12 @@
 package com.hsuanparty.unbox_parity.view.ui.parity
 
 import android.app.Activity
+import android.text.Spanned
+import android.text.SpannedString
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModel;
 import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import java.io.BufferedReader
 import java.net.URL
@@ -18,17 +22,14 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
         private const val BASE_SEARCH_URL = "https://www.findprice.com.tw/g/"
     }
 
+    @Inject
+    lateinit var mPreferences: MyPreferences
+
     fun searchParity(activity: Activity) {
         object : Thread() {
             override fun run() {
 
-                var path = BASE_SEARCH_URL
-//                when (dateRange) {
-//                    ArticleFragment.DATE_RANGE_WEEK -> path += SEARCH_FILTER_WEEK
-//                    ArticleFragment.DATE_RANGE_MONTH -> path += SEARCH_FILTER_MONTH
-//                    ArticleFragment.DATE_RANGE_YEAR -> path += SEARCH_FILTER_YEAR
-//                    else -> {}
-//                }
+                val path = BASE_SEARCH_URL + mPreferences.lastSearchKeyword.replace(" ", "%20")
                 LogMessage.D(TAG, "Parity search url: $path")
 
                 val url = URL(path)

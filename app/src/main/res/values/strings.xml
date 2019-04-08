@@ -1,5 +1,5 @@
 <resources>
-    <string name="appName">unbox_parity</string>
+    <string name="appName">Unbox Parity</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_unbox_parity" translatable="false">UnboxParityActivity</string>
 
