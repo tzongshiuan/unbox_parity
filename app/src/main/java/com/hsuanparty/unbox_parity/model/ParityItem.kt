@@ -1,5 +1,7 @@
 package com.hsuanparty.unbox_parity.model
 
+import java.net.URL
+
 /**
  * Author: Tsung Hsuan, Lai
  * Created on: 2019/4/1
@@ -9,7 +11,7 @@ class ParityItem {
 
     //stores id of a video
     //getter and setter methods for id
-    var id: String? = null
+    var url: URL? = null
 
     //stores title of the video
     //getter and setter methods for video Title
@@ -17,13 +19,9 @@ class ParityItem {
 
     //stores the description of video
     //getter and setter methods for video description
-    var description: String? = null
+    var price = 0
 
     //stores the url of thumbnail of video
     //getter and setter methods for thumbnail url
-    var thumbnailURL: String? = null
-
-    var viewCount = 0
-
-    var likeCount = 0
+    var thumbnailURL: URL? = null
 }
