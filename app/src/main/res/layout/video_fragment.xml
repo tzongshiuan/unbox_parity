@@ -4,6 +4,9 @@
         xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+                name="curOrderStatus"
+                type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,18 +55,54 @@
                 android:layout_height="wrap_content"
                 app:constraint_referenced_ids="noDataImage, noDataText"/>
 
+        <com.hsuanparty.unbox_parity.view.customized.AndroidSegmentedControlView
+                android:id="@+id/segmentView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="8dp"
+                app:ascv_defaultSelection="0"
+                app:ascv_unselectedTextColor="@color/navy"
+                app:ascv_selectedTextColor="@color/white"
+                app:ascv_selectedColor="@color/navy"
+                app:ascv_unselectedColor="@color/white"
+                app:ascv_equalWidth="true"
+                app:ascv_stretch="true"
+                app:ascv_items="@array/video_order_option"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/youtubeView"
+                android:visibility="gone"/>
+
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="60dp"
+                app:convertVideoRelative="@{curOrderStatus}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/youtubeView"
-                app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintTop_toBottomOf="@+id/segmentView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintVertical_bias="0.9"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView2"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="60dp"
+                app:convertVideoViewCount="@{curOrderStatus}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/segmentView"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintVertical_bias="0.9"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

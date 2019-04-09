@@ -23,6 +23,9 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
 
         const val ENTER_FULL_SCREEN = 0
         const val EXIT_FULL_SCREEN = 1
+
+        const val ORDER_RELATIVE = 0
+        const val ORDER_VIEW_COUNT = 1
     }
 
     @Inject
@@ -39,6 +42,7 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
     val isPerformExitFullScreen: MutableLiveData<Boolean> = MutableLiveData()
 
     val videoSearchResult: MutableLiveData<List<VideoItem>> = MutableLiveData()
+    val videoSearchCountResult: MutableLiveData<List<VideoItem>> = MutableLiveData()
 
     val searchVideoFinished: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -70,10 +74,13 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
                 //calling the YoutubeConnector's search method by entered keyword
                 //and saving the results in list of type VideoItem class
                 if (!Constants.IS_SKIP_SEARCH) {
-                    videoSearchResult.postValue(yc.search())
+                    videoSearchResult.postValue(yc.search(true))
+                    videoSearchCountResult.postValue(yc.search(false))
                 } else {
                     val list: ArrayList<VideoItem> = ArrayList()
                     videoSearchResult.postValue(list)
+                    val list2: ArrayList<VideoItem> = ArrayList()
+                    videoSearchCountResult.postValue(list2)
                 }
             }
             //starting the thread
@@ -91,6 +98,7 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
         screenStatusLiveData.removeObservers(fragment)
         isPerformExitFullScreen.removeObservers(fragment)
         videoSearchResult.removeObservers(fragment)
+        videoSearchCountResult.removeObservers(fragment)
         searchVideoFinished.removeObservers(fragment)
         curVideoItem.removeObservers(fragment)
     }

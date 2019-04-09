@@ -19,6 +19,11 @@
         <item>月排行</item>
     </string-array>
 
+    <string-array name="video_order_option">
+        <item>關聯度</item>
+        <item>觀看數</item>
+    </string-array>
+
     <string-array name="article_state_option">
         <item>無限制</item>
         <item>最近一週</item>

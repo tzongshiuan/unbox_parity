@@ -27,7 +27,9 @@ class YoutubeConnectorV2(val keyWord: String) {
 
         private const val BASE_SEARCH_URL = "https://www.youtube.com/results?"
 
-        private const val SEARCH_FILTER_NONE  = "&sp=EgIQAQ%253D%253D"
+        private const val SEARCH_FILTER_NONE  = "&sp=CAASAhAB"
+        private const val SEARCH_FILTER_NONE_COUNT = "&sp=CAMSAhAB"
+
         private const val SEARCH_FILTER_DAY   = "&sp=CAMSBAgCEAE%253D"
         private const val SEARCH_FILTER_WEEK  = "&sp=CAMSBAgDEAE%253D"
         private const val SEARCH_FILTER_MONTH = "&sp=CAMSBAgEEAE%253D"
@@ -35,9 +37,14 @@ class YoutubeConnectorV2(val keyWord: String) {
 
     var mCredential: GoogleAccountCredential? = null
 
-    fun search(): List<VideoItem>? {
+    fun search(isRelative: Boolean): List<VideoItem>? {
         val keyWord = this.keyWord.replace(" ", "+")
-        return searchHotVideo(YoutubeConnector.NONE_HOT_VIDEO, "$keyWord+開箱")
+
+        if (isRelative) {
+            return searchHotVideo(YoutubeConnector.NONE_HOT_VIDEO, "$keyWord+開箱")
+        } else {
+            return searchHotVideo(YoutubeConnector.NONT_HOT_VIDEO_COUNT, "$keyWord+開箱")
+        }
     }
 
     private fun getPreviousDay(): DateTime {
@@ -63,6 +70,7 @@ class YoutubeConnectorV2(val keyWord: String) {
         var path = "${BASE_SEARCH_URL}search_query=$keyWord"
         when (dateRange) {
             YoutubeConnector.NONE_HOT_VIDEO -> path += SEARCH_FILTER_NONE
+            YoutubeConnector.NONT_HOT_VIDEO_COUNT -> path += SEARCH_FILTER_NONE_COUNT
             YoutubeConnector.DAILY_HOT_VIDEO -> path += SEARCH_FILTER_DAY
             YoutubeConnector.WEEKLY_HOT_VIDEO -> path += SEARCH_FILTER_WEEK
             YoutubeConnector.MONTHLY_HOT_VIDEO -> path += SEARCH_FILTER_MONTH
