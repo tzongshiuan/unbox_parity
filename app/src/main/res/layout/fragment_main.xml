@@ -9,21 +9,21 @@
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@mipmap/home_background"
+            android:background="@drawable/home_background"
             tools:context=".view.ui.MainActivityFragment">
 
         <ImageView
                 android:id="@+id/appTitle"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="200dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:scaleType="fitCenter"
-                android:src="@mipmap/ic_app_title"
+                android:src="@mipmap/ic_open_box"
                 android:contentDescription="TODO"
-                app:layout_constraintVertical_bias="0.220" />
+                app:layout_constraintVertical_bias="0.200" />
 
         <ImageView
                 android:id="@+id/appSubtitle"
@@ -33,7 +33,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:scaleType="fitCenter"
-                android:src="@mipmap/ic_app_subtitle"
+                android:src="@mipmap/ic_app_title"
                 android:contentDescription="TODO"/>
 
         <TextView
@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
                 android:textSize="16sp"
-                app:isDarkTheme="false"
+                app:isDarkTheme="true"
                 android:layout_marginStart="60dp"
                 android:layout_marginEnd="60dp"
                 app:layout_constraintStart_toStartOf="parent"

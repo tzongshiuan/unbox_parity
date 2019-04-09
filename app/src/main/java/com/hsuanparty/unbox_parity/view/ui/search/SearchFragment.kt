@@ -236,7 +236,7 @@ class SearchFragment : Fragment(), Injectable {
         }
 
         // TODO for test convenience
-        mBinding.searchEditText.setText("dyson")
+        //mBinding.searchEditText.setText("dyson")
     }
 
     private fun hideKeyboard() {
