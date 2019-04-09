@@ -7,9 +7,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.core.content.ContextCompat
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.databinding.ParityFragmentBinding
 
 import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
@@ -23,6 +27,42 @@ class ParityFragment : Fragment(), Injectable{
 
     companion object {
         private val TAG = ParityFragment::class.java.simpleName
+
+        @JvmStatic
+        @BindingAdapter("convertRelativeOrder")
+        fun convertRelativeOrder(view: Button, curOrderStatus: Int) {
+            if (curOrderStatus == ParityViewModel.ORDER_RELATIVE) {
+                view.setBackgroundResource(R.drawable.btn_parity_order_pressed)
+                view.setTextColor(ContextCompat.getColor(view.context, R.color.white))
+            } else {
+                view.setBackgroundResource(R.drawable.btn_parity_order_selector)
+                view.setTextColor(ContextCompat.getColor(view.context, R.color.color_parity_order_btn_selector))
+            }
+        }
+
+        @JvmStatic
+        @BindingAdapter("convertLow2HighOrder")
+        fun convertLow2HighOrder(view: Button, curOrderStatus: Int) {
+            if (curOrderStatus == ParityViewModel.ORDER_LOW_TO_HIGH) {
+                view.setBackgroundResource(R.drawable.btn_parity_order_pressed)
+                view.setTextColor(ContextCompat.getColor(view.context, R.color.white))
+            } else {
+                view.setBackgroundResource(R.drawable.btn_parity_order_selector)
+                view.setTextColor(ContextCompat.getColor(view.context, R.color.color_parity_order_btn_selector))
+            }
+        }
+
+        @JvmStatic
+        @BindingAdapter("convertHighToLowOrder")
+        fun convertHighToLowOrder(view: Button, curOrderStatus: Int) {
+            if (curOrderStatus == ParityViewModel.ORDER_HIGH_TO_LOW) {
+                view.setBackgroundResource(R.drawable.btn_parity_order_pressed)
+                view.setTextColor(ContextCompat.getColor(view.context, R.color.white))
+            } else {
+                view.setBackgroundResource(R.drawable.btn_parity_order_selector)
+                view.setTextColor(ContextCompat.getColor(view.context, R.color.color_parity_order_btn_selector))
+            }
+        }
     }
 
     @Inject
@@ -74,15 +114,20 @@ class ParityFragment : Fragment(), Injectable{
             if (list.size == 0) {
                 // Not found any result
                 mBinding.noResultGroup.visibility = View.VISIBLE
+                mBinding.parityGroup.visibility = View.GONE
             } else {
                 // Show result on the UI
                 mBinding.noResultGroup.visibility = View.GONE
+                mBinding.parityGroup.visibility = View.VISIBLE
                 (mBinding.parityView.adapter as ParityAdapter).mParityList = list
                 (mBinding.parityView.adapter as ParityAdapter).selectIndex = -1
                 (mBinding.parityView.adapter as ParityAdapter).parityViewModel = viewModel
                 mBinding.parityView.adapter?.notifyDataSetChanged()
             }
         })
+
+        // init parity order status
+        mBinding.curOrderStatus = viewModel.curOrderStatus
     }
 
     override fun onResume() {
@@ -115,5 +160,23 @@ class ParityFragment : Fragment(), Injectable{
         mBinding.parityView.layoutManager = layoutManager
         val adapter = ParityAdapter()
         mBinding.parityView.adapter = adapter
+
+        mBinding.relativeBtn.setOnClickListener {
+            mBinding.curOrderStatus = ParityViewModel.ORDER_RELATIVE
+            viewModel.curOrderStatus = ParityViewModel.ORDER_RELATIVE
+            viewModel.searchParity()
+        }
+
+        mBinding.low2highBtn.setOnClickListener {
+            mBinding.curOrderStatus = ParityViewModel.ORDER_LOW_TO_HIGH
+            viewModel.curOrderStatus = ParityViewModel.ORDER_LOW_TO_HIGH
+            viewModel.searchParity()
+        }
+
+        mBinding.high2lowBtn.setOnClickListener {
+            mBinding.curOrderStatus = ParityViewModel.ORDER_HIGH_TO_LOW
+            viewModel.curOrderStatus = ParityViewModel.ORDER_HIGH_TO_LOW
+            viewModel.searchParity()
+        }
     }
 }

@@ -28,6 +28,11 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
         private val TAG = ParityViewModel::class.java.simpleName
 
         private const val BASE_SEARCH_URL = "https://ezprice.com.tw/s/"
+
+        // parity order
+        const val ORDER_RELATIVE = 0
+        const val ORDER_LOW_TO_HIGH = 1
+        const val ORDER_HIGH_TO_LOW = 2
     }
 
     @Inject
@@ -37,12 +42,26 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
     var mActivity: Activity? = null
 
+    var curOrderStatus = ORDER_RELATIVE
+
+    fun searchParity() {
+        if (mActivity != null) {
+            searchParity(mActivity!!)
+        }
+    }
+
     fun searchParity(activity: Activity) {
         mActivity = activity
         object : Thread() {
             override fun run() {
 
-                val path = BASE_SEARCH_URL + mPreferences.lastSearchKeyword.replace(" ", "%20")
+                var path = BASE_SEARCH_URL + mPreferences.lastSearchKeyword.replace(" ", "%20")
+                when (curOrderStatus) {
+                    ORDER_RELATIVE -> path += "/?"
+                    ORDER_LOW_TO_HIGH -> path += "/?st=1"
+                    ORDER_HIGH_TO_LOW -> path += "/?st=2"
+                    else -> {}
+                }
                 LogMessage.D(TAG, "Parity search url: $path")
 
                 val url = URL(path)

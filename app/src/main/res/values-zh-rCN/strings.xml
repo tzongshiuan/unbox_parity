@@ -43,4 +43,8 @@
 
     <!--ParityFragment-->
     <string name="txt_not_found_parity">無找到任何比價結果</string>
+    <string name="txt_go_platform">前往賣場</string>
+    <string name="txt_relative_degree">相關度</string>
+    <string name="txt_price_low_to_high">$低至高</string>
+    <string name="txt_price_high_to_low">$高至低</string>
 </resources>

@@ -45,4 +45,8 @@
 
     <!--ParityFragment-->
     <string name="txt_not_found_parity">Not found any parity results</string>
+    <string name="txt_go_platform">Go Platform</string>
+    <string name="txt_relative_degree">Relative</string>
+    <string name="txt_price_low_to_high">$Low to High</string>
+    <string name="txt_price_high_to_low">$High to Low</string>
 </resources>
