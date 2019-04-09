@@ -124,6 +124,8 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     override fun onResume() {
         LogMessage.D(TAG, "onResume()")
         super.onResume()
+
+        mPreferences.readPreferences()
     }
 
     override fun onPause() {
@@ -134,6 +136,8 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     override fun onStop() {
         LogMessage.D(TAG, "onStop()")
         super.onStop()
+
+        mPreferences.savePreferences()
     }
 
     override fun onDestroy() {

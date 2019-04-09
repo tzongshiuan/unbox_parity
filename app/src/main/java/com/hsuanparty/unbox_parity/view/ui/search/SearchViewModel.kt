@@ -6,8 +6,11 @@ import androidx.lifecycle.ViewModel;
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.FirebaseDbManager
 import com.hsuanparty.unbox_parity.model.MyPreferences
+import com.hsuanparty.unbox_parity.model.RecentKeywordItem
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,6 +41,15 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
             return
         }
 
+        val recentItem = RecentKeywordItem()
+        recentItem.keyword = str
+        recentItem.dateTime = System.currentTimeMillis()
+        mPreferences.recentKeywordList.add(recentItem)
+
+        doSearch(str)
+    }
+
+    fun doSearch(str: String) {
         LogMessage.D(TAG, "start search with string: $str")
         mPreferences.lastSearchKeyword = str
 

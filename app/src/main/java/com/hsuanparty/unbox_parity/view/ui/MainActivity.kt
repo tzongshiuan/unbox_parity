@@ -125,8 +125,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
             mPreferences.isFinishApp = false
             this.finish()
         }
-
-        mPreferences.readPreferences()
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -142,8 +140,6 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
     override fun onStop() {
         LogMessage.D(TAG, "onStop()")
         super.onStop()
-
-        mPreferences.savePreferences()
     }
 
     override fun onDestroy() {

@@ -3,6 +3,7 @@ package com.hsuanparty.unbox_parity.model
 
 interface PreferencesHelper {
     var developer: String
+    var recentKeywordList: ArrayList<RecentKeywordItem>
 
     var authStatus: Int
     var isFinishApp: Boolean
