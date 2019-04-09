@@ -118,8 +118,7 @@ class AppModule(private val application: Application) {
     @Singleton
     fun provideGoogleSignInOptions(application: Application): GoogleSignInOptions {
         return GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("576027263638-pp1r05g8drjdoo3d4nlrdjh715f9t0ej.apps.googleusercontent.com")
-                //.requestIdToken("1014829811389-34sg1at4j0b6c9iuc1b31an5l46i76to.apps.googleusercontent.com")
+                .requestIdToken("313077683472-kh78ota6sndb9ma926jbn1un3s35ju42.apps.googleusercontent.com")
                 .requestEmail()
                 .build()
     }

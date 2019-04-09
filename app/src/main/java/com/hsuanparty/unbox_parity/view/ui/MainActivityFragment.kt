@@ -100,7 +100,6 @@ class MainActivityFragment : Fragment(), Injectable {
 
         mBinding = FragmentMainBinding.inflate(inflater, container, false)
         initUI()
-
         initSetting()
 
         return mBinding.root
@@ -109,6 +108,11 @@ class MainActivityFragment : Fragment(), Injectable {
     override fun onResume() {
         LogMessage.D(TAG, "onResume()")
         super.onResume()
+
+        if (mPreferences.isLogout) {
+            mPreferences.isLogout = false
+            enableLoginUI()
+        }
     }
 
     override fun onPause() {
@@ -170,6 +174,7 @@ class MainActivityFragment : Fragment(), Injectable {
                     firebaseAuthWithGoogle(account)
                 }
             } else {
+                Toast.makeText(this.context, R.string.txt_login_failed, Toast.LENGTH_LONG).show()
                 LogMessage.D(TAG, "Google sign in failed")
             }
             return
@@ -185,10 +190,6 @@ class MainActivityFragment : Fragment(), Injectable {
         initFacebookAuth()
         initAnonymousAuth()
 
-        mBinding.loadText.visibility = View.GONE
-        mBinding.googleLoginButton.isEnabled = true
-        mBinding.fbLoginButton.isEnabled = true
-        mBinding.anonymousLoginBtn.isEnabled = true
         val slideAnimation = SlideAnimation()
         slideAnimation.initSettings(ContextCompat.getColor(context!!, R.color.white)
             , ContextCompat.getColor(context!!, R.color.orange)
@@ -275,6 +276,7 @@ class MainActivityFragment : Fragment(), Injectable {
                                 LogMessage.D(TAG, "user name = $user")
                                 initData(AuthStatus.AUTH_FACEBOOK)
                             } else {
+                                Toast.makeText(it, R.string.txt_login_failed, Toast.LENGTH_LONG).show()
                                 LogMessage.D(TAG, "Log in with facebook account failed")
                             }
                         }
@@ -360,7 +362,15 @@ class MainActivityFragment : Fragment(), Injectable {
         }
     }
 
+    private fun enableLoginUI() {
+        mBinding.loadText.visibility = View.GONE
+        mBinding.googleLoginButton.isEnabled = true
+        mBinding.fbLoginButton.isEnabled = true
+        mBinding.anonymousLoginBtn.isEnabled = true
+    }
+
     private fun initSetting() {
+        enableLoginUI()
         checkUserHadLogin()
     }
 

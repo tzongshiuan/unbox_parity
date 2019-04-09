@@ -73,6 +73,8 @@ class SettingFragment : Fragment(), Injectable{
     }
 
     private fun initUI() {
-
+        mBinding.logoutBtn.setOnClickListener {
+            viewModel.logout(activity)
+        }
     }
 }

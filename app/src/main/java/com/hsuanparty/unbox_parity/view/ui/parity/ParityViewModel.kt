@@ -7,6 +7,7 @@ import android.net.Uri
 import android.text.Spanned
 import android.text.SpannedString
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel;
 import com.hsuanparty.unbox_parity.di.Injectable
@@ -43,6 +44,10 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
     var mActivity: Activity? = null
 
     var curOrderStatus = ORDER_RELATIVE
+
+    fun removeObservers(fragment: Fragment) {
+        parityResult.removeObservers(fragment)
+    }
 
     fun searchParity() {
         if (mActivity != null) {

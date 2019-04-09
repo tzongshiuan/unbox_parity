@@ -170,6 +170,8 @@ class ArticleFragment : Fragment(), Injectable{
     override fun onDestroy() {
         LogMessage.D(TAG, "onDestroy()")
         super.onDestroy()
+
+        viewModel.removeObservers(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

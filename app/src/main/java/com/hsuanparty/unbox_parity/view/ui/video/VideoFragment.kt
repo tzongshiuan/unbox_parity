@@ -156,6 +156,8 @@ class VideoFragment : Fragment(), Injectable{
         mPreferences.curVideoItem = null
         player = null
         ((mBinding.recyclerView.adapter as YoutubeAdapter).mVideoList as ArrayList<*>).clear()
+
+        viewModel.removeObservers(this)
     }
 
 //    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

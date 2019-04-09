@@ -96,6 +96,7 @@ class SearchFragment : Fragment(), Injectable {
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        LogMessage.D(TAG, "onActivityCreated()")
         super.onActivityCreated(savedInstanceState)
 
         videoViewModel = ViewModelProviders.of(this, factory).get(VideoViewModel::class.java)
@@ -150,6 +151,8 @@ class SearchFragment : Fragment(), Injectable {
     override fun onDestroy() {
         LogMessage.D(TAG, "onDestroy()")
         super.onDestroy()
+
+        viewModel.removeObservers(this)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

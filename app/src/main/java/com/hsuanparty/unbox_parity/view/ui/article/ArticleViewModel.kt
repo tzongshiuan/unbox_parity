@@ -19,6 +19,7 @@ import android.net.Uri
 import android.text.Html
 import android.util.Log
 import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
 
 
 @Singleton
@@ -47,6 +48,14 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
     val articleYearResult: MutableLiveData<ArrayList<ArticleItem>> = MutableLiveData()
 
     val showArticleContent: MutableLiveData<ArticleItem> = MutableLiveData()
+
+    fun removeObservers(fragment: Fragment) {
+        articleNoneResult.removeObservers(fragment)
+        articleWeekResult.removeObservers(fragment)
+        articleMonthResult.removeObservers(fragment)
+        articleYearResult.removeObservers(fragment)
+        showArticleContent.removeObservers(fragment)
+    }
 
     fun searchArticle(activity: Activity) {
         LogMessage.D(TAG, "searchArticle()")

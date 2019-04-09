@@ -19,6 +19,7 @@
     <string name="txt_load_data">Load Data…</string>
     <string name="txt_login_anonymous">Log in Anonymously</string>
     <string name="msg_disallow_youtube_permission">Reject youtube permission, app will close</string>
+    <string name="txt_login_failed">User login failed</string>
 
     <!--UnboxParityActivity-->
     <string name="txt_search_tab">Search</string>

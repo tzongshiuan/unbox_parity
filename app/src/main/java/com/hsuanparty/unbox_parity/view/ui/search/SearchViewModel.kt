@@ -1,5 +1,6 @@
 package com.hsuanparty.unbox_parity.view.ui.search
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel;
 import com.hsuanparty.unbox_parity.di.Injectable
@@ -42,5 +43,10 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
 
         isWaitingLiveData.value = true
         isSearchFinish.value = SEARCH_START
+    }
+
+    fun removeObservers(fragment: Fragment) {
+        isWaitingLiveData.removeObservers(fragment)
+        isSearchFinish.removeObservers(fragment)
     }
 }

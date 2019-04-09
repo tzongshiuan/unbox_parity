@@ -1,6 +1,7 @@
 package com.hsuanparty.unbox_parity.view.ui.video
 
 import android.app.Activity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
@@ -84,5 +85,13 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
 
         mPreferences.curVideoItem = item
         curVideoItem.value = item
+    }
+
+    fun removeObservers(fragment: Fragment) {
+        screenStatusLiveData.removeObservers(fragment)
+        isPerformExitFullScreen.removeObservers(fragment)
+        videoSearchResult.removeObservers(fragment)
+        searchVideoFinished.removeObservers(fragment)
+        curVideoItem.removeObservers(fragment)
     }
 }

@@ -17,6 +17,7 @@
     <string name="txt_load_data">資料讀取中…</string>
     <string name="txt_login_anonymous">匿名登入</string>
     <string name="msg_disallow_youtube_permission">拒絕youtube權限，app將關閉</string>
+    <string name="txt_login_failed">使用者登入失敗</string>
 
     <!--UnboxParityActivity-->
     <string name="txt_search_tab">搜尋</string>

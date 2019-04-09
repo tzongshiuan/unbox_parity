@@ -23,6 +23,7 @@ class MyPreferences @Inject constructor(val context: Context) : PreferencesHelpe
     // no need to save into sharedPreferences
     override var authStatus = AuthStatus.AUTH_NONE
     override var isFinishApp = false
+    override var isLogout = false
     override var lastSearchKeyword = ""
     override var curVideoItem: VideoItem? = null
     override val dayHotVideoList: ArrayList<VideoItem> = ArrayList()
