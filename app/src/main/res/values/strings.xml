@@ -49,4 +49,9 @@
     <string name="txt_relative_degree">Relative</string>
     <string name="txt_price_low_to_high">$Low to High</string>
     <string name="txt_price_high_to_low">$High to Low</string>
+
+    <!--SettingFragment-->
+    <string name="txt_app_instruction">APP Instruction</string>
+    <string name="txt_user_logout">Logout</string>
+    <string name="txt_recent_search_keyword">Recent search keywords:</string>
 </resources>

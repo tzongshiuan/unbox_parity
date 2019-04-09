@@ -10,10 +10,88 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:showIn="@layout/activity_main"
+            android:background="@color/light_gray"
             tools:context=".view.ui.setting.SettingFragment">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="Setting Fragment" tools:ignore="MissingConstraints"/>
+            <RelativeLayout
+                    android:id="@+id/profileLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintDimensionRatio="w,2:3"
+                    android:background="@drawable/profile_background">
+
+                <com.mikhaellopez.circularimageview.CircularImageView
+                        android:id="@+id/userImage"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="28dp"
+                        android:layout_centerHorizontal="true"
+                        app:civ_border_width="3dp"
+                        android:src="@mipmap/ic_anonymous"/>
+
+                <TextView
+                        android:id="@+id/userName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_below="@+id/userImage"
+                        android:layout_centerHorizontal="true"
+                        android:textSize="22sp"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        tools:text="User Name"/>
+
+            </RelativeLayout>
+
+            <TextView
+                    android:id="@+id/text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/txt_recent_search_keyword"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toBottomOf="@+id/profileLayout"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recentView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_margin="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/text1"
+                    app:layout_constraintBottom_toTopOf="@+id/manualBtn"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+            <Button
+                    android:id="@+id/manualBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/btn_logout_selector"
+                    android:textColor="@color/green"
+                    android:text="@string/txt_app_instruction"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toTopOf="@+id/logoutBtn"/>
+
+            <Button
+                    android:id="@+id/logoutBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="70dp"
+                    android:background="@drawable/btn_logout_selector"
+                    android:textColor="@color/green"
+                    android:text="@string/txt_user_logout"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

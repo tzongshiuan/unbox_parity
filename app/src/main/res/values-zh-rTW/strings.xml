@@ -47,4 +47,9 @@
     <string name="txt_relative_degree">相關度</string>
     <string name="txt_price_low_to_high">$低至高</string>
     <string name="txt_price_high_to_low">$高至低</string>
+
+    <!--SettingFragment-->
+    <string name="txt_app_instruction">APP使用說明</string>
+    <string name="txt_user_logout">登出</string>
+    <string name="txt_recent_search_keyword">最近搜索關鍵字:</string>
 </resources>
