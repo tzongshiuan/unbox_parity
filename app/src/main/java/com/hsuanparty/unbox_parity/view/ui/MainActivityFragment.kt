@@ -61,6 +61,8 @@ class MainActivityFragment : Fragment(), Injectable {
         private const val REQUEST_AUTHORIZATION = 1001
         private const val REQUEST_GOOGLE_PLAY_SERVICES = 1002
         private const val REQUEST_PERMISSION_GET_ACCOUNTS = 1003
+
+        private const val ANONYMOUS_MAX_LENGTH = 12
     }
 
     @Inject
@@ -112,6 +114,8 @@ class MainActivityFragment : Fragment(), Injectable {
         if (mPreferences.isLogout) {
             mPreferences.isLogout = false
             enableLoginUI()
+            mPreferences.userName = ""
+            mPreferences.photo = ""
         }
     }
 
@@ -231,6 +235,8 @@ class MainActivityFragment : Fragment(), Injectable {
                             Toast.makeText(context, "Google sign in failed", Toast.LENGTH_LONG).show()
                         } else {
                             LogMessage.D(TAG, "Sing in name:" + account.displayName)
+                            mPreferences.userName = account.displayName!!
+                            mPreferences.photo = account.photoUrl.toString()
                             initData(AuthStatus.AUTH_GOOGLE)
                         }
                     })
@@ -313,10 +319,14 @@ class MainActivityFragment : Fragment(), Injectable {
                     Log.d(TAG, "Facebook id:$id")
                     Log.d(TAG, "Facebook name:$name")
                     Log.d(TAG, "Facebook email:$email")
+
+                    mPreferences.userName = name
+                    mPreferences.photo = Profile.getCurrentProfile().getProfilePictureUri(300, 300).toString()
+
                     // 此時如果登入成功，就可以順便取得用戶大頭照
-                    val profile = Profile.getCurrentProfile()
+//                    val profile = Profile.getCurrentProfile()
                     // 設定大頭照大小
-                    val userPhoto = profile.getProfilePictureUri(300, 300)
+//                    val userPhoto = profile.getProfilePictureUri(300, 300)
 //                            Glide.with(this@FacebookActivity)
 //                                .load(userPhoto.toString())
 //                                .crossFade()
@@ -354,6 +364,7 @@ class MainActivityFragment : Fragment(), Injectable {
             mAuth.signInAnonymously().addOnCompleteListener { authResult ->
                 if (authResult.isSuccessful) {
                     LogMessage.D(TAG, "匿名登入成功 uid:" + mAuth.currentUser?.uid)
+                    mPreferences.userName = mAuth.currentUser?.uid!!.substring(0, ANONYMOUS_MAX_LENGTH)
                     initData(AuthStatus.AUTH_ANONYMOUS)
                 } else {
                     Toast.makeText(context, "匿名登入失敗", Toast.LENGTH_LONG).show()
@@ -384,6 +395,9 @@ class MainActivityFragment : Fragment(), Injectable {
             LogMessage.D(TAG, "account.email: ${account.email}")
             LogMessage.D(TAG, "account.photoUrl: ${account.photoUrl}")
 
+            mPreferences.userName = account.displayName!!
+            mPreferences.photo = account.photoUrl.toString()
+
             initData(AuthStatus.AUTH_GOOGLE)
             return
         }
@@ -401,6 +415,8 @@ class MainActivityFragment : Fragment(), Injectable {
         val currentUser = mAuth.currentUser
         if (currentUser != null) {
             LogMessage.D(TAG, "Has already auth with \"Anonymous\" account")
+
+            mPreferences.userName = mAuth.currentUser?.uid.toString().substring(0, ANONYMOUS_MAX_LENGTH)
 
             initData(AuthStatus.AUTH_ANONYMOUS)
         }

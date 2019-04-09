@@ -12,6 +12,8 @@ interface PreferencesHelper {
     val dayHotVideoList: ArrayList<VideoItem>
     val weekHotVideoList: ArrayList<VideoItem>
     val monthHotVideoList: ArrayList<VideoItem>
+    var userName: String
+    var photo: String
 
     fun readPreferences()
     fun savePreferences()

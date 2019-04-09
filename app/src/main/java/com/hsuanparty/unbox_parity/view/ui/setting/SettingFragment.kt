@@ -7,11 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.hsuanparty.unbox_parity.databinding.SettingFragmentBinding
 
 import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.AuthStatus
+import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
+import com.squareup.picasso.Picasso
 import javax.inject.Inject
 
 class SettingFragment : Fragment(), Injectable{
@@ -22,6 +27,9 @@ class SettingFragment : Fragment(), Injectable{
 
     @Inject
     lateinit var factory: MyViewModelFactory
+
+    @Inject
+    lateinit var mPreferences: PreferencesHelper
 
     private lateinit var viewModel: SettingViewModel
 
@@ -39,6 +47,7 @@ class SettingFragment : Fragment(), Injectable{
         LogMessage.D(TAG, "onCreateView()")
         mBinding = SettingFragmentBinding.inflate(inflater, container, false)
         initUI()
+        initSetting()
 
         return mBinding.root
     }
@@ -75,6 +84,23 @@ class SettingFragment : Fragment(), Injectable{
     private fun initUI() {
         mBinding.logoutBtn.setOnClickListener {
             viewModel.logout(activity)
+        }
+
+        mBinding.manualBtn.setOnClickListener {
+            // Show app instruction
+        }
+    }
+
+    private fun initSetting() {
+        // Show profile information on UI
+        mBinding.userName.text = mPreferences.userName
+
+        if (mPreferences.photo.isNotEmpty()) {
+            Picasso.get()
+                .load(mPreferences.photo)
+                .resize(300, 300)
+                .centerCrop()
+                .into(mBinding.userImage)
         }
     }
 }
