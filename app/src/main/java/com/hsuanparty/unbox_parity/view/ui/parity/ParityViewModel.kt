@@ -81,27 +81,27 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
     }
 
     private fun parseSearchArticleResult(html: String) {
-        // First, retrieve useful data
-        val bodyToken1 = "比價結果的商店"
-        val bodyToken2 = "您可能有興趣的商品"
-        val body = html.substring(html.indexOf(bodyToken1), html.indexOf(bodyToken2))
-
-        val token1 = "class=\"search-rst clearfix\">"
-        val urlToken1 = "<a href=\""
-        val urlToken2 = "\""
-
-        val titleToken1 = "title=\""
-        val titleToken2 = "\""
-
-        val priceToken1 = "prp="
-        val priceToken2 = "&amp"
-
-        val thumbToken1 = "<img src=\""
-        val thumbToken2 = "http"
-        val thumbToken3 = "\""
-
         val items: ArrayList<ParityItem> = ArrayList()
         try {
+            // First, retrieve useful data
+            val bodyToken1 = "比價結果的商店"
+            val bodyToken2 = "您可能有興趣的商品"
+            val body = html.substring(html.indexOf(bodyToken1), html.indexOf(bodyToken2))
+
+            val token1 = "class=\"search-rst clearfix\">"
+            val urlToken1 = "<a href=\""
+            val urlToken2 = "\""
+
+            val titleToken1 = "title=\""
+            val titleToken2 = "\""
+
+            val priceToken1 = "prp="
+            val priceToken2 = "&amp"
+
+            val thumbToken1 = "<img src=\""
+            val thumbToken2 = "http"
+            val thumbToken3 = "\""
+
             var index = 0
             var result = 0
             while (-1 != body.indexOf(token1, index)) {
@@ -155,14 +155,14 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
                 items.add(item)
             }
-
-            parityResult.postValue(items)
         } catch (e: MalformedURLException) {
             e.printStackTrace()
             //throw IOException("Failed to parse Google links.")
         } catch (e: IndexOutOfBoundsException) {
             e.printStackTrace()
             //throw IOException("Failed to parse Google links.")
+        } finally {
+            parityResult.postValue(items)
         }
     }
 

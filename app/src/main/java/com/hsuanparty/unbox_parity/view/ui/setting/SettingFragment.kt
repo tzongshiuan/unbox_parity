@@ -11,12 +11,17 @@ import com.hsuanparty.unbox_parity.databinding.SettingFragmentBinding
 
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.LogMessage
+import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
+import javax.inject.Inject
 
 class SettingFragment : Fragment(), Injectable{
 
     companion object {
         private val TAG = SettingFragment::class.java.simpleName
     }
+
+    @Inject
+    lateinit var factory: MyViewModelFactory
 
     private lateinit var viewModel: SettingViewModel
 
@@ -40,8 +45,7 @@ class SettingFragment : Fragment(), Injectable{
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SettingViewModel::class.java)
-        // TODO: Use the ViewModel
+        viewModel = ViewModelProviders.of(this, factory).get(SettingViewModel::class.java)
     }
 
     override fun onResume() {
