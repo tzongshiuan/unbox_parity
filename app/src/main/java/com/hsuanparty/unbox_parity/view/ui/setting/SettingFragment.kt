@@ -65,7 +65,7 @@ class SettingFragment : Fragment(), Injectable{
         searchViewModel.isSearchFinish.observe(this, Observer<Int> { status ->
             when (status) {
                 SearchViewModel.SEARCH_START -> {
-                    updateRecentView()
+                    //updateRecentView()
                 }
 
                 SearchViewModel.SEARCH_FINISH -> {
@@ -132,6 +132,7 @@ class SettingFragment : Fragment(), Injectable{
     }
 
     private fun updateRecentView() {
+        LogMessage.D(TAG, "updateRecentView(), list.size: ${mPreferences.recentKeywordList.size}")
         // Update recent search keywords
         (mBinding.recentView.adapter as RecentKeywordAdapter).mRecentKeywordList = mPreferences.recentKeywordList
         (mBinding.recentView.adapter as RecentKeywordAdapter).searchViewModel = searchViewModel

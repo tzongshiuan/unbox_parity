@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -28,11 +27,16 @@ import com.hsuanparty.unbox_parity.utils.youtube.YoutubeAdapter
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector
 import com.hsuanparty.unbox_parity.view.ui.video.VideoViewModel
 import javax.inject.Inject
+import android.speech.RecognizerIntent
+import android.app.Activity.RESULT_OK
+
 
 class SearchFragment : Fragment(), Injectable {
 
     companion object {
         private val TAG = SearchFragment::class.java.simpleName
+
+        private const val REQUEST_VOICE = 123
 
         @JvmStatic
         @BindingAdapter("convertWeekRankView")
@@ -158,6 +162,16 @@ class SearchFragment : Fragment(), Injectable {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         LogMessage.D(TAG, "onActivityResult()")
         super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_VOICE && resultCode == RESULT_OK) {
+            // Populate the wordsList with the String values the recognition engine thought it heard
+            val matches = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            if (!matches?.isEmpty()!!) {
+                val query = matches[0]
+                mBinding.searchEditText.setText(query)
+                performSearch()
+            }
+        }
     }
 
     private fun initUI() {
@@ -210,13 +224,17 @@ class SearchFragment : Fragment(), Injectable {
         }
 
         mBinding.speakBtn.setOnClickListener {
-            // TODO voice record and then search
+            // Voice record and then search
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.msg_voice_search))
+            startActivityForResult(intent, REQUEST_VOICE)
         }
 
         mBinding.segmentView.setOnSelectionChangedListener { identifier, value ->
             LogMessage.D(TAG, "identifier: $identifier, value: $value")
 
-            val array = resources.getStringArray(R.array.search_three_state_option)
+            val array = resources.getStringArray(com.hsuanparty.unbox_parity.R.array.search_three_state_option)
 
             when (value) {
                 array[0] -> {
@@ -248,6 +266,8 @@ class SearchFragment : Fragment(), Injectable {
     }
 
     private fun performSearch() {
-        viewModel.search(mBinding.searchEditText.text.toString().trimStart().trimEnd())
+        //this.activity?.runOnUiThread {
+            viewModel.search(mBinding.searchEditText.text.toString().trimStart().trimEnd())
+        //}
     }
 }

@@ -30,6 +30,7 @@
 
     <!--SearchFragment-->
     <string name="txt_search_hint">搜尋商品</string>
+    <string name="msg_voice_search">語音搜尋...</string>
 
     <!--VideoFragment-->
     <string name="txt_give_recommendation">給予推薦</string>

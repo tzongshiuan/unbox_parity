@@ -23,7 +23,7 @@ class YoutubeConnectorV2(val keyWord: String) {
         //maximum results that should be downloaded via the YouTube data API at a time
         private const val MAX_RESULTS: Long = 30
 
-        private const val HOT_MAX_RESULTS: Long = 10
+        private const val HOT_MAX_RESULTS: Long = 20
 
         private const val BASE_SEARCH_URL = "https://www.youtube.com/results?"
 

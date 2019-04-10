@@ -32,6 +32,7 @@
 
     <!--SearchFragment-->
     <string name="txt_search_hint">Search Product</string>
+    <string name="msg_voice_search">Voice Searching...</string>
 
     <!--VideoFragment-->
     <string name="txt_give_recommendation">Give Recommendation</string>

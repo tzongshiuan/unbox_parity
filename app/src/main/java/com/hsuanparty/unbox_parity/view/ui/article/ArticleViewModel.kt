@@ -1,25 +1,20 @@
 package com.hsuanparty.unbox_parity.view.ui.article
 
 import android.app.Activity
+import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.ArticleItem
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import java.io.BufferedReader
-import java.io.IOException
+import java.io.FileNotFoundException
 import java.net.MalformedURLException
 import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
-import androidx.core.content.ContextCompat.startActivity
-import android.content.Intent
-import android.net.Uri
-import android.text.Html
-import android.util.Log
-import androidx.core.text.HtmlCompat
-import androidx.fragment.app.Fragment
 
 
 @Singleton
@@ -31,10 +26,11 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
         private const val SEARCH_FILTER_WEEK   = "&tbs=qdr:w"
         private const val SEARCH_FILTER_MONTH = "&tbs=qdr:m"
         private const val SEARCH_FILTER_YEAR  = "&tbs=qdr:y"
+//        private const val SEARCH_FILTER_EXCLUDE = "+-\"video\"+-\"購物\"+-\"影片\""
         private const val SEARCH_FILTER_EXCLUDE = "&as_eq=\"video\"+\"購物\""
 
         private const val MAX_RESULT = 30
-        private const val BASE_SEARCH_URL = "https://www.google.com/search?tbas=0&source=lnt&num=$MAX_RESULT$SEARCH_FILTER_EXCLUDE"
+        private const val BASE_SEARCH_URL = "https://www.google.com/search?tbas=0&source=lnt&num=$MAX_RESULT"
 
         private const val URL_PREFIX = "/url?q="
     }
@@ -106,12 +102,23 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
 
         val agent = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
         connection.setRequestProperty("User-Agent", agent)
-        val stream = connection.getInputStream()
-        val html = stream.bufferedReader().use(BufferedReader::readText)
 
-        //LogMessage.D(TAG, html)
-
-        parseSearchArticleResult(html, dateRange)
+        try {
+            val stream = connection.getInputStream()
+            val html = stream.bufferedReader().use(BufferedReader::readText)
+            LogMessage.D(TAG, html)
+            parseSearchArticleResult(html, dateRange)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+            val items: ArrayList<ArticleItem> = ArrayList()
+            when (dateRange) {
+                ArticleFragment.DATE_RANGE_NONE -> articleNoneResult.postValue(items)
+                ArticleFragment.DATE_RANGE_WEEK -> articleWeekResult.postValue(items)
+                ArticleFragment.DATE_RANGE_MONTH -> articleMonthResult.postValue(items)
+                ArticleFragment.DATE_RANGE_YEAR -> articleYearResult.postValue(items)
+                else -> {}
+            }
+        }
     }
 
     private fun parseSearchArticleResult(html: String, dateRange: Int) {

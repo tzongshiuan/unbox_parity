@@ -86,6 +86,7 @@ class MyPreferences @Inject constructor(val context: Context) : PreferencesHelpe
     }
 
     override fun savePreferences() {
+        Log.d(TAG, "savePreferences()")
         val preferences = context.getSharedPreferences("preference", Context.MODE_PRIVATE)
         val preferenceEditor = preferences.edit()
 
