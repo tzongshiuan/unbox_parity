@@ -14,6 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
+import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
 import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
@@ -232,8 +233,10 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
         videoViewModel.searchVideoFinished.observe(this, Observer { isFinish ->
             if (isFinish) {
-                searchViewModel.isWaitingLiveData.value = false
-                searchViewModel.isSearchFinish.value = SEARCH_FINISH
+                SimpleDelayTask.after(Constants.SEARCH_DELAY_TIME) {
+                    searchViewModel.isWaitingLiveData.value = false
+                    searchViewModel.isSearchFinish.value = SEARCH_FINISH
+                }
             }
         })
     }

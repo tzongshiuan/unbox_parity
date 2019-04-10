@@ -59,8 +59,11 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
         object : Thread() {
             override fun run() {
                 searchWithDateRange(ArticleFragment.DATE_RANGE_NONE)
+                sleep(1000)
                 searchWithDateRange(ArticleFragment.DATE_RANGE_WEEK)
+                sleep(1000)
                 searchWithDateRange(ArticleFragment.DATE_RANGE_MONTH)
+                sleep(1000)
                 searchWithDateRange(ArticleFragment.DATE_RANGE_YEAR)
             }
         }.start()
@@ -109,7 +112,7 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
             LogMessage.D(TAG, html)
             parseSearchArticleResult(html, dateRange)
         } catch (e: FileNotFoundException) {
-            e.printStackTrace()
+            LogMessage.D(TAG, e.toString())
             val items: ArrayList<ArticleItem> = ArrayList()
             when (dateRange) {
                 ArticleFragment.DATE_RANGE_NONE -> articleNoneResult.postValue(items)

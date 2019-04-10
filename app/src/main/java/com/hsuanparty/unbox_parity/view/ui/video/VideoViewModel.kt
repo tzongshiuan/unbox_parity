@@ -75,6 +75,7 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
                 //and saving the results in list of type VideoItem class
                 if (!Constants.IS_SKIP_SEARCH) {
                     videoSearchResult.postValue(yc.search(true))
+                    sleep(1000)
                     videoSearchCountResult.postValue(yc.search(false))
                 } else {
                     val list: ArrayList<VideoItem> = ArrayList()
