@@ -56,4 +56,7 @@
     <string name="txt_app_instruction">APP Instruction</string>
     <string name="txt_user_logout">Logout</string>
     <string name="txt_recent_search_keyword">Recent search keywords:</string>
+
+    <!--IntroFragment-->
+    <string name="txt_get_start">Get Start</string>
 </resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:showIn="@layout/activity_main"
+            tools:context=".view.ui.intro.IntroFragment"
+            android:background="@color/white">
+
+        <androidx.viewpager.widget.ViewPager
+                android:id="@+id/introPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        <LinearLayout
+                android:id="@+id/pagerCountDots"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="112dp"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"/>
+
+        <Button
+                android:id="@+id/startBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="80dp"
+                android:layout_marginStart="80dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/txt_get_start"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:background="@drawable/btn_get_start_selector"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="gone"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

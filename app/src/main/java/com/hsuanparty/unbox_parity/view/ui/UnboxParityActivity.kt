@@ -243,6 +243,7 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
     private fun initUI() {
         setFragmentPage(SEARCH_PAGE_INDEX)
+        introPage.view?.visibility = View.GONE
     }
 
     private fun setFragmentPage(pageIndex: Int) {
@@ -267,6 +268,18 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
             else -> LogMessage.E(TAG, "Should not happen here...")
         }
+    }
+
+    fun showIntroduction() {
+        LogMessage.D(TAG, "showIntroduction()")
+        introPage.view?.visibility = View.VISIBLE
+        navigation.visibility = View.GONE
+    }
+
+    fun closeIntroduction() {
+        LogMessage.D(TAG, "closeIntroduction()")
+        introPage.view?.visibility = View.GONE
+        navigation.visibility = View.VISIBLE
     }
 
     override fun supportFragmentInjector() = dispatchingAndroidInjector

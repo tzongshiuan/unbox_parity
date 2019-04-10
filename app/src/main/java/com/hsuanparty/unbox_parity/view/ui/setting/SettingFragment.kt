@@ -16,6 +16,7 @@ import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
+import com.hsuanparty.unbox_parity.view.ui.UnboxParityActivity
 import com.hsuanparty.unbox_parity.view.ui.parity.ParityAdapter
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import com.squareup.picasso.Picasso
@@ -123,6 +124,7 @@ class SettingFragment : Fragment(), Injectable{
 
         mBinding.manualBtn.setOnClickListener {
             // Show app instruction
+            (activity as UnboxParityActivity).showIntroduction()
         }
     }
 
