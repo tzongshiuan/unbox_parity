@@ -74,6 +74,14 @@ class SettingFragment : Fragment(), Injectable{
                 else -> {}
             }
         })
+
+        searchViewModel.isWaitingLiveData.observe(this, Observer<Boolean> { isWaiting ->
+            if (isWaiting) {
+                mBinding.waitingDialog.setVisibleWithAnimate(true)
+            } else {
+                mBinding.waitingDialog.setVisibleImmediately(false)
+            }
+        })
     }
 
     override fun onResume() {

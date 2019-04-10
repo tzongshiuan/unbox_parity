@@ -10,7 +10,7 @@ object Constants {
 
     const val LOAD_DATA_TIME = 2000L
 
-    const val SEARCH_DELAY_TIME = 2000L
+    const val SEARCH_DELAY_TIME = 300L
 
     const val IS_SKIP_SEARCH = false
 }
