@@ -1,5 +1,6 @@
 package com.hsuanparty.unbox_parity.view.ui.video
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -81,6 +82,8 @@ class VideoFragment : Fragment(), Injectable{
 
     private var player: YouTubePlayer? = null
 
+    private var isEverSearch = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
         super.onCreate(savedInstanceState)
@@ -111,6 +114,7 @@ class VideoFragment : Fragment(), Injectable{
                 SearchViewModel.SEARCH_FINISH -> {
                     mBinding.noDataGroup.visibility = View.GONE
                     mBinding.segmentView.visibility = View.VISIBLE
+                    isEverSearch = true
                 }
 
                 else -> {}
@@ -123,7 +127,25 @@ class VideoFragment : Fragment(), Injectable{
 
         viewModel.isPerformExitFullScreen.observe(this, Observer { isExit ->
             if (isExit) {
-//                mBinding.youtubeView.exitFullScreen()
+                mBinding.youtubeView.exitFullScreen()
+            }
+        })
+
+        viewModel.screenStatusLiveData.observe(this, Observer { status ->
+            when (status) {
+                VideoViewModel.ENTER_FULL_SCREEN -> {
+                    LogMessage.D(TAG, "Player Enter FullScreen GG")
+                    mBinding.noDataGroup.visibility = View.GONE
+                }
+
+                VideoViewModel.EXIT_FULL_SCREEN -> {
+                    LogMessage.D(TAG, "Player Exit FullScreen GG")
+                    if (!isEverSearch) {
+                        mBinding.noDataGroup.visibility = View.VISIBLE
+                    }
+                }
+
+                else -> {}
             }
         })
 
@@ -253,13 +275,13 @@ class VideoFragment : Fragment(), Injectable{
 
         mBinding.youtubeView.addFullScreenListener(object: YouTubePlayerFullScreenListener {
             override fun onYouTubePlayerEnterFullScreen() {
-                LogMessage.D(TAG, "Player Enter FullScreen")
+                LogMessage.D(TAG, "Player Enter onYouTubePlayerEnterFullScreen()")
 
                 viewModel.enterFullScreen()
             }
 
             override fun onYouTubePlayerExitFullScreen() {
-                LogMessage.D(TAG, "Player Exit FullScreen")
+                LogMessage.D(TAG, "onYouTubePlayerExitFullScreen()")
 
                 viewModel.exitFullScreen()
             }
