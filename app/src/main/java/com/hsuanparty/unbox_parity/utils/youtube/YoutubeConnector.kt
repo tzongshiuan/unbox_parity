@@ -309,9 +309,10 @@ class YoutubeConnector(credential: GoogleAccountCredential) {
         private const val HOT_MAX_RESULTS: Long = 10
 
         const val NONE_HOT_VIDEO = -1
-        const val NONT_HOT_VIDEO_COUNT = 0
-        const val DAILY_HOT_VIDEO = 1
-        const val WEEKLY_HOT_VIDEO = 2
-        const val MONTHLY_HOT_VIDEO = 3
+        const val NONE_HOT_VIDEO_COUNT = 0
+        const val NONE_HOT_VIDEO_UPLOAD = 1
+        const val DAILY_HOT_VIDEO = 2
+        const val WEEKLY_HOT_VIDEO = 3
+        const val MONTHLY_HOT_VIDEO = 4
     }
 }

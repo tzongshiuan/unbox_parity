@@ -38,6 +38,7 @@
     <string name="txt_give_recommendation">Give Recommendation</string>
     <string name="txt_retract_recommendation">Retract Recommendation</string>
     <string name="txt_video_view_count">View Count</string>
+    <string name="txt_video_upload_time">Upload Time</string>
     <string name="txt_video_recommend_count">Recommend Count</string>
 
     <!--ArticleFragment-->

@@ -11,6 +11,9 @@ import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.model.VideoItem
 import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
+import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector
+import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector.Companion.NONE_HOT_VIDEO_COUNT
+import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnector.Companion.NONE_HOT_VIDEO_UPLOAD
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnectorV2
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -26,6 +29,7 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
 
         const val ORDER_RELATIVE = 0
         const val ORDER_VIEW_COUNT = 1
+        const val ORDER_VIEW_UPLOAD = 2
     }
 
     @Inject
@@ -43,6 +47,7 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
 
     val videoSearchResult: MutableLiveData<List<VideoItem>> = MutableLiveData()
     val videoSearchCountResult: MutableLiveData<List<VideoItem>> = MutableLiveData()
+    val videoSearchUploadResult: MutableLiveData<List<VideoItem>> = MutableLiveData()
 
     val searchVideoFinished: MutableLiveData<Boolean> = MutableLiveData()
 
@@ -74,14 +79,16 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
                 //calling the YoutubeConnector's search method by entered keyword
                 //and saving the results in list of type VideoItem class
                 if (!Constants.IS_SKIP_SEARCH) {
-                    videoSearchResult.postValue(yc.search(true))
+                    videoSearchResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO))
                     sleep(1000)
-                    videoSearchCountResult.postValue(yc.search(false))
+                    videoSearchCountResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO_COUNT))
+                    sleep(1000)
+                    videoSearchUploadResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO_UPLOAD))
                 } else {
                     val list: ArrayList<VideoItem> = ArrayList()
                     videoSearchResult.postValue(list)
-                    val list2: ArrayList<VideoItem> = ArrayList()
-                    videoSearchCountResult.postValue(list2)
+                    videoSearchCountResult.postValue(list)
+                    videoSearchUploadResult.postValue(list)
                 }
             }
             //starting the thread

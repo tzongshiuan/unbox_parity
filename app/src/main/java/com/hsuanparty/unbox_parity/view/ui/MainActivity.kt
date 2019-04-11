@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.facebook.CallbackManager
+import com.hsuanparty.unbox_parity.BuildConfig
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.PreferencesHelper
@@ -110,6 +111,9 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
         }
 
         testFireBase()
+
+        // Only show log message in debug mode
+        LogMessage.isShowLog = BuildConfig.DEBUG
     }
 
     override fun onStart() {

@@ -23,12 +23,13 @@ class YoutubeConnectorV2(val keyWord: String) {
         //maximum results that should be downloaded via the YouTube data API at a time
         private const val MAX_RESULTS: Long = 30
 
-        private const val HOT_MAX_RESULTS: Long = 20
+        private const val HOT_MAX_RESULTS: Long = 30
 
         private const val BASE_SEARCH_URL = "https://www.youtube.com/results?"
 
         private const val SEARCH_FILTER_NONE  = "&sp=CAASAhAB"
         private const val SEARCH_FILTER_NONE_COUNT = "&sp=CAMSAhAB"
+        private const val SEARCH_FILTER_NONE_DATE = "&sp=CAI%253D"
 
         private const val SEARCH_FILTER_DAY   = "&sp=CAMSBAgCEAE%253D"
         private const val SEARCH_FILTER_WEEK  = "&sp=CAMSBAgDEAE%253D"
@@ -37,13 +38,14 @@ class YoutubeConnectorV2(val keyWord: String) {
 
     var mCredential: GoogleAccountCredential? = null
 
-    fun search(isRelative: Boolean): List<VideoItem>? {
+    fun search(type: Int): List<VideoItem>? {
         val keyWord = this.keyWord.replace(" ", "+")
 
-        if (isRelative) {
-            return searchHotVideo(YoutubeConnector.NONE_HOT_VIDEO, "$keyWord+開箱")
-        } else {
-            return searchHotVideo(YoutubeConnector.NONT_HOT_VIDEO_COUNT, "$keyWord+開箱")
+        return when (type) {
+            YoutubeConnector.NONE_HOT_VIDEO -> searchHotVideo(YoutubeConnector.NONE_HOT_VIDEO, "$keyWord+開箱")
+            YoutubeConnector.NONE_HOT_VIDEO_COUNT -> searchHotVideo(YoutubeConnector.NONE_HOT_VIDEO_COUNT, "$keyWord+開箱")
+            YoutubeConnector.NONE_HOT_VIDEO_UPLOAD -> searchHotVideo(YoutubeConnector.NONE_HOT_VIDEO_UPLOAD, "$keyWord+開箱")
+            else -> null
         }
     }
 
@@ -70,7 +72,8 @@ class YoutubeConnectorV2(val keyWord: String) {
         var path = "${BASE_SEARCH_URL}search_query=$keyWord"
         when (dateRange) {
             YoutubeConnector.NONE_HOT_VIDEO -> path += SEARCH_FILTER_NONE
-            YoutubeConnector.NONT_HOT_VIDEO_COUNT -> path += SEARCH_FILTER_NONE_COUNT
+            YoutubeConnector.NONE_HOT_VIDEO_COUNT -> path += SEARCH_FILTER_NONE_COUNT
+            YoutubeConnector.NONE_HOT_VIDEO_UPLOAD -> path += SEARCH_FILTER_NONE_DATE
             YoutubeConnector.DAILY_HOT_VIDEO -> path += SEARCH_FILTER_DAY
             YoutubeConnector.WEEKLY_HOT_VIDEO -> path += SEARCH_FILTER_WEEK
             YoutubeConnector.MONTHLY_HOT_VIDEO -> path += SEARCH_FILTER_MONTH
@@ -106,6 +109,9 @@ class YoutubeConnectorV2(val keyWord: String) {
         val titleToken1 = "title=\""
         val titleToken2 = "\""
 
+        val metaToken1 = "<ul class=\"yt-lockup-meta-info\">"
+        val uploadToken1 = "<li>"
+        val uploadToken2 = "</li>"
         val countToken1 = "<li>觀看次數："
         val countToken2 = "次</li>"
 
@@ -172,6 +178,18 @@ class YoutubeConnectorV2(val keyWord: String) {
                 LogMessage.D(TAG, "Title: $title")
                 index = titleEnd + titleToken2.length
 
+                // Upload time
+                index = html.indexOf(metaToken1, index)
+                result = html.indexOf(uploadToken1, index)
+                val uploadStart = result + uploadToken1.length
+                val uploadEnd = html.indexOf(uploadToken2, result)
+                val uploadText = html.substring(uploadStart, uploadEnd)
+
+                item.uploadText = uploadText
+                LogMessage.D(TAG, "Upload time: $uploadText")
+                index = uploadEnd + uploadToken2.length
+
+                // View count
                 result = html.indexOf(countToken1, index)
                 val countStart = result + countToken1.length
                 val countEnd = html.indexOf(countToken2, countStart)

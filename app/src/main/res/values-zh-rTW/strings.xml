@@ -36,6 +36,7 @@
     <string name="txt_give_recommendation">給予推薦</string>
     <string name="txt_retract_recommendation">收回推薦</string>
     <string name="txt_video_view_count">觀看數</string>
+    <string name="txt_video_upload_time">上傳時間</string>
     <string name="txt_video_recommend_count">推薦數</string>
 
     <!--ArticleFragment-->

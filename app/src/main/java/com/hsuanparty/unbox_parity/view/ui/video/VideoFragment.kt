@@ -54,6 +54,16 @@ class VideoFragment : Fragment(), Injectable{
                 view.visibility = View.GONE
             }
         }
+
+        @JvmStatic
+        @BindingAdapter("convertVideoViewUpload")
+        fun convertVideoViewUpload(view: RecyclerView, curOrderStatus: Int) {
+            if (curOrderStatus == VideoViewModel.ORDER_VIEW_UPLOAD) {
+                view.visibility = View.VISIBLE
+            } else {
+                view.visibility = View.GONE
+            }
+        }
     }
 
     @Inject
@@ -132,11 +142,12 @@ class VideoFragment : Fragment(), Injectable{
             (mBinding.recyclerView2.adapter as YoutubeAdapter).mVideoList = result
             (mBinding.recyclerView2.adapter as YoutubeAdapter).selectIndex = -1
             mBinding.recyclerView2.adapter?.notifyDataSetChanged()
+        })
 
-//            viewModel.searchVideoFinished.postValue(true)
-//
-//            // clear play video
-//            player?.cueVideo(DEFAULT_VIDEO_ID, 0f)
+        viewModel.videoSearchUploadResult.observe(this, Observer { result ->
+            (mBinding.recyclerView3.adapter as YoutubeAdapter).mVideoList = result
+            (mBinding.recyclerView3.adapter as YoutubeAdapter).selectIndex = -1
+            mBinding.recyclerView3.adapter?.notifyDataSetChanged()
         })
 
         viewModel.curVideoItem.observe(this, Observer { videoItem ->
@@ -189,21 +200,26 @@ class VideoFragment : Fragment(), Injectable{
         mBinding.recyclerView2.layoutManager = layoutManager2
         mBinding.recyclerView2.adapter = YoutubeAdapter()
 
+        val layoutManager3 = LinearLayoutManager(activity)
+        layoutManager3.orientation = RecyclerView.VERTICAL
+        mBinding.recyclerView3.layoutManager = layoutManager3
+        mBinding.recyclerView3.adapter = YoutubeAdapter()
+
         mBinding.curOrderStatus = VideoViewModel.ORDER_RELATIVE
         mBinding.segmentView.setOnSelectionChangedListener { identifier, value ->
             LogMessage.D(TAG, "identifier: $identifier, value: $value")
 
             val array = resources.getStringArray(R.array.video_order_option)
-
             when (value) {
                 array[0] -> {
                     mBinding.curOrderStatus = VideoViewModel.ORDER_RELATIVE
                 }
-
                 array[1] -> {
                     mBinding.curOrderStatus = VideoViewModel.ORDER_VIEW_COUNT
                 }
-
+                array[2] -> {
+                    mBinding.curOrderStatus = VideoViewModel.ORDER_VIEW_UPLOAD
+                }
                 else -> {}
             }
         }

@@ -23,6 +23,8 @@ class VideoItem {
     //getter and setter methods for thumbnail url
     var thumbnailURL: String? = null
 
+    var uploadText: String? = null
+
     var viewCount = 0
 
     var likeCount = 0
