@@ -9,15 +9,16 @@ import java.net.URL
  */
 class ArticleItem {
 
-    //stores id of a video
-    //getter and setter methods for id
+    companion object {
+        const val TYPE_ARTICLE = 0
+        const val TYPE_BANNER = 1
+    }
+
     var url: URL? = null
 
-    //stores title of the video
-    //getter and setter methods for video Title
     var title: String? = null
 
-    //stores the description of video
-    //getter and setter methods for video description
     var description: String? = null
+
+    var type = TYPE_ARTICLE
 }

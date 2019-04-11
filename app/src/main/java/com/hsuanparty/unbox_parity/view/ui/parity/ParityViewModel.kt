@@ -1,21 +1,17 @@
 package com.hsuanparty.unbox_parity.view.ui.parity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.text.Spanned
-import android.text.SpannedString
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModel
 import com.hsuanparty.unbox_parity.di.Injectable
-import com.hsuanparty.unbox_parity.model.ArticleItem
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.model.ParityItem
+import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
-import com.hsuanparty.unbox_parity.view.ui.article.ArticleFragment
 import java.io.BufferedReader
 import java.net.MalformedURLException
 import java.net.URL
@@ -87,6 +83,13 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
     private fun parseSearchArticleResult(html: String) {
         val items: ArrayList<ParityItem> = ArrayList()
+
+        if (Constants.IS_SHOW_ADMOB) {
+            val adItem = ParityItem()
+            adItem.type = ParityItem.TYPE_BANNER
+            items.add(adItem)
+        }
+
         try {
             // First, retrieve useful data
             val bodyToken1 = "比價結果的商店"

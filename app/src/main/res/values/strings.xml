@@ -6,7 +6,9 @@
     <!--about AdMob-->
     <string name="admob_app_id" translatable="false">ca-app-pub-9406365381643944~8457216272</string>
     <string name="test_banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="search_banner_id" translatable="false">ca-app-pub-9406365381643944/9120750625</string>
+    <string name="video_banner_id" translatable="false">ca-app-pub-9406365381643944/9120750625</string>
+    <string name="article_banner_id" translatable="false">ca-app-pub-9406365381643944/8935674522</string>
+    <string name="parity_banner_id" translatable="false">ca-app-pub-9406365381643944/7952807489</string>
 
     <!--about facebook-->
     <string name="facebook_app_id">2542636175809491</string>

@@ -3,6 +3,7 @@ package com.hsuanparty.unbox_parity.utils.youtube
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -59,14 +60,14 @@ class YoutubeAdapter: RecyclerView.Adapter<YoutubeAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         LogMessage.D(TAG, "onCreateViewHolder()")
 
-        if (viewType == VideoItem.TYPE_VIDEO) {
+        return if (viewType == VideoItem.TYPE_VIDEO) {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = VideoItemBinding.inflate(layoutInflater, parent, false)
-            return MyViewHolder(binding)
+            MyViewHolder(binding)
         } else {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = BannerItemBinding.inflate(layoutInflater, parent, false)
-            return AdViewHolder(binding)
+            AdViewHolder(binding)
         }
     }
 
@@ -132,8 +133,14 @@ class YoutubeAdapter: RecyclerView.Adapter<YoutubeAdapter.ViewHolder>() {
             if (Constants.IS_DEBUG_MODE) {
                 adView.adUnitId = binding.root.context.getString(R.string.test_banner_id)
             } else {
-                adView.adUnitId = binding.root.context.getString(R.string.search_banner_id)
+                adView.adUnitId = binding.root.context.getString(R.string.video_banner_id)
             }
+
+            val params = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT)
+            params.addRule(RelativeLayout.CENTER_HORIZONTAL,  RelativeLayout.TRUE)
+            adView.layoutParams = params
+
             binding.bannerView.removeAllViews()
             binding.bannerView.addView(adView)
 

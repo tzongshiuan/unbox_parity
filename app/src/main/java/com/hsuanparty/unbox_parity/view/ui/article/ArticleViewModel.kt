@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.ArticleItem
 import com.hsuanparty.unbox_parity.model.MyPreferences
+import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import java.io.BufferedReader
 import java.io.FileNotFoundException
@@ -140,6 +141,13 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
         val descToken2 = "</span>"
 
         val items: ArrayList<ArticleItem> = ArrayList()
+
+        if (Constants.IS_SHOW_ADMOB) {
+            val adItem = ArticleItem()
+            adItem.type = ArticleItem.TYPE_BANNER
+            items.add(adItem)
+        }
+
         try {
             // Loop until all links are found and parsed. Find each link by
             // finding the beginning and ending index of the tokens defined
