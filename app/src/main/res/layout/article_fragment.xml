@@ -63,48 +63,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:visibility="invisible"/>
 
-        <!--上一頁/下一頁/關閉 button-->
-        <LinearLayout
-                android:id="@+id/webControlLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:orientation="horizontal">
-
-            <Button
-                    android:id="@+id/previousBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_web_control_selector"
-                    android:text="@string/txt_previous_page"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"/>
-
-            <Button
-                    android:id="@+id/closeBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_web_control_selector"
-                    android:text="@string/txt_close_page"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"/>
-
-            <Button
-                    android:id="@+id/nextBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/btn_web_control_selector"
-                    android:text="@string/txt_next_page"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginEnd="6dp"/>
-        </LinearLayout>
-
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/noneView"
                 android:layout_width="match_parent"
@@ -153,11 +111,65 @@
                 android:id='@+id/webView'
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/webControlLayout"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/webControlLayout"/>
+
+        <!--上一頁/下一頁/關閉/前往瀏覽器 button-->
+        <LinearLayout
+                android:id="@+id/webControlLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="65dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="horizontal">
+
+            <Button
+                    android:id="@+id/previousBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_web_control_selector"
+                    android:text="@string/txt_previous_page"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:visibility="gone"/>
+
+            <Button
+                    android:id="@+id/closeBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_web_control_selector"
+                    android:text="@string/txt_close_page"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"/>
+
+            <Button
+                    android:id="@+id/nextBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_web_control_selector"
+                    android:text="@string/txt_next_page"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"
+                    android:visibility="gone"/>
+
+            <Button
+                    android:id="@+id/browserBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_web_control_selector"
+                    android:text="@string/txt_go_browser"
+                    android:layout_marginStart="6dp"
+                    android:layout_marginEnd="6dp"/>
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.Group
                 android:id="@+id/articleGroup"

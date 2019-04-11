@@ -1,6 +1,7 @@
 package com.hsuanparty.unbox_parity.view.ui.article
 
 import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -226,6 +227,12 @@ class ArticleFragment : Fragment(), Injectable{
             if (mBinding.webView.canGoForward()) {
                 mBinding.webView.goForward()
             }
+        }
+
+        mBinding.browserBtn.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse(mBinding.webView.url.toString())
+            activity?.startActivity(intent)
         }
     }
 

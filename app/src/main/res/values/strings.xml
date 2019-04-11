@@ -44,6 +44,7 @@
     <string name="txt_previous_page">Previous Page</string>
     <string name="txt_close_page">Close Page</string>
     <string name="txt_next_page">Next Page</string>
+    <string name="txt_go_browser">Go Browser</string>
 
     <!--ParityFragment-->
     <string name="txt_not_found_parity">Not found any parity results</string>
