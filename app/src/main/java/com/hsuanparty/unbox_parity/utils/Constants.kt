@@ -6,6 +6,8 @@ package com.hsuanparty.unbox_parity.utils
  * Description:
  */
 object Constants {
+    var IS_DEBUG_MODE = true
+
     const val PERMISSION_DENY_CLOSE_TIME = 2000L
 
     const val LOAD_DATA_TIME = 2000L
@@ -13,4 +15,6 @@ object Constants {
     const val SEARCH_DELAY_TIME = 300L
 
     const val IS_SKIP_SEARCH = false
+
+    const val IS_SHOW_ADMOB = true
 }

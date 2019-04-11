@@ -7,6 +7,11 @@ package com.hsuanparty.unbox_parity.model
  */
 class VideoItem {
 
+    companion object {
+        const val TYPE_VIDEO = 0
+        const val TYPE_BANNER = 1
+    }
+
     //stores id of a video
     //getter and setter methods for id
     var id: String? = null
@@ -28,4 +33,6 @@ class VideoItem {
     var viewCount = 0
 
     var likeCount = 0
+
+    var type = TYPE_VIDEO
 }

@@ -6,6 +6,7 @@ import com.google.api.client.util.DateTime
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import java.util.*
 import com.hsuanparty.unbox_parity.model.VideoItem
+import com.hsuanparty.unbox_parity.utils.Constants
 import java.io.BufferedReader
 import java.net.MalformedURLException
 import java.net.URL
@@ -120,6 +121,13 @@ class YoutubeConnectorV2(val keyWord: String) {
         val descToken3 = "</div>"
 
         val items: ArrayList<VideoItem> = ArrayList()
+
+        if (Constants.IS_SHOW_ADMOB) {
+            val adItem = VideoItem()
+            adItem.type = VideoItem.TYPE_BANNER
+            items.add(adItem)
+        }
+
         try {
             // Loop until all links are found and parsed. Find each link by
             // finding the beginning and ending index of the tokens defined

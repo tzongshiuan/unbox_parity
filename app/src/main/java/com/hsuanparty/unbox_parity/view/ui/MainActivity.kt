@@ -23,6 +23,7 @@ import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.PreferencesHelper
 import com.hsuanparty.unbox_parity.utils.Constants
+import com.hsuanparty.unbox_parity.utils.Constants.IS_DEBUG_MODE
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
 import com.hsuanparty.unbox_parity.utils.networkChecker.NetworkChangeReceiver
@@ -113,6 +114,7 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector, Injectable
         testFireBase()
 
         // Only show log message in debug mode
+        Constants.IS_DEBUG_MODE = BuildConfig.DEBUG
         LogMessage.isShowLog = BuildConfig.DEBUG
     }
 

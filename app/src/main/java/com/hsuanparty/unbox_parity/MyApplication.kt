@@ -5,6 +5,7 @@ import android.app.Application
 import androidx.fragment.app.Fragment
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.FirebaseApp
 import com.hsuanparty.unbox_parity.di.AppInjector
 import dagger.android.AndroidInjector
@@ -31,6 +32,9 @@ class MyApplication : Application(), HasActivityInjector, HasSupportFragmentInje
 
         // Dagger2
         AppInjector.init(this)
+
+        // Ads
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
 
         FirebaseApp.initializeApp(this)
         FacebookSdk.sdkInitialize(this)
