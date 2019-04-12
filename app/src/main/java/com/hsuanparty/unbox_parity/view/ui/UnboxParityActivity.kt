@@ -76,6 +76,8 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
     private var isBackPress = false
 
+    private var isEverSearch = false
+
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         searchPage.view?.visibility = View.GONE
         videoPage.view?.visibility = View.GONE
@@ -129,6 +131,12 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
         super.onResume()
 
         mPreferences.readPreferences()
+
+        if (isEverSearch) {
+            videoViewModel.searchVideo(this)
+            articleViewModel.searchArticle(this)
+            parityViewModel.searchParity(this)
+        }
     }
 
     override fun onPause() {
@@ -184,6 +192,10 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
         searchViewModel.isSearchFinish.observe(this, Observer<Int> { status ->
             when (status) {
                 SearchViewModel.SEARCH_START -> {
+                    if (!isEverSearch) {
+                        isEverSearch = true
+                    }
+
                     isSearchStart = true
                     videoViewModel.searchVideo(this)
 

@@ -113,6 +113,16 @@ class SearchFragment : Fragment(), Injectable {
     override fun onResume() {
         LogMessage.D(TAG, "onResume()")
         super.onResume()
+
+        val yc = YoutubeConnectorV2("")
+        object : Thread() {
+            override fun run() {
+                mPreferences.hotVideoList.addAll(
+                    yc.searchHotVideo(mBinding.curHotStatus!!, "開箱") as ArrayList
+                )
+                refreshView()
+            }
+        }.start()
     }
 
     override fun onPause() {
@@ -153,11 +163,8 @@ class SearchFragment : Fragment(), Injectable {
         layoutManager.orientation = RecyclerView.VERTICAL
         mBinding.rankView.layoutManager = layoutManager
         val adapter = YoutubeAdapter()
-        adapter.mVideoList = mPreferences.hotVideoList
-        adapter.selectIndex = -1
         adapter.videoViewModel = videoViewModel
         mBinding.rankView.adapter = adapter
-        mBinding.rankView.adapter?.notifyDataSetChanged()
 
         mBinding.searchEditText.setOnEditorActionListener(object: TextView.OnEditorActionListener {
             override fun onEditorAction(view: TextView?, actionId: Int, event: KeyEvent?): Boolean {
@@ -246,6 +253,7 @@ class SearchFragment : Fragment(), Injectable {
     private fun refreshView() {
         activity?.runOnUiThread {
             val adapter = mBinding.rankView.adapter as YoutubeAdapter
+            adapter.selectIndex = -1
             adapter.mVideoList = mPreferences.hotVideoList
             adapter.notifyDataSetChanged()
         }
