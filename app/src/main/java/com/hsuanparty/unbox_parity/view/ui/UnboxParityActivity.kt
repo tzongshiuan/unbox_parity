@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -27,6 +28,7 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import kotlinx.android.synthetic.main.activity_unbox_parity.*
 import javax.inject.Inject
+
 
 /**
  * Author: Tsung Hsuan, Lai
@@ -82,27 +84,27 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
         settingPage.view?.visibility = View.GONE
 
         when (item.itemId) {
-            R.id.navigation_search -> {
+            com.hsuanparty.unbox_parity.R.id.navigation_search -> {
                 curPageIndex = SEARCH_PAGE_INDEX
                 searchPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_video -> {
+            com.hsuanparty.unbox_parity.R.id.navigation_video -> {
                 curPageIndex = VIDEO_PAGE_INDEX
                 videoPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_article -> {
+            com.hsuanparty.unbox_parity.R.id.navigation_article -> {
                 curPageIndex = ARTICLE_PAGE_INDEX
                 articlePage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_parity -> {
+            com.hsuanparty.unbox_parity.R.id.navigation_parity -> {
                 curPageIndex = PARITY_PAGE_INDEX
                 parityPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
             }
-            R.id.navigation_setting -> {
+            com.hsuanparty.unbox_parity.R.id.navigation_setting -> {
                 curPageIndex = SETTING_PAGE_INDEX
                 settingPage.view?.visibility = View.VISIBLE
                 return@OnNavigationItemSelectedListener true
@@ -114,7 +116,7 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     override fun onCreate(savedInstanceState: Bundle?) {
         LogMessage.D(TAG, "onCreate()")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_unbox_parity)
+        setContentView(com.hsuanparty.unbox_parity.R.layout.activity_unbox_parity)
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
@@ -162,7 +164,7 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
         // Show message to ask user whether to leave App
         if (!isBackPress) {
             isBackPress = true
-            Toast.makeText(this, getString(R.string.msg_ask_user_leave_app), Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(com.hsuanparty.unbox_parity.R.string.msg_ask_user_leave_app), Toast.LENGTH_LONG).show()
             SimpleDelayTask.after(2000) {
                 isBackPress = false
             }
@@ -218,6 +220,7 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
                     navigation.visibility = View.GONE
                     isFullScreen = true
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                    hideToolBr()
                 }
 
                 VideoViewModel.EXIT_FULL_SCREEN -> {
@@ -225,6 +228,7 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
                     navigation.visibility = View.VISIBLE
                     isFullScreen = false
                     requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+                    showSystemUI()
                 }
 
                 else -> {}
@@ -241,6 +245,53 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
         })
     }
 
+    private fun showSystemUI() {
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+    }
+
+    private fun hideToolBr() {
+
+        // BEGIN_INCLUDE (get_current_ui_flags)
+        // The UI options currently enabled are represented by a bitfield.
+        // getSystemUiVisibility() gives us that bitfield.
+        val uiOptions = window.decorView.systemUiVisibility
+        var newUiOptions = uiOptions
+        // END_INCLUDE (get_current_ui_flags)
+        // BEGIN_INCLUDE (toggle_ui_flags)
+        val isImmersiveModeEnabled = uiOptions or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY == uiOptions
+        if (isImmersiveModeEnabled) {
+            LogMessage.D(TAG, "Turning immersive mode mode off. ")
+        } else {
+            LogMessage.D(TAG, "Turning immersive mode mode on.")
+        }
+
+        // Navigation bar hiding:  Backwards compatible to ICS.
+//        if (Build.VERSION.SDK_INT >= 14) {
+            newUiOptions = newUiOptions xor View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//        }
+
+        // Status bar hiding: Backwards compatible to Jellybean
+//        if (Build.VERSION.SDK_INT >= 16) {
+            newUiOptions = newUiOptions xor View.SYSTEM_UI_FLAG_FULLSCREEN
+//        }
+
+        // Immersive mode: Backward compatible to KitKat.
+        // Note that this flag doesn't do anything by itself, it only augments the behavior
+        // of HIDE_NAVIGATION and FLAG_FULLSCREEN.  For the purposes of this sample
+        // all three flags are being toggled together.
+        // Note that there are two immersive mode UI flags, one of which is referred to as "sticky".
+        // Sticky immersive mode differs in that it makes the navigation and status bars
+        // semi-transparent, and the UI flag does not get cleared when the user interacts with
+        // the screen.
+//        if (Build.VERSION.SDK_INT >= 18) {
+//            newUiOptions = newUiOptions xor View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//        }
+
+        window.decorView.systemUiVisibility = newUiOptions
+        //END_INCLUDE (set_ui_flags)
+    }
+
     private fun initUI() {
         setFragmentPage(SEARCH_PAGE_INDEX)
         introPage.view?.visibility = View.GONE
@@ -251,19 +302,19 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
         when (pageIndex) {
             SEARCH_PAGE_INDEX -> {
-                navigation.selectedItemId = R.id.navigation_search
+                navigation.selectedItemId = com.hsuanparty.unbox_parity.R.id.navigation_search
             }
             VIDEO_PAGE_INDEX -> {
-                navigation.selectedItemId = R.id.navigation_video
+                navigation.selectedItemId = com.hsuanparty.unbox_parity.R.id.navigation_video
             }
             ARTICLE_PAGE_INDEX -> {
-                navigation.selectedItemId = R.id.navigation_article
+                navigation.selectedItemId = com.hsuanparty.unbox_parity.R.id.navigation_article
             }
             PARITY_PAGE_INDEX -> {
-                navigation.selectedItemId = R.id.navigation_parity
+                navigation.selectedItemId = com.hsuanparty.unbox_parity.R.id.navigation_parity
             }
             SETTING_PAGE_INDEX -> {
-                navigation.selectedItemId = R.id.navigation_setting
+                navigation.selectedItemId = com.hsuanparty.unbox_parity.R.id.navigation_setting
             }
 
             else -> LogMessage.E(TAG, "Should not happen here...")
