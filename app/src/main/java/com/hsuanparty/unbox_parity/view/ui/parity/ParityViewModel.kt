@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hsuanparty.unbox_parity.di.Injectable
+import com.hsuanparty.unbox_parity.model.ArticleItem
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.model.ParityItem
 import com.hsuanparty.unbox_parity.utils.Constants
@@ -83,13 +84,6 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
     private fun parseSearchArticleResult(html: String) {
         val items: ArrayList<ParityItem> = ArrayList()
-
-        if (Constants.IS_SHOW_ADMOB) {
-            val adItem = ParityItem()
-            adItem.type = ParityItem.TYPE_BANNER
-            items.add(adItem)
-        }
-
         try {
             // First, retrieve useful data
             val bodyToken1 = "比價結果的商店"
@@ -115,6 +109,14 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
             while (-1 != body.indexOf(token1, index)) {
                 val item = ParityItem()
                 index = body.indexOf(token1, index)
+
+                if (items.size % 6 == 0) {
+                    if (Constants.IS_SHOW_ADMOB) {
+                        val adItem = ParityItem()
+                        adItem.type = ParityItem.TYPE_BANNER
+                        items.add(adItem)
+                    }
+                }
 
                 // URL
                 result = body.indexOf(urlToken1, index)

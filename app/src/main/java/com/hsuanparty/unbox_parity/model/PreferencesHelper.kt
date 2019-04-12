@@ -10,9 +10,7 @@ interface PreferencesHelper {
     var isLogout: Boolean
     var lastSearchKeyword: String
     var curVideoItem: VideoItem?
-    val dayHotVideoList: ArrayList<VideoItem>
-    val weekHotVideoList: ArrayList<VideoItem>
-    val monthHotVideoList: ArrayList<VideoItem>
+    val hotVideoList: ArrayList<VideoItem>
     var userName: String
     var photo: String
 

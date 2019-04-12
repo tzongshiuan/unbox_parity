@@ -29,6 +29,7 @@ import com.hsuanparty.unbox_parity.view.ui.video.VideoViewModel
 import javax.inject.Inject
 import android.speech.RecognizerIntent
 import android.app.Activity.RESULT_OK
+import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnectorV2
 
 
 class SearchFragment : Fragment(), Injectable {
@@ -38,35 +39,15 @@ class SearchFragment : Fragment(), Injectable {
 
         private const val REQUEST_VOICE = 123
 
-        @JvmStatic
-        @BindingAdapter("convertWeekRankView")
-        fun convertWeekRankView(view: RecyclerView, curHotStatus: Int) {
-            if (curHotStatus == YoutubeConnector.DAILY_HOT_VIDEO) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
-        }
-
-        @JvmStatic
-        @BindingAdapter("convertMonthRankView")
-        fun convertMonthRankView(view: RecyclerView, curHotStatus: Int) {
-            if (curHotStatus == YoutubeConnector.WEEKLY_HOT_VIDEO) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
-        }
-
-        @JvmStatic
-        @BindingAdapter("convertYearRankView")
-        fun convertYearRankView(view: RecyclerView, curHotStatus: Int) {
-            if (curHotStatus == YoutubeConnector.MONTHLY_HOT_VIDEO) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
-        }
+//        @JvmStatic
+//        @BindingAdapter("convertWeekRankView")
+//        fun convertWeekRankView(view: RecyclerView, curHotStatus: Int) {
+//            if (curHotStatus == YoutubeConnector.DAILY_HOT_VIDEO) {
+//                view.visibility = View.VISIBLE
+//            } else {
+//                view.visibility = View.GONE
+//            }
+//        }
     }
 
     @Inject
@@ -105,15 +86,7 @@ class SearchFragment : Fragment(), Injectable {
 
         videoViewModel = ViewModelProviders.of(this, factory).get(VideoViewModel::class.java)
         videoViewModel.curVideoItem.observe(this, Observer {
-            when (mBinding.curHotStatus) {
-                YoutubeConnector.DAILY_HOT_VIDEO -> mBinding.dayRankView.adapter?.notifyDataSetChanged()
-
-                YoutubeConnector.WEEKLY_HOT_VIDEO -> mBinding.weekRankView.adapter?.notifyDataSetChanged()
-
-                YoutubeConnector.MONTHLY_HOT_VIDEO -> mBinding.monthRankView.adapter?.notifyDataSetChanged()
-
-                else -> {}
-            }
+            mBinding.rankView.adapter?.notifyDataSetChanged()
         })
 
         viewModel = ViewModelProviders.of(this, factory).get(SearchViewModel::class.java)
@@ -178,35 +151,13 @@ class SearchFragment : Fragment(), Injectable {
         // Week Rank
         val layoutManager = LinearLayoutManager(activity)
         layoutManager.orientation = RecyclerView.VERTICAL
-        mBinding.dayRankView.layoutManager = layoutManager
+        mBinding.rankView.layoutManager = layoutManager
         val adapter = YoutubeAdapter()
-        adapter.mVideoList = mPreferences.dayHotVideoList
+        adapter.mVideoList = mPreferences.hotVideoList
         adapter.selectIndex = -1
         adapter.videoViewModel = videoViewModel
-        mBinding.dayRankView.adapter = adapter
-        mBinding.dayRankView.adapter?.notifyDataSetChanged()
-
-        // Month Rank
-        val layoutManager2 = LinearLayoutManager(activity)
-        layoutManager.orientation = RecyclerView.VERTICAL
-        mBinding.weekRankView.layoutManager = layoutManager2
-        val adapter2 = YoutubeAdapter()
-        adapter2.mVideoList = mPreferences.weekHotVideoList
-        adapter2.selectIndex = -1
-        adapter2.videoViewModel = videoViewModel
-        mBinding.weekRankView.adapter = adapter2
-        mBinding.weekRankView.adapter?.notifyDataSetChanged()
-
-        // Year Rank
-        val layoutManager3 = LinearLayoutManager(activity)
-        layoutManager.orientation = RecyclerView.VERTICAL
-        mBinding.monthRankView.layoutManager = layoutManager3
-        val adapter3 = YoutubeAdapter()
-        adapter3.mVideoList = mPreferences.monthHotVideoList
-        adapter3.selectIndex = -1
-        adapter3.videoViewModel = videoViewModel
-        mBinding.monthRankView.adapter = adapter3
-        mBinding.monthRankView.adapter?.notifyDataSetChanged()
+        mBinding.rankView.adapter = adapter
+        mBinding.rankView.adapter?.notifyDataSetChanged()
 
         mBinding.searchEditText.setOnEditorActionListener(object: TextView.OnEditorActionListener {
             override fun onEditorAction(view: TextView?, actionId: Int, event: KeyEvent?): Boolean {
@@ -234,22 +185,54 @@ class SearchFragment : Fragment(), Injectable {
         mBinding.segmentView.setOnSelectionChangedListener { identifier, value ->
             LogMessage.D(TAG, "identifier: $identifier, value: $value")
 
+            val yc = YoutubeConnectorV2("")
             val array = resources.getStringArray(com.hsuanparty.unbox_parity.R.array.search_three_state_option)
+
+            mPreferences.hotVideoList.clear()
+
+            // Clear data
+            val adapter = mBinding.rankView.adapter as YoutubeAdapter
+            (adapter.mVideoList as ArrayList).clear()
+            adapter.notifyDataSetChanged()
 
             when (value) {
                 array[0] -> {
                     mBinding.curHotStatus = YoutubeConnector.DAILY_HOT_VIDEO
-                    //mBinding.dayRankView.adapter?.notifyDataSetChanged()
+
+                    object : Thread() {
+                        override fun run() {
+                            mPreferences.hotVideoList.addAll(
+                                yc.searchHotVideo(YoutubeConnector.DAILY_HOT_VIDEO, "開箱") as ArrayList
+                            )
+                            refreshView()
+                        }
+                    }.start()
                 }
 
                 array[1] -> {
                     mBinding.curHotStatus = YoutubeConnector.WEEKLY_HOT_VIDEO
-                    //mBinding.weekRankView.adapter?.notifyDataSetChanged()
+
+                    object : Thread() {
+                        override fun run() {
+                            mPreferences.hotVideoList.addAll(
+                                yc.searchHotVideo(YoutubeConnector.WEEKLY_HOT_VIDEO, "開箱") as ArrayList
+                            )
+                            refreshView()
+                        }
+                    }.start()
                 }
 
                 array[2] -> {
                     mBinding.curHotStatus = YoutubeConnector.MONTHLY_HOT_VIDEO
-                    //mBinding.monthRankView.adapter?.notifyDataSetChanged()
+
+                    object : Thread() {
+                        override fun run() {
+                            mPreferences.hotVideoList.addAll(
+                                yc.searchHotVideo(YoutubeConnector.MONTHLY_HOT_VIDEO, "開箱") as ArrayList
+                            )
+                            refreshView()
+                        }
+                    }.start()
                 }
 
                 else -> {}
@@ -258,6 +241,14 @@ class SearchFragment : Fragment(), Injectable {
 
         // TODO for test convenience
         //mBinding.searchEditText.setText("dyson")
+    }
+
+    private fun refreshView() {
+        activity?.runOnUiThread {
+            val adapter = mBinding.rankView.adapter as YoutubeAdapter
+            adapter.mVideoList = mPreferences.hotVideoList
+            adapter.notifyDataSetChanged()
+        }
     }
 
     private fun hideKeyboard() {

@@ -41,6 +41,8 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
     @Inject
     lateinit var mCredential: GoogleAccountCredential
 
+    var curOrderStatus = ORDER_RELATIVE
+
     val screenStatusLiveData: MutableLiveData<Int> = MutableLiveData()
 
     val isPerformExitFullScreen: MutableLiveData<Boolean> = MutableLiveData()
@@ -79,16 +81,18 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
                 //calling the YoutubeConnector's search method by entered keyword
                 //and saving the results in list of type VideoItem class
                 if (!Constants.IS_SKIP_SEARCH) {
-                    videoSearchResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO))
-                    sleep(1000)
-                    videoSearchCountResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO_COUNT))
-                    sleep(1000)
-                    videoSearchUploadResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO_UPLOAD))
+                    when (curOrderStatus) {
+                        ORDER_RELATIVE -> videoSearchResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO))
+                        ORDER_VIEW_COUNT -> videoSearchCountResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO_COUNT))
+                        ORDER_VIEW_UPLOAD -> videoSearchUploadResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO_UPLOAD))
+                    }
                 } else {
                     val list: ArrayList<VideoItem> = ArrayList()
-                    videoSearchResult.postValue(list)
-                    videoSearchCountResult.postValue(list)
-                    videoSearchUploadResult.postValue(list)
+                    when (curOrderStatus) {
+                        ORDER_RELATIVE -> videoSearchResult.postValue(list)
+                        ORDER_VIEW_COUNT -> videoSearchCountResult.postValue(list)
+                        ORDER_VIEW_UPLOAD -> videoSearchUploadResult.postValue(list)
+                    }
                 }
             }
             //starting the thread

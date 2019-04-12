@@ -1,6 +1,5 @@
 package com.hsuanparty.unbox_parity.view.ui
 
-import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
@@ -472,14 +471,14 @@ class MainActivityFragment : Fragment(), Injectable {
                     //calling the YoutubeConnector's search method by entered keyword
                     //and saving the results in list of type VideoItem class
                     if (!Constants.IS_SKIP_SEARCH) {
-                        mPreferences.dayHotVideoList.clear()
-                        mPreferences.dayHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.DAILY_HOT_VIDEO, "開箱") as ArrayList)
+                        mPreferences.hotVideoList.clear()
+                        mPreferences.hotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.DAILY_HOT_VIDEO, "開箱") as ArrayList)
 
-                        mPreferences.weekHotVideoList.clear()
-                        mPreferences.weekHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.WEEKLY_HOT_VIDEO, "開箱") as ArrayList)
+                        //mPreferences.weekHotVideoList.clear()
+                        //mPreferences.weekHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.WEEKLY_HOT_VIDEO, "開箱") as ArrayList)
 
-                        mPreferences.monthHotVideoList.clear()
-                        mPreferences.monthHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.MONTHLY_HOT_VIDEO, "開箱") as ArrayList)
+                        //mPreferences.monthHotVideoList.clear()
+                        //mPreferences.monthHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.MONTHLY_HOT_VIDEO, "開箱") as ArrayList)
                     }
 
                     isSearchFinish = true

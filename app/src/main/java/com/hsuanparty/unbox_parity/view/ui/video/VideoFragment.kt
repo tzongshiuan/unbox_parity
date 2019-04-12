@@ -8,6 +8,7 @@ import android.widget.Button
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +16,7 @@ import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.databinding.VideoFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
+import com.hsuanparty.unbox_parity.model.VideoItem
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeAdapter
@@ -32,35 +34,15 @@ class VideoFragment : Fragment(), Injectable{
 
         private const val DEFAULT_VIDEO_ID = ""
 
-        @JvmStatic
-        @BindingAdapter("convertVideoRelative")
-        fun convertVideoRelative(view: RecyclerView, curOrderStatus: Int) {
-            if (curOrderStatus == VideoViewModel.ORDER_RELATIVE) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
-        }
-
-        @JvmStatic
-        @BindingAdapter("convertVideoViewCount")
-        fun convertVideoViewCount(view: RecyclerView, curOrderStatus: Int) {
-            if (curOrderStatus == VideoViewModel.ORDER_VIEW_COUNT) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
-        }
-
-        @JvmStatic
-        @BindingAdapter("convertVideoViewUpload")
-        fun convertVideoViewUpload(view: RecyclerView, curOrderStatus: Int) {
-            if (curOrderStatus == VideoViewModel.ORDER_VIEW_UPLOAD) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
-        }
+//        @JvmStatic
+//        @BindingAdapter("convertVideoRelative")
+//        fun convertVideoRelative(view: RecyclerView, curOrderStatus: Int) {
+//            if (curOrderStatus == VideoViewModel.ORDER_RELATIVE) {
+//                view.visibility = View.VISIBLE
+//            } else {
+//                view.visibility = View.GONE
+//            }
+//        }
     }
 
     @Inject
@@ -119,7 +101,6 @@ class VideoFragment : Fragment(), Injectable{
 
         viewModel = ViewModelProviders.of(this, factory).get(VideoViewModel::class.java)
         (mBinding.recyclerView.adapter as YoutubeAdapter).videoViewModel = viewModel
-        (mBinding.recyclerView2.adapter as YoutubeAdapter).videoViewModel = viewModel
 
         viewModel.isPerformExitFullScreen.observe(this, Observer { isExit ->
             if (isExit) {
@@ -146,26 +127,15 @@ class VideoFragment : Fragment(), Injectable{
         })
 
         viewModel.videoSearchResult.observe(this, Observer { result ->
-            (mBinding.recyclerView.adapter as YoutubeAdapter).mVideoList = result
-            (mBinding.recyclerView.adapter as YoutubeAdapter).selectIndex = -1
-            mBinding.recyclerView.adapter?.notifyDataSetChanged()
-
-            viewModel.searchVideoFinished.postValue(true)
-
-            // clear play video
-            player?.cueVideo(DEFAULT_VIDEO_ID, 0f)
+            onGetSearchResult(result)
         })
 
         viewModel.videoSearchCountResult.observe(this, Observer { result ->
-            (mBinding.recyclerView2.adapter as YoutubeAdapter).mVideoList = result
-            (mBinding.recyclerView2.adapter as YoutubeAdapter).selectIndex = -1
-            mBinding.recyclerView2.adapter?.notifyDataSetChanged()
+            onGetSearchResult(result)
         })
 
         viewModel.videoSearchUploadResult.observe(this, Observer { result ->
-            (mBinding.recyclerView3.adapter as YoutubeAdapter).mVideoList = result
-            (mBinding.recyclerView3.adapter as YoutubeAdapter).selectIndex = -1
-            mBinding.recyclerView3.adapter?.notifyDataSetChanged()
+            onGetSearchResult(result)
         })
 
         viewModel.curVideoItem.observe(this, Observer { videoItem ->
@@ -175,6 +145,17 @@ class VideoFragment : Fragment(), Injectable{
             // jump to video page forcibly
             searchViewModel.isSearchFinish.value = SearchViewModel.SWITCH_TO_VIDEO_PAGE
         })
+    }
+
+    private fun onGetSearchResult(result: List<VideoItem>) {
+        (mBinding.recyclerView.adapter as YoutubeAdapter).mVideoList = result
+        (mBinding.recyclerView.adapter as YoutubeAdapter).selectIndex = -1
+        mBinding.recyclerView.adapter?.notifyDataSetChanged()
+
+        viewModel.searchVideoFinished.postValue(true)
+
+        // clear play video
+        player?.cueVideo(DEFAULT_VIDEO_ID, 0f)
     }
 
     override fun onResume() {
@@ -213,33 +194,33 @@ class VideoFragment : Fragment(), Injectable{
         mBinding.recyclerView.layoutManager = layoutManager
         mBinding.recyclerView.adapter = YoutubeAdapter()
 
-        val layoutManager2 = LinearLayoutManager(activity)
-        layoutManager2.orientation = RecyclerView.VERTICAL
-        mBinding.recyclerView2.layoutManager = layoutManager2
-        mBinding.recyclerView2.adapter = YoutubeAdapter()
-
-        val layoutManager3 = LinearLayoutManager(activity)
-        layoutManager3.orientation = RecyclerView.VERTICAL
-        mBinding.recyclerView3.layoutManager = layoutManager3
-        mBinding.recyclerView3.adapter = YoutubeAdapter()
-
         mBinding.curOrderStatus = VideoViewModel.ORDER_RELATIVE
         mBinding.segmentView.setOnSelectionChangedListener { identifier, value ->
             LogMessage.D(TAG, "identifier: $identifier, value: $value")
 
             val array = resources.getStringArray(R.array.video_order_option)
+
+            // Clear data
+            val adapter = mBinding.recyclerView.adapter as YoutubeAdapter
+            (adapter.mVideoList as ArrayList).clear()
+            adapter.notifyDataSetChanged()
+
             when (value) {
                 array[0] -> {
                     mBinding.curOrderStatus = VideoViewModel.ORDER_RELATIVE
+                    viewModel.curOrderStatus = VideoViewModel.ORDER_RELATIVE
                 }
                 array[1] -> {
                     mBinding.curOrderStatus = VideoViewModel.ORDER_VIEW_COUNT
+                    viewModel.curOrderStatus = VideoViewModel.ORDER_VIEW_COUNT
                 }
                 array[2] -> {
                     mBinding.curOrderStatus = VideoViewModel.ORDER_VIEW_UPLOAD
+                    viewModel.curOrderStatus = VideoViewModel.ORDER_VIEW_UPLOAD
                 }
                 else -> {}
             }
+            viewModel.searchVideo(activity!!)
         }
 
         lifecycle.addObserver(mBinding.youtubeView)

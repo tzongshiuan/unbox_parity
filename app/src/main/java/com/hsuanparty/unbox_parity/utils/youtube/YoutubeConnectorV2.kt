@@ -24,7 +24,7 @@ class YoutubeConnectorV2(val keyWord: String) {
         //maximum results that should be downloaded via the YouTube data API at a time
         private const val MAX_RESULTS: Long = 30
 
-        private const val HOT_MAX_RESULTS: Long = 30
+        private const val HOT_MAX_RESULTS: Long = 40
 
         private const val BASE_SEARCH_URL = "https://www.youtube.com/results?"
 
@@ -122,12 +122,6 @@ class YoutubeConnectorV2(val keyWord: String) {
 
         val items: ArrayList<VideoItem> = ArrayList()
 
-        if (Constants.IS_SHOW_ADMOB) {
-            val adItem = VideoItem()
-            adItem.type = VideoItem.TYPE_BANNER
-            items.add(adItem)
-        }
-
         try {
             // Loop until all links are found and parsed. Find each link by
             // finding the beginning and ending index of the tokens defined
@@ -136,6 +130,14 @@ class YoutubeConnectorV2(val keyWord: String) {
             while (-1 != html.indexOf(indexToken, index)) {
                 val item = VideoItem()
                 index = html.indexOf(indexToken, index)
+
+                if (items.size % 5 == 0) {
+                    if (Constants.IS_SHOW_ADMOB) {
+                        val adItem = VideoItem()
+                        adItem.type = VideoItem.TYPE_BANNER
+                        items.add(adItem)
+                    }
+                }
 
                 LogMessage.D(TAG, "-----------------------------------------------------------")
 

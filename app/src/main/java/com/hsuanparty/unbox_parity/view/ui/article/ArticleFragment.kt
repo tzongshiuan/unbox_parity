@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hsuanparty.unbox_parity.R
@@ -21,6 +22,7 @@ import com.hsuanparty.unbox_parity.model.ArticleItem
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
 import com.hsuanparty.unbox_parity.utils.MyWebViewClient
+import com.hsuanparty.unbox_parity.utils.youtube.YoutubeAdapter
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import javax.inject.Inject
 
@@ -34,45 +36,15 @@ class ArticleFragment : Fragment(), Injectable{
         const val DATE_RANGE_MONTH = 2
         const val DATE_RANGE_YEAR  = 3
 
-        @JvmStatic
-        @BindingAdapter("convertNoneDateRange")
-        fun convertNoneDateRange(view: RecyclerView, curDateRange: Int) {
-            if (curDateRange == DATE_RANGE_NONE) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
-        }
-
-        @JvmStatic
-        @BindingAdapter("convertWeekDateRange")
-        fun convertWeekDateRange(view: RecyclerView, curDateRange: Int) {
-            if (curDateRange == DATE_RANGE_WEEK) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
-        }
-
-        @JvmStatic
-        @BindingAdapter("convertMonthDateRange")
-        fun convertMonthDateRange(view: RecyclerView, curDateRange: Int) {
-            if (curDateRange == DATE_RANGE_MONTH) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
-        }
-
-        @JvmStatic
-        @BindingAdapter("convertYearDateRange")
-        fun convertYearDateRange(view: RecyclerView, curDateRange: Int) {
-            if (curDateRange == DATE_RANGE_YEAR) {
-                view.visibility = View.VISIBLE
-            } else {
-                view.visibility = View.GONE
-            }
-        }
+//        @JvmStatic
+//        @BindingAdapter("convertNoneDateRange")
+//        fun convertNoneDateRange(view: RecyclerView, curDateRange: Int) {
+//            if (curDateRange == DATE_RANGE_NONE) {
+//                view.visibility = View.VISIBLE
+//            } else {
+//                view.visibility = View.GONE
+//            }
+//        }
     }
 
     @Inject
@@ -123,27 +95,19 @@ class ArticleFragment : Fragment(), Injectable{
 
         viewModel = ViewModelProviders.of(this, factory).get(ArticleViewModel::class.java)
         viewModel.articleNoneResult.observe(this, Observer { list ->
-            (mBinding.noneView.adapter as ArticleAdapter).mArticleList = list
-            (mBinding.noneView.adapter as ArticleAdapter).selectIndex = -1
-            mBinding.noneView.adapter?.notifyDataSetChanged()
+            onGetSearchResult(list)
         })
 
         viewModel.articleWeekResult.observe(this, Observer { list ->
-            (mBinding.weekView.adapter as ArticleAdapter).mArticleList = list
-            (mBinding.weekView.adapter as ArticleAdapter).selectIndex = -1
-            mBinding.weekView.adapter?.notifyDataSetChanged()
+            onGetSearchResult(list)
         })
 
         viewModel.articleMonthResult.observe(this, Observer { list ->
-            (mBinding.monthView.adapter as ArticleAdapter).mArticleList = list
-            (mBinding.monthView.adapter as ArticleAdapter).selectIndex = -1
-            mBinding.monthView.adapter?.notifyDataSetChanged()
+            onGetSearchResult(list)
         })
 
         viewModel.articleYearResult.observe(this, Observer { list ->
-            (mBinding.yearView.adapter as ArticleAdapter).mArticleList = list
-            (mBinding.yearView.adapter as ArticleAdapter).selectIndex = -1
-            mBinding.yearView.adapter?.notifyDataSetChanged()
+            onGetSearchResult(list)
         })
 
         viewModel.showArticleContent.observe(this, Observer { articleItem ->
@@ -151,6 +115,12 @@ class ArticleFragment : Fragment(), Injectable{
         })
 
         initAdapters()
+    }
+
+    private fun onGetSearchResult(list: ArrayList<ArticleItem>) {
+        (mBinding.recyclerView.adapter as ArticleAdapter).mArticleList = list
+        (mBinding.recyclerView.adapter as ArticleAdapter).selectIndex = -1
+        mBinding.recyclerView.adapter?.notifyDataSetChanged()
     }
 
     override fun onResume() {
@@ -188,25 +158,42 @@ class ArticleFragment : Fragment(), Injectable{
 
             val array = resources.getStringArray(R.array.article_state_option)
 
+            // Clear data
+            val adapter = mBinding.recyclerView.adapter as ArticleAdapter
+            (adapter.mArticleList as ArrayList).clear()
+            adapter.notifyDataSetChanged()
+
             when (value) {
                 array[0] -> {
                     curFilterStatus = DATE_RANGE_NONE
+                    viewModel.curFilterStatus = DATE_RANGE_NONE
                     mBinding.curDateRange = DATE_RANGE_NONE
+
+                    viewModel.searchArticle(activity!!)
                 }
 
                 array[1] -> {
                     curFilterStatus = DATE_RANGE_WEEK
+                    viewModel.curFilterStatus = DATE_RANGE_WEEK
                     mBinding.curDateRange = DATE_RANGE_WEEK
+
+                    viewModel.searchArticle(activity!!)
                 }
 
                 array[2] -> {
                     curFilterStatus = DATE_RANGE_MONTH
+                    viewModel.curFilterStatus = DATE_RANGE_MONTH
                     mBinding.curDateRange = DATE_RANGE_MONTH
+
+                    viewModel.searchArticle(activity!!)
                 }
 
                 array[3] -> {
                     curFilterStatus = DATE_RANGE_YEAR
+                    viewModel.curFilterStatus = DATE_RANGE_YEAR
                     mBinding.curDateRange = DATE_RANGE_YEAR
+
+                    viewModel.searchArticle(activity!!)
                 }
 
                 else -> {}
@@ -240,34 +227,10 @@ class ArticleFragment : Fragment(), Injectable{
         // None filter
         val layoutManager = LinearLayoutManager(activity)
         layoutManager.orientation = RecyclerView.VERTICAL
-        mBinding.noneView.layoutManager = layoutManager
+        mBinding.recyclerView.layoutManager = layoutManager
         val adapter = ArticleAdapter()
         adapter.articleViewModel = viewModel
-        mBinding.noneView.adapter = adapter
-
-        // Week filter
-        val layoutManager2 = LinearLayoutManager(activity)
-        layoutManager.orientation = RecyclerView.VERTICAL
-        mBinding.weekView.layoutManager = layoutManager2
-        val adapter2 = ArticleAdapter()
-        adapter2.articleViewModel = viewModel
-        mBinding.weekView.adapter = adapter2
-
-        // Month filter
-        val layoutManager3 = LinearLayoutManager(activity)
-        layoutManager.orientation = RecyclerView.VERTICAL
-        mBinding.monthView.layoutManager = layoutManager3
-        val adapter3 = ArticleAdapter()
-        adapter3.articleViewModel = viewModel
-        mBinding.monthView.adapter = adapter3
-
-        // Year filter
-        val layoutManager4 = LinearLayoutManager(activity)
-        layoutManager.orientation = RecyclerView.VERTICAL
-        mBinding.yearView.layoutManager = layoutManager4
-        val adapter4 = ArticleAdapter()
-        adapter4.articleViewModel = viewModel
-        mBinding.yearView.adapter = adapter4
+        mBinding.recyclerView.adapter = adapter
     }
 
     private fun showUrlContent(articleItem: ArticleItem) {
@@ -278,26 +241,12 @@ class ArticleFragment : Fragment(), Injectable{
     private fun changeToArticleUI() {
         mBinding.articleGroup.visibility = View.VISIBLE
         mBinding.webGroup.visibility = View.GONE
-
-        when (curFilterStatus) {
-            DATE_RANGE_NONE -> mBinding.noneView.visibility = View.VISIBLE
-            DATE_RANGE_WEEK -> mBinding.weekView.visibility = View.VISIBLE
-            DATE_RANGE_MONTH -> mBinding.monthView.visibility = View.VISIBLE
-            DATE_RANGE_YEAR -> mBinding.yearView.visibility = View.VISIBLE
-            else -> {}
-        }
+        mBinding.recyclerView.visibility = View.VISIBLE
     }
 
     private fun changeToWebUI() {
         mBinding.articleGroup.visibility = View.GONE
         mBinding.webGroup.visibility = View.VISIBLE
-
-        when (curFilterStatus) {
-            DATE_RANGE_NONE -> mBinding.noneView.visibility = View.GONE
-            DATE_RANGE_WEEK -> mBinding.weekView.visibility = View.GONE
-            DATE_RANGE_MONTH -> mBinding.monthView.visibility = View.GONE
-            DATE_RANGE_YEAR -> mBinding.yearView.visibility = View.GONE
-            else -> {}
-        }
+        mBinding.recyclerView.visibility = View.GONE
     }
 }

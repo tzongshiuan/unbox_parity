@@ -64,44 +64,10 @@
                 android:visibility="invisible"/>
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/noneView"
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginBottom="60dp"
-                app:convertNoneDateRange="@{curDateRange}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/segmentView"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/weekView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="60dp"
-                app:convertWeekDateRange="@{curDateRange}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/segmentView"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/monthView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="60dp"
-                app:convertMonthDateRange="@{curDateRange}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/segmentView"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/yearView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="60dp"
-                app:convertYearDateRange="@{curDateRange}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/segmentView"

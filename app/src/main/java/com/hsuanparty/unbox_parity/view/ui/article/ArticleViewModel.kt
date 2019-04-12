@@ -30,7 +30,7 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
 //        private const val SEARCH_FILTER_EXCLUDE = "+-\"video\"+-\"購物\"+-\"影片\""
         private const val SEARCH_FILTER_EXCLUDE = "&as_eq=\"video\"+\"購物\""
 
-        private const val MAX_RESULT = 30
+        private const val MAX_RESULT = 40
         private const val BASE_SEARCH_URL = "https://www.google.com/search?tbas=0&source=lnt&num=$MAX_RESULT"
 
         private const val URL_PREFIX = "/url?q="
@@ -38,6 +38,8 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
 
     @Inject
     lateinit var mPreferences: MyPreferences
+
+    var curFilterStatus = ArticleFragment.DATE_RANGE_NONE
 
     val articleNoneResult: MutableLiveData<ArrayList<ArticleItem>> = MutableLiveData()
     val articleWeekResult: MutableLiveData<ArrayList<ArticleItem>> = MutableLiveData()
@@ -59,13 +61,12 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
 
         object : Thread() {
             override fun run() {
-                searchWithDateRange(ArticleFragment.DATE_RANGE_NONE)
-                sleep(1000)
-                searchWithDateRange(ArticleFragment.DATE_RANGE_WEEK)
-                sleep(1000)
-                searchWithDateRange(ArticleFragment.DATE_RANGE_MONTH)
-                sleep(1000)
-                searchWithDateRange(ArticleFragment.DATE_RANGE_YEAR)
+                when (curFilterStatus) {
+                    ArticleFragment.DATE_RANGE_NONE -> searchWithDateRange(ArticleFragment.DATE_RANGE_NONE)
+                    ArticleFragment.DATE_RANGE_WEEK -> searchWithDateRange(ArticleFragment.DATE_RANGE_WEEK)
+                    ArticleFragment.DATE_RANGE_MONTH -> searchWithDateRange(ArticleFragment.DATE_RANGE_MONTH)
+                    ArticleFragment.DATE_RANGE_YEAR -> searchWithDateRange(ArticleFragment.DATE_RANGE_YEAR)
+                }
             }
         }.start()
 
@@ -142,12 +143,6 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
 
         val items: ArrayList<ArticleItem> = ArrayList()
 
-        if (Constants.IS_SHOW_ADMOB) {
-            val adItem = ArticleItem()
-            adItem.type = ArticleItem.TYPE_BANNER
-            items.add(adItem)
-        }
-
         try {
             // Loop until all links are found and parsed. Find each link by
             // finding the beginning and ending index of the tokens defined
@@ -156,6 +151,14 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
             while (-1 != html.indexOf(token1, index)) {
                 val item = ArticleItem()
                 index = html.indexOf(token1, index)
+
+                if (items.size % 8 == 0) {
+                    if (Constants.IS_SHOW_ADMOB) {
+                        val adItem = ArticleItem()
+                        adItem.type = ArticleItem.TYPE_BANNER
+                        items.add(adItem)
+                    }
+                }
 
                 // URL
                 val result = html.indexOf(token2, index)
