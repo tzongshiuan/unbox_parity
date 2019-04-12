@@ -27,10 +27,18 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
         private const val BASE_SEARCH_URL = "https://ezprice.com.tw/s/"
 
+        private const val PAGE_FORMAT_URL = "&p=%d"
+
         // parity order
         const val ORDER_RELATIVE = 0
         const val ORDER_LOW_TO_HIGH = 1
         const val ORDER_HIGH_TO_LOW = 2
+
+
+        // PAGE_STATE
+        const val PAGE_STATE_FIRST = 0
+        const val PAGE_STATE_MIDDLE = 1
+        const val PAGE_STATE_END = 2
     }
 
     @Inject
@@ -38,12 +46,16 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
     val parityResult: MutableLiveData<ArrayList<ParityItem>> = MutableLiveData()
 
+    val pageState: MutableLiveData<Int> = MutableLiveData()
+
     var mActivity: Activity? = null
 
     var curOrderStatus = ORDER_RELATIVE
+    var curPageNum = 1  // initial with page 1
 
     fun removeObservers(fragment: Fragment) {
         parityResult.removeObservers(fragment)
+        pageState.removeObservers(fragment)
     }
 
     fun searchParity() {
@@ -64,6 +76,7 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
                     ORDER_HIGH_TO_LOW -> path += "/?st=2"
                     else -> {}
                 }
+                path += String.format(PAGE_FORMAT_URL, curPageNum)
                 LogMessage.D(TAG, "Parity search url: $path")
 
                 val url = URL(path)
@@ -165,6 +178,36 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
                 items.add(item)
             }
+
+            val pageToken = "<div class=\"pagination clearfix\">"
+            val pageToken1 = "<li class=\"prev"
+            val pageToken2 = "上一頁"
+            val pageToken3 = "<li class=\"next"
+            val pageToken4 = "下一頁"
+            val disableToken = "\"javascript: void(0)\""
+            index = html.indexOf(pageToken, index)
+            if (index != -1) {
+                val preStart = html.indexOf(pageToken1, index)
+                val preEnd = html.indexOf(pageToken2, index)
+                val preText = html.substring(preStart, preEnd)
+                val isPreviousDisable = preText.contains(disableToken)
+
+                index = preEnd + pageToken2.length
+                val nextStart = html.indexOf(pageToken3, index)
+                val nextEnd = html.indexOf(pageToken4, index)
+                val nextText = html.substring(nextStart, nextEnd)
+                val isNextDisable = nextText.contains(disableToken)
+
+                if (!isPreviousDisable && !isNextDisable) {
+                    pageState.postValue(PAGE_STATE_MIDDLE)
+                } else if (isPreviousDisable && !isNextDisable) {
+                    pageState.postValue(PAGE_STATE_FIRST)
+                } else if (!isPreviousDisable && isNextDisable) {
+                    pageState.postValue(PAGE_STATE_END)
+                }
+            }
+
+            // Check page status
         } catch (e: MalformedURLException) {
             e.printStackTrace()
             //throw IOException("Failed to parse Google links.")

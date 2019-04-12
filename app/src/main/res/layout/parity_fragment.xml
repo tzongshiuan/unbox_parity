@@ -7,6 +7,10 @@
         <variable
                 name="curOrderStatus"
                 type="Integer" />
+
+        <variable
+                name="curPageNum"
+                type="Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -121,12 +125,55 @@
                 android:id="@+id/parityView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="60dp"
                 app:layout_constraintTop_toBottomOf="@+id/filterLayout"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toTopOf="@+id/pageControlLayout"/>
+
+        <LinearLayout
+                android:id="@+id/pageControlLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="60dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="horizontal">
+
+            <Button
+                    android:id="@+id/previousBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/txt_previous_page"
+                    android:background="@drawable/btn_parity_order_selector"
+                    android:textColor="@color/color_parity_order_btn_selector"
+                    tools:background="@drawable/btn_parity_order_selector"
+                    tools:textColor="@color/color_parity_order_btn_selector"/>
+
+            <TextView
+                    android:id="@+id/pageText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center_vertical"
+                    app:convertPageNum="@{curPageNum}"
+                    tools:text="12"
+                    android:textSize="22sp"/>
+
+            <Button
+                    android:id="@+id/nextBtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/txt_next_page"
+                    android:background="@drawable/btn_parity_order_selector"
+                    android:textColor="@color/color_parity_order_btn_selector"
+                    tools:background="@drawable/btn_parity_order_selector"
+                    tools:textColor="@color/color_parity_order_btn_selector"/>
+        </LinearLayout>
 
         <androidx.constraintlayout.widget.Group
                 android:id="@+id/parityGroup"

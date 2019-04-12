@@ -1,22 +1,21 @@
 package com.hsuanparty.unbox_parity.view.ui.parity
 
 import android.content.Intent
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.databinding.ParityFragmentBinding
-
-import com.hsuanparty.unbox_parity.databinding.SearchFragmentBinding
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
@@ -62,6 +61,13 @@ class ParityFragment : Fragment(), Injectable{
                 view.setBackgroundResource(R.drawable.btn_parity_order_selector)
                 view.setTextColor(ContextCompat.getColor(view.context, R.color.color_parity_order_btn_selector))
             }
+        }
+
+        @JvmStatic
+        @BindingAdapter("convertPageNum")
+        fun convertPageNum(view: TextView, pageNum: Int) {
+            val text = String.format("第%d頁", pageNum)
+            view.text = text
         }
     }
 
@@ -123,6 +129,25 @@ class ParityFragment : Fragment(), Injectable{
                 (mBinding.parityView.adapter as ParityAdapter).selectIndex = -1
                 (mBinding.parityView.adapter as ParityAdapter).parityViewModel = viewModel
                 mBinding.parityView.adapter?.notifyDataSetChanged()
+
+                mBinding.curPageNum = viewModel.curPageNum
+            }
+        })
+
+        viewModel.pageState.observe(this, Observer { state ->
+            when (state) {
+                ParityViewModel.PAGE_STATE_FIRST -> {
+                    mBinding.previousBtn.isEnabled = false
+                    mBinding.nextBtn.isEnabled = true
+                }
+                ParityViewModel.PAGE_STATE_MIDDLE -> {
+                    mBinding.previousBtn.isEnabled = true
+                    mBinding.nextBtn.isEnabled = true
+                }
+                ParityViewModel.PAGE_STATE_END -> {
+                    mBinding.previousBtn.isEnabled = true
+                    mBinding.nextBtn.isEnabled = false
+                }
             }
         })
 
@@ -166,19 +191,47 @@ class ParityFragment : Fragment(), Injectable{
         mBinding.relativeBtn.setOnClickListener {
             mBinding.curOrderStatus = ParityViewModel.ORDER_RELATIVE
             viewModel.curOrderStatus = ParityViewModel.ORDER_RELATIVE
+            pageRestore()
             viewModel.searchParity()
         }
 
         mBinding.low2highBtn.setOnClickListener {
             mBinding.curOrderStatus = ParityViewModel.ORDER_LOW_TO_HIGH
             viewModel.curOrderStatus = ParityViewModel.ORDER_LOW_TO_HIGH
+            pageRestore()
             viewModel.searchParity()
         }
 
         mBinding.high2lowBtn.setOnClickListener {
             mBinding.curOrderStatus = ParityViewModel.ORDER_HIGH_TO_LOW
             viewModel.curOrderStatus = ParityViewModel.ORDER_HIGH_TO_LOW
+            pageRestore()
             viewModel.searchParity()
         }
+
+        mBinding.previousBtn.setOnClickListener {
+            pagePrevious()
+            viewModel.searchParity()
+        }
+
+        mBinding.nextBtn.setOnClickListener {
+            pageNext()
+            viewModel.searchParity()
+        }
+    }
+
+    private fun pageRestore() {
+        viewModel.curPageNum = 1
+        mBinding.curPageNum = viewModel.curPageNum
+    }
+
+    private fun pageNext() {
+        viewModel.curPageNum += 1
+        mBinding.curPageNum = viewModel.curPageNum
+    }
+
+    private fun pagePrevious() {
+        viewModel.curPageNum -= 1
+        mBinding.curPageNum = viewModel.curPageNum
     }
 }
