@@ -180,7 +180,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="filterLayout, parityView"/>
+                app:constraint_referenced_ids="filterLayout, parityView, pageControlLayout"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
