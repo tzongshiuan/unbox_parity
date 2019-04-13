@@ -4,11 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +17,7 @@ import com.hsuanparty.unbox_parity.model.VideoItem
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeAdapter
+import com.hsuanparty.unbox_parity.view.ui.UnboxParityActivity
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -171,6 +169,12 @@ class VideoFragment : Fragment(), Injectable{
     override fun onStop() {
         LogMessage.D(TAG, "onStop()")
         super.onStop()
+
+        player?.pause()
+
+        if (mBinding.youtubeView.isFullScreen()) {
+            viewModel.performExitFullScreen()
+        }
     }
 
     override fun onDestroy() {
