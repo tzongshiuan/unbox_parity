@@ -7,7 +7,10 @@ import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.FirebaseApp
+import com.google.firebase.iid.FirebaseInstanceId
 import com.hsuanparty.unbox_parity.di.AppInjector
+import com.hsuanparty.unbox_parity.utils.LogMessage
+import com.hsuanparty.unbox_parity.utils.MyFirebaseMessagingService
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -39,6 +42,13 @@ class MyApplication : Application(), HasActivityInjector, HasSupportFragmentInje
         FirebaseApp.initializeApp(this)
         FacebookSdk.sdkInitialize(this)
         AppEventsLogger.activateApp(this)
+
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val token = task.result?.token
+                LogMessage.D(MyFirebaseMessagingService::class.java.simpleName, "token: $token")
+            }
+        }
 
 //        Fabric.with(this, Crashlytics())
     }
