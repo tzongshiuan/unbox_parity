@@ -6,7 +6,7 @@ package com.hsuanparty.unbox_parity.utils
  * Description:
  */
 object Constants {
-    var IS_DEBUG_MODE = true
+    var IS_DEBUG_MODE = false
 
     const val PERMISSION_DENY_CLOSE_TIME = 2000L
 
