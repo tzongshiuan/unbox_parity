@@ -7,7 +7,7 @@
 
     <!--Common Strings-->
     <string name="txt_ok">OK</string>
-    <string name="txt_waiting">請稍後</string>
+    <string name="txt_waiting">請稍候</string>
 
     <!--MainActivity-->
     <string name="txt_network_check">Network Check</string>
