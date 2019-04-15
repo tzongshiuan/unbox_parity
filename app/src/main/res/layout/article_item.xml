@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardCornerRadius="10dp"
-        android:layout_margin="16dp">
+        android:layout_margin="10dp">
 
         <!-- RelativeLayout places views with respect to each other -->
         <RelativeLayout
@@ -34,6 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:layout_toStartOf="@+id/shareBtn"
                 android:text="@{articleItem.title}"
                 android:textColor="@color/light_blue"
                 tools:text="Article Title"
@@ -54,6 +55,15 @@
                 android:textAppearance="@style/TextAppearance.AppCompat"
                 android:textSize="12sp"
                 android:maxLines="4" />
+
+            <ImageButton
+                    android:id="@+id/shareBtn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/btn_logout_selector"
+                    android:src="@drawable/ic_share_24dp"
+                    android:contentDescription="share"/>
 
         </RelativeLayout>
 

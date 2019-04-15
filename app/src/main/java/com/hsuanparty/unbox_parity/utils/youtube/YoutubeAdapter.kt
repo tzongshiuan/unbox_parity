@@ -1,11 +1,13 @@
 package com.hsuanparty.unbox_parity.utils.youtube
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
@@ -19,6 +21,7 @@ import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.view.ui.video.VideoViewModel
 import com.squareup.picasso.Picasso
+import java.lang.StringBuilder
 
 /**
  * Author: Tsung Hsuan, Lai
@@ -86,6 +89,21 @@ class YoutubeAdapter: RecyclerView.Adapter<YoutubeAdapter.ViewHolder>() {
         binding.videoView.setOnClickListener {
             videoViewModel?.playVideo(binding.videoItem)
             selectIndex = position
+        }
+
+        binding.shareBtn.setOnClickListener {
+            val builder = StringBuilder()
+            builder.append(binding.videoItem?.title)
+            builder.append("\n")
+            val playUrl = "https://www.youtube.com/watch?v=${binding.videoItem?.id}"
+            builder.append(playUrl)
+
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, builder.toString())
+                type = "text/plain"
+            }
+            binding.root.context.startActivity(sendIntent)
         }
     }
 

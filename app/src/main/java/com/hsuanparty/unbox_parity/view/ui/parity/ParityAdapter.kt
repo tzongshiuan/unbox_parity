@@ -1,5 +1,6 @@
 package com.hsuanparty.unbox_parity.view.ui.parity
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,6 +85,21 @@ class ParityAdapter: RecyclerView.Adapter<ParityAdapter.ViewHolder>() {
         binding.goPlatformBtn.setOnClickListener {
             parityViewModel?.showPlatform(binding.parityItem)
             //selectIndex = position
+        }
+
+        binding.shareBtn.setOnClickListener {
+            val builder = StringBuilder()
+            builder.append(binding.parityItem?.title)
+            builder.append("\n")
+            val parityUrl = "${binding.parityItem?.url}"
+            builder.append(parityUrl)
+
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, builder.toString())
+                type = "text/plain"
+            }
+            binding.root.context.startActivity(sendIntent)
         }
     }
 

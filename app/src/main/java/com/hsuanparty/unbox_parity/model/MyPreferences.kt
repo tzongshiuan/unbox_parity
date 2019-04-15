@@ -58,7 +58,6 @@ class MyPreferences @Inject constructor(val context: Context) : PreferencesHelpe
         if (versionName != getVersionName()) {
             Log.d(TAG, "Read reference failed, previous version ${getVersionName()}")
             initPreferences()
-            return
         }
 
         try {

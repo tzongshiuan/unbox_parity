@@ -44,7 +44,7 @@
             <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
+                    android:layout_toStartOf="@+id/shareBtn"
                     android:layout_marginEnd="30dp"
                     android:orientation="vertical">
 
@@ -70,6 +70,16 @@
                         android:textColor="@color/color_go_platform_selector"
                         android:textSize="16sp"/>
             </LinearLayout>
+
+            <ImageButton
+                    android:id="@+id/shareBtn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/btn_logout_selector"
+                    android:src="@drawable/ic_share_24dp"
+                    android:contentDescription="share"/>
 
             <!-- TextView used to show title of the searched video -->
             <TextView

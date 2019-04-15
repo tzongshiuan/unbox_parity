@@ -1,5 +1,6 @@
 package com.hsuanparty.unbox_parity.view.ui.article
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,6 +80,21 @@ class ArticleAdapter: RecyclerView.Adapter<ArticleAdapter.ViewHolder>() {
             articleViewModel?.showUrlContent(binding.articleItem)
             selectIndex = position
             this.notifyDataSetChanged()
+        }
+
+        binding.shareBtn.setOnClickListener {
+            val builder = StringBuilder()
+            builder.append(binding.articleItem?.title)
+            builder.append("\n")
+            val articleUrl = "${binding.articleItem?.url}"
+            builder.append(articleUrl)
+
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, builder.toString())
+                type = "text/plain"
+            }
+            binding.root.context.startActivity(sendIntent)
         }
     }
 
