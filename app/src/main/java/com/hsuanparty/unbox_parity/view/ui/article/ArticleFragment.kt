@@ -87,6 +87,7 @@ class ArticleFragment : Fragment(), Injectable{
 
                 SearchViewModel.SEARCH_FINISH -> {
                     mBinding.noDataGroup.visibility = View.GONE
+                    mBinding.segmentView.visibility = View.VISIBLE
                 }
 
                 else -> {}
@@ -239,13 +240,13 @@ class ArticleFragment : Fragment(), Injectable{
     }
 
     private fun changeToArticleUI() {
-        mBinding.articleGroup.visibility = View.VISIBLE
+        mBinding.segmentView.visibility = View.VISIBLE
         mBinding.webGroup.visibility = View.GONE
         mBinding.recyclerView.visibility = View.VISIBLE
     }
 
     private fun changeToWebUI() {
-        mBinding.articleGroup.visibility = View.GONE
+        mBinding.segmentView.visibility = View.GONE
         mBinding.webGroup.visibility = View.VISIBLE
         mBinding.recyclerView.visibility = View.GONE
     }

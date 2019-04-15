@@ -61,7 +61,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:visibility="invisible"/>
+                android:visibility="gone"/>
 
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -136,12 +136,6 @@
                     android:layout_marginStart="6dp"
                     android:layout_marginEnd="6dp"/>
         </LinearLayout>
-
-        <androidx.constraintlayout.widget.Group
-                android:id="@+id/articleGroup"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="segmentView"/>
 
         <androidx.constraintlayout.widget.Group
                 android:id="@+id/webGroup"
