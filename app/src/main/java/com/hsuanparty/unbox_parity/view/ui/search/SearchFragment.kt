@@ -30,6 +30,7 @@ import javax.inject.Inject
 import android.speech.RecognizerIntent
 import android.app.Activity.RESULT_OK
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnectorV2
+import android.widget.ArrayAdapter
 
 
 class SearchFragment : Fragment(), Injectable {
@@ -123,6 +124,8 @@ class SearchFragment : Fragment(), Injectable {
                 refreshView()
             }
         }.start()
+
+        updateAutocompleteAdapter()
     }
 
     override fun onPause() {
@@ -162,7 +165,7 @@ class SearchFragment : Fragment(), Injectable {
         val layoutManager = LinearLayoutManager(activity)
         layoutManager.orientation = RecyclerView.VERTICAL
         mBinding.rankView.layoutManager = layoutManager
-        val adapter = YoutubeAdapter()
+        var adapter = YoutubeAdapter()
         adapter.videoViewModel = videoViewModel
         mBinding.rankView.adapter = adapter
 
@@ -185,7 +188,7 @@ class SearchFragment : Fragment(), Injectable {
             // Voice record and then search
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.msg_voice_search))
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(com.hsuanparty.unbox_parity.R.string.msg_voice_search))
             startActivityForResult(intent, REQUEST_VOICE)
         }
 
@@ -267,6 +270,17 @@ class SearchFragment : Fragment(), Injectable {
     private fun performSearch() {
         //this.activity?.runOnUiThread {
             viewModel.search(mBinding.searchEditText.text.toString().trimStart().trimEnd())
+            updateAutocompleteAdapter()
         //}
+    }
+
+    private fun updateAutocompleteAdapter() {
+        val searchAdapter = ArrayAdapter(
+            context!!,
+            android.R.layout.simple_dropdown_item_1line,
+            mPreferences.getKeywordArray()
+        )
+        mBinding.searchEditText.threshold = 1
+        mBinding.searchEditText.setAdapter(searchAdapter)
     }
 }

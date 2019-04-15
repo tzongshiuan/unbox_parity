@@ -15,7 +15,7 @@
             tools:showIn="@layout/activity_main"
             tools:context=".view.ui.search.SearchFragment">
 
-        <EditText
+        <AutoCompleteTextView
                 android:id="@+id/searchEditText"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"

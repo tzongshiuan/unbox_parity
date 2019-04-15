@@ -19,6 +19,8 @@ class MyPreferences @Inject constructor(val context: Context) : PreferencesHelpe
         private const val MY_SETTING = "my_setting"
         private const val SETTING_DEVELOPER = "developer"
         private const val SETTING_RECENT_KEYWORD = "recent_keyword"
+
+        private const val RECENT_KEYWORD_DAYS = 7
     }
 
     override var developer = ""
@@ -71,7 +73,7 @@ class MyPreferences @Inject constructor(val context: Context) : PreferencesHelpe
                                                 , object: TypeToken<ArrayList<RecentKeywordItem>>(){}.type)
             // Trim list size
             val now = System.currentTimeMillis()
-            val milliDay = 1000 * 60 * 60 * 24
+            val milliDay = 1000 * 60 * 60 * 24 * RECENT_KEYWORD_DAYS
             for (item in recentKeywordList) {
                 if ((now - item.dateTime) > milliDay) {
                     recentKeywordList.remove(item)
@@ -99,5 +101,13 @@ class MyPreferences @Inject constructor(val context: Context) : PreferencesHelpe
     private fun getVersionName(): String {
         val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
         return packageInfo.versionName
+    }
+
+    fun getKeywordArray(): ArrayList<String> {
+        val list: ArrayList<String> = ArrayList()
+        for (item in recentKeywordList) {
+            list.add(item.keyword!!)
+        }
+        return list
     }
 }

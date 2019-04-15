@@ -44,9 +44,7 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
         val recentItem = RecentKeywordItem()
         recentItem.keyword = str
         recentItem.dateTime = System.currentTimeMillis()
-        LogMessage.D(TAG, "AAA list.size: ${mPreferences.recentKeywordList.size}")
         mPreferences.recentKeywordList.add(recentItem)
-        LogMessage.D(TAG, "BBB list.size: ${mPreferences.recentKeywordList.size}")
         // save
         mPreferences.savePreferences()
 
