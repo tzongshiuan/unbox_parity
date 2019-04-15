@@ -125,8 +125,7 @@ class IntroFragment : Fragment() {
     private fun loadData() {
         val imageId = intArrayOf(
             com.hsuanparty.unbox_parity.R.mipmap.intro_page_1, com.hsuanparty.unbox_parity.R.mipmap.intro_page_2
-                                        , com.hsuanparty.unbox_parity.R.mipmap.intro_page_3, com.hsuanparty.unbox_parity.R.mipmap.intro_page_4
-                                        , com.hsuanparty.unbox_parity.R.mipmap.intro_page_5, com.hsuanparty.unbox_parity.R.mipmap.intro_page_6)
+                                        , com.hsuanparty.unbox_parity.R.mipmap.intro_page_3, com.hsuanparty.unbox_parity.R.mipmap.intro_page_4)
 
         for (id in imageId) {
             val item = IntroItem()
