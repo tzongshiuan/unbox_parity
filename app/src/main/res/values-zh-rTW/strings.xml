@@ -8,6 +8,11 @@
     <!--Common Strings-->
     <string name="txt_ok">OK</string>
     <string name="txt_waiting">請稍候</string>
+    <string name="txt_rate">評價%1$s</string>
+    <string name="msg_rate">如果您喜歡%1$s，不妨花些時間給予評價，讓彼此更美好:)</string>
+    <string name="txt_give_comment">給予評價</string>
+    <string name="txt_remind_later">下次再說</string>
+    <string name="txt_no_thanks">已評過，感謝</string>
 
     <!--MainActivity-->
     <string name="txt_network_check">Network Check</string>

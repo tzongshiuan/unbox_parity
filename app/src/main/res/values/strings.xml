@@ -17,6 +17,11 @@
     <!--Common Strings-->
     <string name="txt_ok">OK</string>
     <string name="txt_waiting">Please Waiting</string>
+    <string name="txt_rate">Rate: %1$s</string>
+    <string name="msg_rate">If you enjoy using %1$s, please take a moment to rate it. Thanks for your support!</string>
+    <string name="txt_give_comment">Give comment</string>
+    <string name="txt_remind_later">Remind me later</string>
+    <string name="txt_no_thanks">I have already done</string>
 
     <!--MainActivity-->
     <string name="txt_network_check">Network Check</string>

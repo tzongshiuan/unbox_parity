@@ -1,27 +1,20 @@
 package com.hsuanparty.unbox_parity.view.ui
 
-import android.app.Activity
-import android.app.SearchManager
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
-import com.hsuanparty.unbox_parity.utils.Constants
-import com.hsuanparty.unbox_parity.utils.LogMessage
-import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
-import com.hsuanparty.unbox_parity.utils.SimpleDelayTask
+import com.hsuanparty.unbox_parity.utils.*
 import com.hsuanparty.unbox_parity.view.ui.article.ArticleViewModel
 import com.hsuanparty.unbox_parity.view.ui.parity.ParityViewModel
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
@@ -136,6 +129,7 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
         initViewModel()
         initUI()
+        AppRater().appLaunched(this)
     }
 
     override fun onResume() {
