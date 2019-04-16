@@ -463,30 +463,27 @@ class MainActivityFragment : Fragment(), Injectable {
     }
 
     private fun doSearchHotVideos() {
-        activity?.runOnUiThread {
-            object : Thread() {
-                override fun run() {
-                    val yc = YoutubeConnectorV2("")
+//        activity?.runOnUiThread {
+//            object : Thread() {
+//                override fun run() {
+//                    val yc = YoutubeConnectorV2("")
 
                     //calling the YoutubeConnector's search method by entered keyword
                     //and saving the results in list of type VideoItem class
-                    if (!Constants.IS_SKIP_SEARCH) {
-                        mPreferences.hotVideoList.clear()
-                        mPreferences.hotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.DAILY_HOT_VIDEO, "開箱") as ArrayList)
+                    //mPreferences.hotVideoList.clear()
+                    //mPreferences.hotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.DAILY_HOT_VIDEO, "開箱") as ArrayList)
 
-                        //mPreferences.weekHotVideoList.clear()
-                        //mPreferences.weekHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.WEEKLY_HOT_VIDEO, "開箱") as ArrayList)
+                    //mPreferences.weekHotVideoList.clear()
+                    //mPreferences.weekHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.WEEKLY_HOT_VIDEO, "開箱") as ArrayList)
 
-                        //mPreferences.monthHotVideoList.clear()
-                        //mPreferences.monthHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.MONTHLY_HOT_VIDEO, "開箱") as ArrayList)
-                    }
-
+                    //mPreferences.monthHotVideoList.clear()
+                    //mPreferences.monthHotVideoList.addAll(yc.searchHotVideo(YoutubeConnector.MONTHLY_HOT_VIDEO, "開箱") as ArrayList)
                     isSearchFinish = true
-                }
-            }.start()
+//                }
+//            }.start()
 
             startSearchFragment()
-        }
+//        }
     }
 
     /**

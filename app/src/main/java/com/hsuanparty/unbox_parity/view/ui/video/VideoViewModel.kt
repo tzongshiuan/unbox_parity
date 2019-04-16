@@ -80,19 +80,10 @@ class VideoViewModel @Inject constructor() : ViewModel(), Injectable {
 
                 //calling the YoutubeConnector's search method by entered keyword
                 //and saving the results in list of type VideoItem class
-                if (!Constants.IS_SKIP_SEARCH) {
-                    when (curOrderStatus) {
-                        ORDER_RELATIVE -> videoSearchResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO))
-                        ORDER_VIEW_COUNT -> videoSearchCountResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO_COUNT))
-                        ORDER_VIEW_UPLOAD -> videoSearchUploadResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO_UPLOAD))
-                    }
-                } else {
-                    val list: ArrayList<VideoItem> = ArrayList()
-                    when (curOrderStatus) {
-                        ORDER_RELATIVE -> videoSearchResult.postValue(list)
-                        ORDER_VIEW_COUNT -> videoSearchCountResult.postValue(list)
-                        ORDER_VIEW_UPLOAD -> videoSearchUploadResult.postValue(list)
-                    }
+                when (curOrderStatus) {
+                    ORDER_RELATIVE -> videoSearchResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO))
+                    ORDER_VIEW_COUNT -> videoSearchCountResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO_COUNT))
+                    ORDER_VIEW_UPLOAD -> videoSearchUploadResult.postValue(yc.search(YoutubeConnector.NONE_HOT_VIDEO_UPLOAD))
                 }
             }
             //starting the thread

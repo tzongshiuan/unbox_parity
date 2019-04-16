@@ -14,7 +14,9 @@ object Constants {
 
     const val SEARCH_DELAY_TIME = 300L
 
-    const val IS_SKIP_SEARCH = false
-
     const val IS_SHOW_ADMOB = true
+
+    const val TESSBASE_PATH = "/storage/emulated/0/download/"
+    const val DEFAULT_LANGUAGE = "eng"
+    const val CHINESE_LANGUAGE = "chi_tra"
 }
