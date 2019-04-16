@@ -131,7 +131,7 @@ class YoutubeConnectorV2(val keyWord: String) {
                 val item = VideoItem()
                 index = html.indexOf(indexToken, index)
 
-                if (items.size % 5 == 0) {
+                if (items.size % 4 == 0) {
                     if (Constants.IS_SHOW_ADMOB) {
                         val adItem = VideoItem()
                         adItem.type = VideoItem.TYPE_BANNER

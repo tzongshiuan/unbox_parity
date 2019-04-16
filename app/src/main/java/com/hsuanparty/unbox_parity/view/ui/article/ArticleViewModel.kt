@@ -152,7 +152,7 @@ class ArticleViewModel @Inject constructor() : ViewModel(), Injectable {
                 val item = ArticleItem()
                 index = html.indexOf(token1, index)
 
-                if (items.size % 8 == 0) {
+                if (items.size % 6 == 0) {
                     if (Constants.IS_SHOW_ADMOB) {
                         val adItem = ArticleItem()
                         adItem.type = ArticleItem.TYPE_BANNER

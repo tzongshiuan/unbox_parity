@@ -123,7 +123,7 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
                 val item = ParityItem()
                 index = body.indexOf(token1, index)
 
-                if (items.size % 6 == 0) {
+                if (items.size % 4 == 0) {
                     if (Constants.IS_SHOW_ADMOB) {
                         val adItem = ParityItem()
                         adItem.type = ParityItem.TYPE_BANNER
