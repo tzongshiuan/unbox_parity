@@ -19,18 +19,16 @@
             android:name="android.permission.ACCESS_NETWORK_STATE"/> <!-- Required to check whether Wi-Fi is enabled -->
     <uses-permission
             android:name="android.permission.ACCESS_WIFI_STATE"/> <!-- Required to read and write the expansion files on shared storage -->
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <!--<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>-->
     <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>-->
     <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>-->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
 
-    <!--<uses-permission-->
-            <!--android:name="android.permission.CAMERA"/> &lt;!&ndash; <uses-permission android:name="android.permission.WRITE_SETTINGS"/> &ndash;&gt;-->
-    <!--&lt;!&ndash; <uses-permission android:name="android.permission.MANAGE_USB" /> &ndash;&gt;-->
-    <!--<uses-feature android:name="android.hardware.camera"/>-->
-    <!--<uses-feature android:name="android.hardware.camera.autofocus"/>-->
-    <!--<uses-feature android:name="android.hardware.usb.accessory"/>-->
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+    <uses-feature android:name="android.hardware.camera"/>
 
     <application
             android:name=".MyApplication"

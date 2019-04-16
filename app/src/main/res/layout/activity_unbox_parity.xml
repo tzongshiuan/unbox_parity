@@ -24,7 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/navigation"/>
+            app:layout_constraintBottom_toTopOf="@+id/navigation"
+            tools:visibility="gone"/>
 
     <fragment
             android:id="@+id/articlePage"
@@ -33,7 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/navigation"/>
+            app:layout_constraintBottom_toTopOf="@+id/navigation"
+            tools:visibility="gone"/>
 
     <fragment
             android:id="@+id/parityPage"
@@ -42,7 +44,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/navigation"/>
+            app:layout_constraintBottom_toTopOf="@+id/navigation"
+            tools:visibility="gone"/>
 
     <fragment
             android:id="@+id/settingPage"
@@ -51,7 +54,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/navigation"/>
+            app:layout_constraintBottom_toTopOf="@+id/navigation"
+            tools:visibility="gone"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/navigation"
@@ -72,6 +76,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="gone"/>
+
+    <fragment
+            android:id="@+id/scanPage"
+            android:name="com.hsuanparty.unbox_parity.view.ui.scan.ScanFragment"
+            tools:layout="@layout/scan_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

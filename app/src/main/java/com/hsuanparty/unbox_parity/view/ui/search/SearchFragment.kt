@@ -31,6 +31,9 @@ import android.speech.RecognizerIntent
 import android.app.Activity.RESULT_OK
 import com.hsuanparty.unbox_parity.utils.youtube.YoutubeConnectorV2
 import android.widget.ArrayAdapter
+import androidx.fragment.app.FragmentManager
+import androidx.navigation.Navigation
+import com.hsuanparty.unbox_parity.view.ui.UnboxParityActivity
 
 
 class SearchFragment : Fragment(), Injectable {
@@ -190,6 +193,10 @@ class SearchFragment : Fragment(), Injectable {
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(com.hsuanparty.unbox_parity.R.string.msg_voice_search))
             startActivityForResult(intent, REQUEST_VOICE)
+        }
+
+        mBinding.scanBtn.setOnClickListener {
+            (activity as UnboxParityActivity).showScanPage()
         }
 
         mBinding.segmentView.setOnSelectionChangedListener { identifier, value ->

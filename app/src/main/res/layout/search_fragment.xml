@@ -17,10 +17,10 @@
 
         <AutoCompleteTextView
                 android:id="@+id/searchEditText"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="120dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="5dp"
                 android:background="@drawable/search_view_boarder"
                 android:hint="@string/txt_search_hint"
@@ -49,10 +49,20 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="120dp"
                 android:padding="8dp"
                 android:src="@drawable/btn_mic_selector"
                 app:layout_constraintStart_toEndOf="@+id/searchBtn"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/scanBtn"/>
+
+        <ImageView
+                android:id="@+id/scanBtn"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="20dp"
+                android:padding="8dp"
+                android:src="@mipmap/ic_open_box"
+                app:layout_constraintStart_toEndOf="@+id/speakBtn"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 

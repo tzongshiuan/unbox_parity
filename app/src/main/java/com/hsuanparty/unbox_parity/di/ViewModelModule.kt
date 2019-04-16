@@ -3,6 +3,7 @@ package com.hsuanparty.unbox_parity.di
 import androidx.lifecycle.ViewModel
 import com.hsuanparty.unbox_parity.view.ui.article.ArticleViewModel
 import com.hsuanparty.unbox_parity.view.ui.parity.ParityViewModel
+import com.hsuanparty.unbox_parity.view.ui.scan.ScanViewModel
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import com.hsuanparty.unbox_parity.view.ui.setting.SettingViewModel
 import com.hsuanparty.unbox_parity.view.ui.video.VideoViewModel
@@ -41,4 +42,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SettingViewModel::class)
     abstract fun bindSettingViewModel(settingViewModel: SettingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ScanViewModel::class)
+    abstract fun bindScanViewModel(scanViewModel: ScanViewModel): ViewModel
 }

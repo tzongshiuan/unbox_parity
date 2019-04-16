@@ -40,4 +40,8 @@
     <color name="like_button_pressed">#ff8a00</color>
     <color name="like_button_focused">#ff8a00</color>
     <color name="like_button_default">#1c76bb</color>
+
+    <color name="viewfinder_corners">#ffffffff</color> <!-- four corner elements for viewfinder -->
+    <color name="viewfinder_frame">#ffd6d6d6</color> <!-- viewfinder rectangle -->
+    <color name="viewfinder_mask">#60000000</color>  <!-- viewfinder exterior darkened area -->
 </resources>

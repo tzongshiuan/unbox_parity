@@ -2,6 +2,7 @@ package com.hsuanparty.unbox_parity.view.ui
 
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -11,12 +12,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.get
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.googlecode.tesseract.android.TessBaseAPI
+import com.hsuanparty.unbox_parity.R
 import com.hsuanparty.unbox_parity.di.Injectable
 import com.hsuanparty.unbox_parity.model.MyPreferences
 import com.hsuanparty.unbox_parity.utils.*
 import com.hsuanparty.unbox_parity.view.ui.article.ArticleViewModel
 import com.hsuanparty.unbox_parity.view.ui.parity.ParityViewModel
+import com.hsuanparty.unbox_parity.view.ui.scan.ScanViewModel
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel
 import com.hsuanparty.unbox_parity.view.ui.search.SearchViewModel.Companion.SEARCH_FINISH
 import com.hsuanparty.unbox_parity.view.ui.video.VideoViewModel
@@ -72,6 +77,9 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
 
     @Inject
     lateinit var parityViewModel: ParityViewModel
+
+    @Inject
+    lateinit var scanViewModel: ScanViewModel
 
     private var curPageIndex = SEARCH_PAGE_INDEX
 
@@ -204,6 +212,7 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
         videoViewModel = ViewModelProviders.of(this, factory).get(VideoViewModel::class.java)
         articleViewModel = ViewModelProviders.of(this, factory).get(ArticleViewModel::class.java)
         parityViewModel = ViewModelProviders.of(this, factory).get(ParityViewModel::class.java)
+        scanViewModel = ViewModelProviders.of(this, factory).get(ScanViewModel::class.java)
 
         searchViewModel.isSearchFinish.observe(this, Observer<Int> { status ->
             when (status) {
@@ -328,6 +337,7 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     private fun initUI() {
         setFragmentPage(SEARCH_PAGE_INDEX)
         introPage.view?.visibility = View.GONE
+        scanPage.view?.visibility = View.GONE
     }
 
     private fun setFragmentPage(pageIndex: Int) {
@@ -363,6 +373,20 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     fun closeIntroduction() {
         LogMessage.D(TAG, "closeIntroduction()")
         introPage.view?.visibility = View.GONE
+        navigation.visibility = View.VISIBLE
+    }
+
+    fun showScanPage() {
+        LogMessage.D(TAG, "showScanPage()")
+        scanViewModel.isEnableOCR.value = true
+        scanPage.view?.visibility = View.VISIBLE
+        navigation.visibility = View.GONE
+    }
+
+    fun closeScanPage() {
+        LogMessage.D(TAG, "closeScanPage()")
+        scanViewModel.isEnableOCR.value = false
+        scanPage.view?.visibility = View.GONE
         navigation.visibility = View.VISIBLE
     }
 

@@ -3,6 +3,7 @@ package com.hsuanparty.unbox_parity.di
 import com.hsuanparty.unbox_parity.view.ui.MainActivityFragment
 import com.hsuanparty.unbox_parity.view.ui.article.ArticleFragment
 import com.hsuanparty.unbox_parity.view.ui.parity.ParityFragment
+import com.hsuanparty.unbox_parity.view.ui.scan.ScanFragment
 import com.hsuanparty.unbox_parity.view.ui.search.SearchFragment
 import com.hsuanparty.unbox_parity.view.ui.setting.SettingFragment
 import com.hsuanparty.unbox_parity.view.ui.video.VideoFragment
@@ -32,4 +33,7 @@ abstract class FragmentBuildersModule {
 
     @ContributesAndroidInjector
     abstract fun contributeSettingFragment(): SettingFragment
+
+    @ContributesAndroidInjector
+    abstract fun contributeScanFragment(): ScanFragment
 }
