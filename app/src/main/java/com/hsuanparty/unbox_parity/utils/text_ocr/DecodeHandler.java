@@ -1,6 +1,10 @@
 package com.hsuanparty.unbox_parity.utils.text_ocr;
 
 import android.graphics.Bitmap;
+import android.graphics.ImageFormat;
+import android.graphics.Rect;
+import android.graphics.YuvImage;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -13,6 +17,12 @@ import com.hsuanparty.unbox_parity.model.OcrResult;
 import com.hsuanparty.unbox_parity.model.OcrResultFailure;
 import com.hsuanparty.unbox_parity.view.ui.scan.ScanFragment;
 import com.hsuanparty.unbox_parity.view.ui.scan.ViewFinder;
+
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Random;
 
 /**
  * Class to send bitmap data for OCR.
@@ -73,6 +83,28 @@ public final class DecodeHandler extends Handler {
     private void ocrDecode(byte[] data, int width, int height) {
         //beepManager.playBeepSoundAndVibrate();
         fragment.displayProgressDialog();
+
+        // test saved image
+//        String root = Environment.getExternalStorageDirectory().toString();
+//        File myDir = new File(root + "/req_images");
+//        if (!myDir.mkdirs()) {
+//        }
+//        Random generator = new Random();
+//        int n = 10000;
+//        n = generator.nextInt(n);
+//        String fname = "Image-" + n + ".jpg";
+//        File file = new File(myDir, fname);
+//
+//        try {
+//            FileOutputStream out = new FileOutputStream(file.getAbsolutePath());
+//            BufferedOutputStream bos = new BufferedOutputStream(out);
+//            byte[] test = encodeNV21toJPEG(data, width, height);
+//            bos.write(test);
+//            bos.flush();
+//            bos.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         // Launch OCR asynchronously, so we get the dialog box displayed immediately
         new OcrRecognizeAsyncTask(fragment, baseApi, data, width, height).execute();

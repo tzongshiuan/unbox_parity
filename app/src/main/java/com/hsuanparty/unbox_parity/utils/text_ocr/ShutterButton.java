@@ -81,11 +81,11 @@ public class ShutterButton extends AppCompatImageView {
                 //     pressed(true), optional click, pressed(false)
                 post(new Runnable() {
                     public void run() {
-                        callShutterButtonFocus(pressed);
+                        callShutterButtonFocus(false);
                     }
                 });
             } else {
-                callShutterButtonFocus(pressed);
+                callShutterButtonFocus(true);
             }
             mOldPressed = pressed;
         }

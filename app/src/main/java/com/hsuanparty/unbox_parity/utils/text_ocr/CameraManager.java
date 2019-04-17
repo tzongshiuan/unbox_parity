@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.io.IOException;
@@ -38,16 +39,19 @@ public final class CameraManager {
     private boolean reverseImage;
     private int requestedFramingRectWidth;
     private int requestedFramingRectHeight;
+    private int offsetHeight = 72;
+
     /**
      * Preview frames are delivered here, which we pass on to the registered handler. Make sure to
      * clear the handler so it will only receive one message.
      */
     private final PreviewCallback previewCallback;
 
-    public CameraManager(Context context) {
+    public CameraManager(Context context, int offsetHeight) {
         this.context = context;
         this.configManager = new CameraConfigurationManager(context);
         previewCallback = new PreviewCallback(configManager);
+        this.offsetHeight = offsetHeight;
     }
 
     /**
@@ -170,18 +174,21 @@ public final class CameraManager {
                 // Called early, before init even finished
                 return null;
             }
-            int width = screenResolution.x * 3 / 5;
+            int width = screenResolution.x * 5 / 8;
             if (width < MIN_FRAME_WIDTH) {
                 width = MIN_FRAME_WIDTH;
-            } else if (width > MAX_FRAME_WIDTH) {
-                width = MAX_FRAME_WIDTH;
             }
-            int height = screenResolution.y * 1 / 5;
+//            else if (width > MAX_FRAME_WIDTH) {
+//                width = MAX_FRAME_WIDTH;
+//            }
+            int height = screenResolution.y / 8;
+
             if (height < MIN_FRAME_HEIGHT) {
                 height = MIN_FRAME_HEIGHT;
-            } else if (height > MAX_FRAME_HEIGHT) {
-                height = MAX_FRAME_HEIGHT;
             }
+//            else if (height > MAX_FRAME_HEIGHT) {
+//                height = MAX_FRAME_HEIGHT;
+//            }
             int leftOffset = (screenResolution.x - width) / 2;
             int topOffset = (screenResolution.y - height) / 2;
             framingRect = new Rect(leftOffset, topOffset, leftOffset + width, topOffset + height);
@@ -202,12 +209,27 @@ public final class CameraManager {
                 // Called early, before init even finished
                 return null;
             }
-            rect.left = rect.left * cameraResolution.x / screenResolution.x;
-            rect.right = rect.right * cameraResolution.x / screenResolution.x;
-            rect.top = rect.top * cameraResolution.y / screenResolution.y;
-            rect.bottom = rect.bottom * cameraResolution.y / screenResolution.y;
+
+            // is portrait
+            rect.left = rect.left * cameraResolution.y / screenResolution.x;
+            rect.right = rect.right * cameraResolution.y / screenResolution.x;
+            rect.top = rect.top * cameraResolution.x / (screenResolution.y - offsetHeight);
+            rect.bottom = rect.bottom * cameraResolution.x / (screenResolution.y - offsetHeight);
+
+            // is landscape
+//            rect.left = rect.left * cameraResolution.x / screenResolution.x;
+//            rect.right = rect.right * cameraResolution.x / screenResolution.x;
+//            rect.top = rect.top * cameraResolution.y / screenResolution.y;
+//            rect.bottom = rect.bottom * cameraResolution.y / screenResolution.y;
             framingRectInPreview = rect;
         }
+
+//        Log.d(TAG, "================ Result =================");
+//        Log.d(TAG, "left = " + framingRectInPreview.left);
+//        Log.d(TAG, "top = " + framingRectInPreview.top);
+//        Log.d(TAG, "right = " + framingRectInPreview.right);
+//        Log.d(TAG, "bottom = " + framingRectInPreview.bottom);
+
         return framingRectInPreview;
     }
 
@@ -234,6 +256,10 @@ public final class CameraManager {
             int leftOffset = (screenResolution.x - newWidth) / 2;
             int topOffset = (screenResolution.y - newHeight) / 2;
             framingRect = new Rect(leftOffset, topOffset, leftOffset + newWidth, topOffset + newHeight);
+//            Log.d(TAG, "left = " + framingRect.left);
+//            Log.d(TAG, "top = " + framingRect.top);
+//            Log.d(TAG, "right = " + framingRect.right);
+//            Log.d(TAG, "bottom = " + framingRect.bottom);
             framingRectInPreview = null;
         } else {
             requestedFramingRectWidth = deltaWidth;

@@ -29,10 +29,7 @@ import com.hsuanparty.unbox_parity.model.OcrResultText
 import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import com.hsuanparty.unbox_parity.utils.MyViewModelFactory
-import com.hsuanparty.unbox_parity.utils.text_ocr.CameraManager
-import com.hsuanparty.unbox_parity.utils.text_ocr.FinishListener
-import com.hsuanparty.unbox_parity.utils.text_ocr.LanguageCodeHelper
-import com.hsuanparty.unbox_parity.utils.text_ocr.OcrInitAsyncTask
+import com.hsuanparty.unbox_parity.utils.text_ocr.*
 import com.hsuanparty.unbox_parity.view.ui.UnboxParityActivity
 import kotlinx.android.synthetic.main.scan_fragment.*
 import java.io.File
@@ -40,7 +37,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 
-class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback {
+class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback, ShutterButton.OnShutterButtonListener {
 
     companion object {
         private val TAG = ScanFragment::class.java.simpleName
@@ -216,6 +213,11 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initUI() {
+        mBinding.retryBtn.setOnClickListener {
+            mBinding.ocrResultTextView.visibility = View.GONE
+            mBinding.imageView.visibility = View.GONE
+        }
+
         mBinding.confirmBtn.setOnClickListener {
             (activity as UnboxParityActivity).closeScanPage()
         }
@@ -245,35 +247,35 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback {
                                 if ((currentX >= rect.left - bigBuffer && currentX <= rect.left + bigBuffer || lastX >= rect.left - bigBuffer && lastX <= rect.left + bigBuffer) && (currentY <= rect.top + bigBuffer && currentY >= rect.top - bigBuffer || lastY <= rect.top + bigBuffer && lastY >= rect.top - bigBuffer)) {
                                     // Top left corner: adjust both top and left sides
                                     cameraManager.adjustFramingRect(2 * (lastX - currentX), 2 * (lastY - currentY))
-                                    mBinding.viewFinder.removeResultText()
+                                    //mBinding.viewFinder.removeResultText()
                                 } else if ((currentX >= rect.right - bigBuffer && currentX <= rect.right + bigBuffer || lastX >= rect.right - bigBuffer && lastX <= rect.right + bigBuffer) && (currentY <= rect.top + bigBuffer && currentY >= rect.top - bigBuffer || lastY <= rect.top + bigBuffer && lastY >= rect.top - bigBuffer)) {
                                     // Top right corner: adjust both top and right sides
                                     cameraManager.adjustFramingRect(2 * (currentX - lastX), 2 * (lastY - currentY))
-                                    mBinding.viewFinder.removeResultText()
+                                    //mBinding.viewFinder.removeResultText()
                                 } else if ((currentX >= rect.left - bigBuffer && currentX <= rect.left + bigBuffer || lastX >= rect.left - bigBuffer && lastX <= rect.left + bigBuffer) && (currentY <= rect.bottom + bigBuffer && currentY >= rect.bottom - bigBuffer || lastY <= rect.bottom + bigBuffer && lastY >= rect.bottom - bigBuffer)) {
                                     // Bottom left corner: adjust both bottom and left sides
                                     cameraManager.adjustFramingRect(2 * (lastX - currentX), 2 * (currentY - lastY))
-                                    mBinding.viewFinder.removeResultText()
+                                    //mBinding.viewFinder.removeResultText()
                                 } else if ((currentX >= rect.right - bigBuffer && currentX <= rect.right + bigBuffer || lastX >= rect.right - bigBuffer && lastX <= rect.right + bigBuffer) && (currentY <= rect.bottom + bigBuffer && currentY >= rect.bottom - bigBuffer || lastY <= rect.bottom + bigBuffer && lastY >= rect.bottom - bigBuffer)) {
                                     // Bottom right corner: adjust both bottom and right sides
                                     cameraManager.adjustFramingRect(2 * (currentX - lastX), 2 * (currentY - lastY))
-                                    mBinding.viewFinder.removeResultText()
+                                    //mBinding.viewFinder.removeResultText()
                                 } else if ((currentX >= rect.left - buffer && currentX <= rect.left + buffer || lastX >= rect.left - buffer && lastX <= rect.left + buffer) && (currentY <= rect.bottom && currentY >= rect.top || lastY <= rect.bottom && lastY >= rect.top)) {
                                     // Adjusting left side: event falls within BUFFER pixels of left side, and between top and bottom side limits
                                     cameraManager.adjustFramingRect(2 * (lastX - currentX), 0)
-                                    mBinding.viewFinder.removeResultText()
+                                    //mBinding.viewFinder.removeResultText()
                                 } else if ((currentX >= rect.right - buffer && currentX <= rect.right + buffer || lastX >= rect.right - buffer && lastX <= rect.right + buffer) && (currentY <= rect.bottom && currentY >= rect.top || lastY <= rect.bottom && lastY >= rect.top)) {
                                     // Adjusting right side: event falls within BUFFER pixels of right side, and between top and bottom side limits
                                     cameraManager.adjustFramingRect(2 * (currentX - lastX), 0)
-                                    mBinding.viewFinder.removeResultText()
+                                    //mBinding.viewFinder.removeResultText()
                                 } else if ((currentY <= rect.top + buffer && currentY >= rect.top - buffer || lastY <= rect.top + buffer && lastY >= rect.top - buffer) && (currentX <= rect.right && currentX >= rect.left || lastX <= rect.right && lastX >= rect.left)) {
                                     // Adjusting top side: event falls within BUFFER pixels of top side, and between left and right side limits
                                     cameraManager.adjustFramingRect(0, 2 * (lastY - currentY))
-                                    mBinding.viewFinder.removeResultText()
+                                    //mBinding.viewFinder.removeResultText()
                                 } else if ((currentY <= rect.bottom + buffer && currentY >= rect.bottom - buffer || lastY <= rect.bottom + buffer && lastY >= rect.bottom - buffer) && (currentX <= rect.right && currentX >= rect.left || lastX <= rect.right && lastX >= rect.left)) {
                                     // Adjusting bottom side: event falls within BUFFER pixels of bottom side, and between left and right side limits
                                     cameraManager.adjustFramingRect(0, 2 * (currentY - lastY))
-                                    mBinding.viewFinder.removeResultText()
+                                    //mBinding.viewFinder.removeResultText()
                                 }
                             }
                         } catch (e: NullPointerException) {
@@ -297,8 +299,16 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback {
     }
 
     private fun initSetting() {
-        cameraManager = CameraManager(context)
+        // status bar height
+        var statusBarHeight = 0
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            statusBarHeight = resources.getDimensionPixelSize(resourceId)
+        }
+        cameraManager = CameraManager(context, statusBarHeight)
         mBinding.viewFinder.setCameraManager(cameraManager)
+
+        mBinding.shutterBtn.setOnShutterButtonListener(this)
 
         sourceLanguageCodeOcr = DEFAULT_SOURCE_LANGUAGE_CODE
         sourceLanguageReadable = LanguageCodeHelper.getOcrLanguageName(context, DEFAULT_SOURCE_LANGUAGE_CODE)
@@ -341,6 +351,24 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback {
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
         Log.d(TAG, "surfaceChanged()")
+    }
+
+    override fun onShutterButtonFocus(b: ShutterButton?, pressed: Boolean) {
+        requestDelayedAutoFocus()
+    }
+
+    private fun requestDelayedAutoFocus() {
+        // Wait 350 ms before focusing to avoid interfering with quick button presses when
+        // the user just wants to take a picture without focusing.
+        cameraManager.requestAutoFocus(350L)
+    }
+
+    override fun onShutterButtonClick(b: ShutterButton?) {
+//        if (isContinuousModeActive) {
+//            onShutterButtonPressContinuous()
+//        } else {
+            handler?.shutterButtonClick()
+//        }
     }
 
     /** Finds the proper location on the SD card where we can save files.  */
@@ -486,39 +514,6 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback {
             .setPositiveButton("Done", FinishListener(activity))
             .show()
     }
-
-    private fun scan() {
-        object : Thread() {
-            override fun run() {
-                val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_test)
-                val ocrApi = TessBaseAPI()
-                ocrApi.init(Constants.TESSBASE_PATH, Constants.DEFAULT_LANGUAGE + "+" + Constants.CHINESE_LANGUAGE)
-                ocrApi.pageSegMode = TessBaseAPI.PageSegMode.PSM_AUTO
-                ocrApi.setImage(bitmap)
-
-                val result = ocrApi.utF8Text
-                LogMessage.D(TAG, "Text OCR result: $result")
-
-                ocrApi.clear()
-                ocrApi.end()
-            }
-        }.start()
-    }
-
-//    private fun convertGray(bitmap: Bitmap): Bitmap {
-//        val colorMatrix = ColorMatrix()
-//        colorMatrix.setSaturation(0f)
-//        val filter = ColorMatrixColorFilter(colorMatrix)
-//
-//        val paint = Paint()
-//        paint.colorFilter = filter
-//        val result = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
-//
-//        val canvas = Canvas(result)
-//        canvas.drawBitmap(bitmap, 0f, 0f, paint)
-//
-//        return result
-//    }
 
     fun getBaseApi(): TessBaseAPI {
         return baseApi
@@ -696,31 +691,28 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback {
             return false
         }
 
+        mBinding.ocrResultTextView.visibility = View.VISIBLE
+        mBinding.imageView.visibility = View.VISIBLE
+
         // Turn off capture-related UI elements
-        mBinding.shutterBtn.visibility = View.GONE
-        statusViewBottom.visibility = View.GONE
-        statusViewTop.visibility = View.GONE
+//        mBinding.shutterBtn.visibility = View.GONE
+//        mBinding.viewFinder.visibility = View.GONE
+
+//        statusViewBottom.visibility = View.GONE
+//        statusViewTop.visibility = View.GONE
 //        cameraButtonView.setVisibility(View.GONE)
-        mBinding.viewFinder.visibility = View.GONE
 //        resultView.setVisibility(View.VISIBLE)
 
-//        val bitmapImageView = findViewById(R.id.image_view) as ImageView
-//        lastBitmap = ocrResult.bitmap
-//        if (lastBitmap == null) {
-//            bitmapImageView.setImageBitmap(
-//                BitmapFactory.decodeResource(
-//                    resources,
-//                    R.drawable.ic_launcher
-//                )
-//            )
-//        } else {
-//            bitmapImageView.setImageBitmap(lastBitmap)
-//        }
+        val lastBitmap = ocrResult.bitmap
+        if (lastBitmap != null && Constants.IS_DEBUG_MODE) {
+            mBinding.imageView.setImageBitmap(lastBitmap)
+        }
 
         // Display the recognized text
 //        val sourceLanguageTextView = findViewById(R.id.source_language_text_view) as TextView
 //        mBinding.sourceLanguageTextView.text = sourceLanguageReadable
 
+        LogMessage.D(TAG, "result: ${ocrResult.text}")
         mBinding.ocrResultTextView.text = ocrResult.text
         // Crudely scale betweeen 22 and 32 -- bigger font for shorter text
         val scaledSize = Math.max(22, 32 - ocrResult.text.length / 4)
@@ -755,4 +747,37 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback {
 //        }
         return true
     }
+
+//    private fun scan() {
+//        object : Thread() {
+//            override fun run() {
+//                val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_test)
+//                val ocrApi = TessBaseAPI()
+//                ocrApi.init(Constants.TESSBASE_PATH, Constants.DEFAULT_LANGUAGE + "+" + Constants.CHINESE_LANGUAGE)
+//                ocrApi.pageSegMode = TessBaseAPI.PageSegMode.PSM_AUTO
+//                ocrApi.setImage(bitmap)
+//
+//                val result = ocrApi.utF8Text
+//                LogMessage.D(TAG, "Text OCR result: $result")
+//
+//                ocrApi.clear()
+//                ocrApi.end()
+//            }
+//        }.start()
+//    }
+
+//    private fun convertGray(bitmap: Bitmap): Bitmap {
+//        val colorMatrix = ColorMatrix()
+//        colorMatrix.setSaturation(0f)
+//        val filter = ColorMatrixColorFilter(colorMatrix)
+//
+//        val paint = Paint()
+//        paint.colorFilter = filter
+//        val result = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+//
+//        val canvas = Canvas(result)
+//        canvas.drawBitmap(bitmap, 0f, 0f, paint)
+//
+//        return result
+//    }
 }

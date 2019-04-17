@@ -25,6 +25,14 @@
                 android:background="#0000"/>
 
         <Button
+                android:id="@+id/retryBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="retry"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/confirmBtn"/>
+
+        <Button
                 android:id="@+id/confirmBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,19 +42,18 @@
 
         <com.hsuanparty.unbox_parity.utils.text_ocr.ShutterButton
                 android:id="@+id/shutterBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@mipmap/ic_launcher"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="8dip"
+                android:layout_marginTop="8dip"
+                android:gravity="center_vertical"
+                android:background="@drawable/btn_shutter_selector"
                 android:clickable="true"
                 android:focusable="true"
-                android:layout_alignParentRight="true"
-                android:gravity="center_vertical"
-                android:layout_marginRight="8dip"
-                android:layout_marginTop="8dip"
                 android:scaleType="center"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:visibility="gone" />
+                android:visibility="visible"/>
 
         <TextView
                 android:id="@+id/statusViewTop"
@@ -59,6 +66,7 @@
                 android:textSize="14sp"
                 android:autoLink="web"
                 android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -73,42 +81,36 @@
                 android:textSize="14sp"
                 android:autoLink="web"
                 android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-        <ScrollView
+        <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+            <TextView android:id="@+id/ocrResultTextView"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textColor="@color/white"
+                      android:textSize="22sp"
+                      android:paddingStart="12dip"
+                      android:paddingEnd="2dip"/>
 
-                <TextView android:id="@+id/ocrResultTextView"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:textColor="@color/white"
-                          android:textColorLink="@color/white"
-                          android:textSize="22sp"
-                          android:paddingLeft="12dip"
-                          android:autoLink="web"/>
-
-                <!--<TextView android:id="@+id/translation_text_view"-->
-                          <!--android:layout_width="wrap_content"-->
-                          <!--android:layout_height="wrap_content"-->
-                          <!--android:textColor="@color/navy"-->
-                          <!--android:textColorLink="@color/navy"-->
-                          <!--android:textSize="22sp"-->
-                          <!--android:paddingLeft="12dip"-->
-                          <!--android:autoLink="web"-->
-                          <!--android:clickable="true"/>-->
-            </LinearLayout>
-        </ScrollView>
+            <ImageView android:id="@+id/imageView"
+                       android:layout_width="160dip"
+                       android:layout_height="wrap_content"
+                       android:maxWidth="160dip"
+                       android:maxHeight="160dip"
+                       android:layout_marginBottom="4dip"
+                       android:adjustViewBounds="true"
+                       android:scaleType="centerInside"/>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
