@@ -22,6 +22,8 @@
     <string name="txt_give_comment">Give comment</string>
     <string name="txt_remind_later">Remind me later</string>
     <string name="txt_no_thanks">I have already done</string>
+    <string name="txt_confirm">Confirm</string>
+    <string name="txt_retry">Retry</string>
 
     <!--MainActivity-->
     <string name="txt_network_check">Network Check</string>
@@ -73,4 +75,8 @@
 
     <!--IntroFragment-->
     <string name="txt_get_start">Get Start</string>
+
+    <!--ScanFragment-->
+    <string name="msg_ocr_fail">OCR failed. Please try again</string>
+    <string name="msg_perform_text_recognition">Performing text recognition...</string>
 </resources>

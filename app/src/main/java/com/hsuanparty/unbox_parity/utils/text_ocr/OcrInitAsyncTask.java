@@ -44,7 +44,8 @@ public final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
     private TessBaseAPI baseApi;
     private ProgressDialog dialog;
     private ProgressDialog indeterminateDialog;
-    private final String languageCode;
+    private String languageCode;
+    private String[] languageArray;
     private String languageName;
     private int ocrEngineMode;
 
@@ -68,6 +69,7 @@ public final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
         this.dialog = dialog;
         this.indeterminateDialog = indeterminateDialog;
         this.languageCode = languageCode;
+        this.languageArray = languageCode.split("\\+");
         this.languageName = languageName;
         this.ocrEngineMode = ocrEngineMode;
     }
@@ -90,6 +92,149 @@ public final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
      *
      * @param params [0] Pathname for the directory for storing language data files to the SD card
      */
+    protected Boolean doInBackground(String... params) {
+        // Check whether we need Cube data or Tesseract data.
+        // Example Cube data filename: "tesseract-ocr-3.01.eng.tar"
+        // Example Tesseract data filename: "eng.traineddata"
+
+        // Check for, and create if necessary, folder to hold model data
+        String destinationDirBase = params[0]; // The storage directory, minus the
+        // "tessdata" subdirectory
+        File tessdataDir = new File(destinationDirBase + File.separator + "tessdata");
+        if (!tessdataDir.exists() && !tessdataDir.mkdirs()) {
+            Log.e(TAG, "Couldn't make directory " + tessdataDir);
+            return false;
+        }
+
+        boolean installSuccess = false;
+        for (String lang : languageArray) {
+            File tesseractTestFile = new File(tessdataDir, lang + ".traineddata");
+            String destinationFilenameBase = lang + ".traineddata";
+            File downloadFile = new File(tessdataDir, destinationFilenameBase);
+
+            // If language data files are not present, install them
+            if (!tesseractTestFile.exists()) {
+                Log.d(TAG, "Language data for " + lang + " not found in " + tessdataDir.toString());
+                deleteCubeDataFiles(tessdataDir);
+
+                // Check assets for language data to install. If not present, download from Internet
+                try {
+                    Log.d(TAG, "Checking for language data (" + destinationFilenameBase
+                            + ".zip) in application assets...");
+                    // Check for a file like "eng.traineddata.zip" or "tesseract-ocr-3.01.eng.tar.zip"
+                    installSuccess = installFromAssets(destinationFilenameBase + ".zip", tessdataDir,
+                            downloadFile);
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException", e);
+                } catch (Exception e) {
+                    Log.e(TAG, "Got exception", e);
+                }
+
+                // Download from internet
+//                if (!installSuccess) {
+//                    // File was not packaged in assets, so download it
+//                    Log.d(TAG, "Downloading " + destinationFilenameBase + ".gz...");
+//                    try {
+//                        installSuccess = downloadFile(destinationFilenameBase, downloadFile);
+//                        if (!installSuccess) {
+//                            Log.e(TAG, "Download failed");
+//                            return false;
+//                        }
+//                    } catch (IOException e) {
+//                        Log.e(TAG, "IOException received in doInBackground. Is a network connection available?");
+//                        return false;
+//                    }
+//                }
+
+                // If we have a tar file at this point because we downloaded v3.01+ data, untar it
+//                String extension = destinationFilenameBase.substring(
+//                        destinationFilenameBase.lastIndexOf('.'));
+//                if (extension.equals(".tar")) {
+//                    try {
+//                        untar(new File(tessdataDir.toString() + File.separator + destinationFilenameBase),
+//                                tessdataDir);
+//                        installSuccess = true;
+//                    } catch (IOException e) {
+//                        Log.e(TAG, "Untar failed");
+//                        return false;
+//                    }
+//                }
+
+            } else {
+                Log.d(TAG, "Language data for " + languageCode + " already installed in "
+                        + tessdataDir.toString());
+                installSuccess = true;
+            }
+
+            if (!installSuccess) {
+                Log.d(TAG, "Language data for " + languageCode + " installed failed !!!!!!!");
+            }
+        }
+
+        // If OSD data file is not present, download it
+        File osdFile = new File(tessdataDir, ScanFragment.OSD_FILENAME_BASE);
+        boolean osdInstallSuccess = false;
+        if (!osdFile.exists()) {
+            // Check assets for language data to install. If not present, download from Internet
+            languageName = "orientation and script detection";
+            try {
+                // Check for, and delete, partially-downloaded OSD files
+                String[] badFiles = {ScanFragment.OSD_FILENAME + ".gz.download",
+                        ScanFragment.OSD_FILENAME + ".gz", ScanFragment.OSD_FILENAME};
+                for (String filename : badFiles) {
+                    File file = new File(tessdataDir, filename);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+
+                Log.d(TAG, "Checking for OSD data (" + ScanFragment.OSD_FILENAME_BASE
+                        + ".zip) in application assets...");
+                // Check for "osd.traineddata.zip"
+                osdInstallSuccess = installFromAssets(ScanFragment.OSD_FILENAME_BASE + ".zip",
+                        tessdataDir, new File(ScanFragment.OSD_FILENAME));
+            } catch (IOException e) {
+                Log.e(TAG, "IOException", e);
+            } catch (Exception e) {
+                Log.e(TAG, "Got exception", e);
+            }
+
+            if (!osdInstallSuccess) {
+                // File was not packaged in assets, so download it
+                Log.d(TAG, "Downloading " + ScanFragment.OSD_FILENAME + ".gz...");
+                try {
+                    osdInstallSuccess = downloadFile(ScanFragment.OSD_FILENAME, new File(tessdataDir,
+                            ScanFragment.OSD_FILENAME));
+                    if (!osdInstallSuccess) {
+                        Log.e(TAG, "Download failed");
+                        return false;
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException received in doInBackground. Is a network connection available?");
+                    return false;
+                }
+            }
+
+        } else {
+            Log.d(TAG, "OSD file already present in " + tessdataDir.toString());
+            osdInstallSuccess = true;
+        }
+
+        // Dismiss the progress dialog box, revealing the indeterminate dialog box behind it
+        try {
+            dialog.dismiss();
+        } catch (IllegalArgumentException e) {
+            // Catch "View not attached to window manager" error, and continue
+        }
+
+        // Initialize the OCR engine
+        if (baseApi.init(destinationDirBase + File.separator, languageCode, ocrEngineMode)) {
+            return installSuccess && osdInstallSuccess;
+        }
+        return false;
+    }
+
+    /*
     protected Boolean doInBackground(String... params) {
         // Check whether we need Cube data or Tesseract data.
         // Example Cube data filename: "tesseract-ocr-3.01.eng.tar"
@@ -258,6 +403,7 @@ public final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
         }
         return false;
     }
+    */
 
     /**
      * Delete any existing data files for Cube that are present in the given directory. Files may be
@@ -622,10 +768,10 @@ public final class OcrInitAsyncTask extends AsyncTask<String, String, Boolean> {
         super.onProgressUpdate(message);
         int percentComplete = 0;
 
-        percentComplete = Integer.parseInt(message[1]);
-        dialog.setMessage(message[0]);
-        dialog.setProgress(percentComplete);
-        dialog.show();
+//        percentComplete = Integer.parseInt(message[1]);
+//        dialog.setMessage(message[0]);
+//        dialog.setProgress(percentComplete);
+//        dialog.show();
     }
 
     @Override

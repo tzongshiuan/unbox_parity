@@ -13,6 +13,8 @@
     <string name="txt_give_comment">給予評價</string>
     <string name="txt_remind_later">下次再說</string>
     <string name="txt_no_thanks">已評過，感謝</string>
+    <string name="txt_confirm">確認</string>
+    <string name="txt_retry">重試</string>
 
     <!--MainActivity-->
     <string name="txt_network_check">Network Check</string>
@@ -64,4 +66,8 @@
 
     <!--IntroFragment-->
     <string name="txt_get_start">開始使用</string>
+
+    <!--ScanFragment-->
+    <string name="msg_ocr_fail">辨識失敗，請再試一次</string>
+    <string name="msg_perform_text_recognition">開始文字辨識...</string>
 </resources>

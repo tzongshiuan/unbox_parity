@@ -35,6 +35,8 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
 
     val isSearchFinish: MutableLiveData<Int> = MutableLiveData()
 
+    val scanResult: MutableLiveData<String> = MutableLiveData()
+
     fun search(str: String) {
         if (str.isEmpty()) {
             LogMessage.D(TAG, "Search text is null or empty")
@@ -62,5 +64,6 @@ class SearchViewModel @Inject constructor() : ViewModel(), Injectable {
     fun removeObservers(fragment: Fragment) {
         isWaitingLiveData.removeObservers(fragment)
         isSearchFinish.removeObservers(fragment)
+        scanResult.removeObservers(fragment)
     }
 }

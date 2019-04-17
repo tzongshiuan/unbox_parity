@@ -178,6 +178,11 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
     override fun onBackPressed() {
         LogMessage.D(TAG, "onBackPressed()")
 
+        if (isScanning) {
+            closeScanPage()
+            return
+        }
+
         if (isFullScreen) {
             videoViewModel.performExitFullScreen()
             return
@@ -376,18 +381,28 @@ class UnboxParityActivity : AppCompatActivity(), HasSupportFragmentInjector, Inj
         navigation.visibility = View.VISIBLE
     }
 
+    private var isScanning = false
     fun showScanPage() {
         LogMessage.D(TAG, "showScanPage()")
+        isScanning = true
+
         scanViewModel.isEnableOCR.value = true
         scanPage.view?.visibility = View.VISIBLE
         navigation.visibility = View.GONE
     }
 
-    fun closeScanPage() {
+    private fun closeScanPage() {
         LogMessage.D(TAG, "closeScanPage()")
+        isScanning = false
+
         scanViewModel.isEnableOCR.value = false
         scanPage.view?.visibility = View.GONE
         navigation.visibility = View.VISIBLE
+    }
+
+    fun closeScanPage(result: String) {
+        closeScanPage()
+        searchViewModel.scanResult.value = result
     }
 
     override fun supportFragmentInjector() = dispatchingAndroidInjector

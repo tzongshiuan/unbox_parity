@@ -102,7 +102,8 @@ final class ScanHandler extends Handler {
             case R.id.ocr_decode_failed:
                 state = State.PREVIEW;
                 fragment.setShutterButtonClickable(true);
-                Toast toast = Toast.makeText(fragment.getContext(), "OCR failed. Please try again.", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(fragment.getContext(),
+                        fragment.getContext().getString(R.string.msg_ocr_fail), Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.TOP, 0, 0);
                 toast.show();
                 break;

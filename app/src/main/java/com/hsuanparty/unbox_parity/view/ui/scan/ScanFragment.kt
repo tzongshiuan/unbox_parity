@@ -43,7 +43,7 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback, ShutterButt
         private val TAG = ScanFragment::class.java.simpleName
 
         /** ISO 639-3 language code indicating the default recognition language.  */
-        const val DEFAULT_SOURCE_LANGUAGE_CODE = "eng"
+        const val DEFAULT_SOURCE_LANGUAGE_CODE = "eng+chi_tra"
 
         /** ISO 639-1 language code indicating the default target language for translation.  */
         const val DEFAULT_TARGET_LANGUAGE_CODE = "es"
@@ -216,10 +216,19 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback, ShutterButt
         mBinding.retryBtn.setOnClickListener {
             mBinding.ocrResultTextView.visibility = View.GONE
             mBinding.imageView.visibility = View.GONE
+
+            mBinding.shutterBtn.visibility = View.VISIBLE
+            mBinding.viewFinder.visibility = View.VISIBLE
+
+            mBinding.retryBtn.visibility = View.GONE
+            mBinding.confirmBtn.visibility = View.GONE
         }
 
         mBinding.confirmBtn.setOnClickListener {
-            (activity as UnboxParityActivity).closeScanPage()
+            mBinding.retryBtn.visibility = View.GONE
+            mBinding.confirmBtn.visibility = View.GONE
+
+            (activity as UnboxParityActivity).closeScanPage(mBinding.ocrResultTextView.text.toString())
         }
 
         mBinding.viewFinder.setOnTouchListener(object : View.OnTouchListener {
@@ -461,8 +470,17 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback, ShutterButt
             handler?.resetState()
         }
 
+        mBinding.ocrResultTextView.visibility = View.GONE
+        mBinding.imageView.visibility = View.GONE
+
+        mBinding.shutterBtn.visibility = View.VISIBLE
+        mBinding.viewFinder.visibility = View.VISIBLE
+
+        mBinding.retryBtn.visibility = View.GONE
+        mBinding.confirmBtn.visibility = View.GONE
+
         if (baseApi != null) {
-            baseApi.pageSegMode = TessBaseAPI.PageSegMode.PSM_AUTO_OSD
+            baseApi.pageSegMode = TessBaseAPI.PageSegMode.PSM_AUTO
 //            baseApi.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST, characterBlacklist)
 //            baseApi.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST, characterWhitelist)
         }
@@ -528,17 +546,12 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback, ShutterButt
     }
 
     fun displayProgressDialog() {
-//        // Set up the indeterminate progress dialog box
-//        indeterminateDialog = ProgressDialog(context)
-//        indeterminateDialog!!.setTitle("Please wait")
-//        val ocrEngineModeName = getOcrEngineModeName()
-//        if (ocrEngineModeName == "Both") {
-//            indeterminateDialog!!.setMessage("Performing OCR using Cube and Tesseract...")
-//        } else {
-//            indeterminateDialog!!.setMessage("Performing OCR using $ocrEngineModeName...")
-//        }
-//        indeterminateDialog!!.setCancelable(false)
-//        indeterminateDialog!!.show()
+        // Set up the indeterminate progress dialog box
+        indeterminateDialog = ProgressDialog(context)
+        indeterminateDialog?.setTitle(getString(R.string.txt_waiting))
+        indeterminateDialog?.setMessage(getString(R.string.msg_perform_text_recognition))
+        indeterminateDialog?.setCancelable(false)
+        indeterminateDialog?.show()
     }
 
     fun getProgressDialog(): ProgressDialog? {
@@ -579,9 +592,9 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback, ShutterButt
 
     fun setStatusViewForContinuous() {
         mBinding.viewFinder.removeResultText()
-        if (CONTINUOUS_DISPLAY_METADATA) {
+//        if (CONTINUOUS_DISPLAY_METADATA) {
             //statusViewBottom.setText("OCR: $sourceLanguageReadable - waiting for OCR...")
-        }
+//        }
     }
 
     private fun setSpanBetweenTokens(
@@ -614,17 +627,17 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback, ShutterButt
         mBinding.viewFinder.removeResultText()
 
         // Reset the text in the recognized text box.
-        statusViewTop.text = ""
-
-        if (CONTINUOUS_DISPLAY_METADATA) {
-            // Color text delimited by '-' as red.
-            statusViewBottom.textSize = 14f
-            val cs = setSpanBetweenTokens(
-                "OCR: " + sourceLanguageReadable + " - OCR failed - Time required: "
-                        + obj.timeRequired + " ms", "-", ForegroundColorSpan(-0x10000)
-            )
-            statusViewBottom.text = cs
-        }
+//        statusViewTop.text = ""
+//
+//        if (CONTINUOUS_DISPLAY_METADATA) {
+//            // Color text delimited by '-' as red.
+//            statusViewBottom.textSize = 14f
+//            val cs = setSpanBetweenTokens(
+//                "OCR: " + sourceLanguageReadable + " - OCR failed - Time required: "
+//                        + obj.timeRequired + " ms", "-", ForegroundColorSpan(-0x10000)
+//            )
+//            statusViewBottom.text = cs
+//        }
     }
 
     /**
@@ -652,24 +665,24 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback, ShutterButt
 
         val meanConfidence = ocrResult.meanConfidence
 
-        if (CONTINUOUS_DISPLAY_RECOGNIZED_TEXT) {
-            // Display the recognized text on the screen
-            mBinding.statusViewTop.text = ocrResult.text
-            val scaledSize = Math.max(22, 32 - ocrResult.text.length / 4)
-            mBinding.statusViewTop.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize.toFloat())
-            mBinding.statusViewTop.setTextColor(Color.BLACK)
-            mBinding.statusViewTop.setBackgroundResource(R.color.white)
-
-            mBinding.statusViewTop.background.alpha = meanConfidence * (255 / 100)
-        }
-
-        if (CONTINUOUS_DISPLAY_METADATA) {
-            // Display recognition-related metadata at the bottom of the screen
-            val recognitionTimeRequired = ocrResult.recognitionTimeRequired
-            mBinding.statusViewBottom.textSize = 14f
-            mBinding.statusViewBottom.text = "OCR: " + sourceLanguageReadable + " - Mean confidence: " +
-                    meanConfidence!!.toString() + " - Time required: " + recognitionTimeRequired + " ms"
-        }
+//        if (CONTINUOUS_DISPLAY_RECOGNIZED_TEXT) {
+//            // Display the recognized text on the screen
+//            mBinding.statusViewTop.text = ocrResult.text
+//            val scaledSize = Math.max(22, 32 - ocrResult.text.length / 4)
+//            mBinding.statusViewTop.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize.toFloat())
+//            mBinding.statusViewTop.setTextColor(Color.BLACK)
+//            mBinding.statusViewTop.setBackgroundResource(R.color.white)
+//
+//            mBinding.statusViewTop.background.alpha = meanConfidence * (255 / 100)
+//        }
+//
+//        if (CONTINUOUS_DISPLAY_METADATA) {
+//            // Display recognition-related metadata at the bottom of the screen
+//            val recognitionTimeRequired = ocrResult.recognitionTimeRequired
+//            mBinding.statusViewBottom.textSize = 14f
+//            mBinding.statusViewBottom.text = "OCR: " + sourceLanguageReadable + " - Mean confidence: " +
+//                    meanConfidence!!.toString() + " - Time required: " + recognitionTimeRequired + " ms"
+//        }
     }
 
     fun setShutterButtonClickable(clickable: Boolean) {
@@ -695,8 +708,10 @@ class ScanFragment : Fragment(), Injectable, SurfaceHolder.Callback, ShutterButt
         mBinding.imageView.visibility = View.VISIBLE
 
         // Turn off capture-related UI elements
-//        mBinding.shutterBtn.visibility = View.GONE
-//        mBinding.viewFinder.visibility = View.GONE
+        mBinding.shutterBtn.visibility = View.GONE
+        mBinding.viewFinder.visibility = View.GONE
+        mBinding.retryBtn.visibility = View.VISIBLE
+        mBinding.confirmBtn.visibility = View.VISIBLE
 
 //        statusViewBottom.visibility = View.GONE
 //        statusViewTop.visibility = View.GONE

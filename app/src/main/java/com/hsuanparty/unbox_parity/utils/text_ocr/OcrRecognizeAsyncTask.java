@@ -15,6 +15,7 @@ import com.hsuanparty.unbox_parity.model.OcrResult;
 import com.hsuanparty.unbox_parity.view.ui.scan.ScanFragment;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Class to send OCR requests to the OCR engine in a separate thread, send a success/failure message,
@@ -120,17 +121,16 @@ final class OcrRecognizeAsyncTask extends AsyncTask<Void, Void, Boolean> {
         super.onPostExecute(result);
 
         Handler handler = fragment.getHandler();
-        if (handler != null) {
-            // Send results for single-shot mode recognition.
-            if (result) {
-                Message message = Message.obtain(handler, R.id.ocr_decode_succeeded, ocrResult);
-                message.sendToTarget();
-            } else {
-                Message message = Message.obtain(handler, R.id.ocr_decode_failed, ocrResult);
-                message.sendToTarget();
-            }
-            //fragment.getProgressDialog().dismiss();
+        // Send results for single-shot mode recognition.
+        if (result) {
+            Message message = Message.obtain(handler, R.id.ocr_decode_succeeded, ocrResult);
+            message.sendToTarget();
+        } else {
+            Message message = Message.obtain(handler, R.id.ocr_decode_failed, ocrResult);
+            message.sendToTarget();
         }
+        Objects.requireNonNull(fragment.getProgressDialog()).dismiss();
+
         if (baseApi != null) {
             baseApi.clear();
         }

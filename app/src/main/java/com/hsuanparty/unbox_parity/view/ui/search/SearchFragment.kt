@@ -34,6 +34,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
 import com.hsuanparty.unbox_parity.view.ui.UnboxParityActivity
+import kotlinx.android.synthetic.main.search_fragment.*
 
 
 class SearchFragment : Fragment(), Injectable {
@@ -111,6 +112,11 @@ class SearchFragment : Fragment(), Injectable {
                 else -> {
                 }
             }
+        })
+
+        viewModel.scanResult.observe(this, Observer { result ->
+            LogMessage.D(TAG, "Scan result: $result")
+            mBinding.searchEditText.setText(result)
         })
     }
 
