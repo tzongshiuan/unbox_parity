@@ -39,7 +39,7 @@ class YoutubeAdapter: RecyclerView.Adapter<YoutubeAdapter.ViewHolder>() {
             if (count < 10000) {
                 view.text = String.format("%d", count)
             } else {
-                val thousand = count/10000
+                val thousand = count/1000
                 view.text = String.format("%d.%d萬", thousand/10, thousand%10)
             }
         }
