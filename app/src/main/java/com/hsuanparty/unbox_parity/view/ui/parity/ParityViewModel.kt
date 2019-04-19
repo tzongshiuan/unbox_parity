@@ -14,6 +14,7 @@ import com.hsuanparty.unbox_parity.model.ParityItem
 import com.hsuanparty.unbox_parity.utils.Constants
 import com.hsuanparty.unbox_parity.utils.LogMessage
 import java.io.BufferedReader
+import java.io.FileNotFoundException
 import java.net.MalformedURLException
 import java.net.URL
 import javax.inject.Inject
@@ -85,12 +86,13 @@ class ParityViewModel @Inject constructor() : ViewModel(), Injectable {
 
                 val agent = "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
                 connection.setRequestProperty("User-Agent", agent)
-                val stream = connection.getInputStream()
-                val html = stream.bufferedReader().use(BufferedReader::readText)
-
-                //LogMessage.D(TAG, html)
-
-                parseSearchArticleResult(html)
+                try {
+                    val stream = connection.getInputStream()
+                    val html = stream.bufferedReader().use(BufferedReader::readText)
+                    parseSearchArticleResult(html)
+                } catch (e: FileNotFoundException) {
+                    LogMessage.E(TAG, e.printStackTrace().toString())
+                }
             }
         }.start()
     }
